@@ -3,7 +3,7 @@
 ]>
 
 <article>
-<title>Mouse Support in X11R6.7
+<title>Mouse Support in X11R&relvers;
 <author>Kazutaka Yokota
 <date>17 December 2002
 
@@ -111,7 +111,7 @@ NetBSD/pc98       Ok        ?         Ok        NA        NA         NA
 OpenBSD           Ok        Ok        Ok        Ok*1      Ok*1       Ok*1
 OS/2              SP*2      SP*2      SP*2      SP*2      SP*2       ?
 SCO               Ok        ?         SP*1      SP*1      NA         ?
-Solaris 2.x       Ok        NA*1      ?*1       Ok        Ok         ?
+Solaris 2.x       Ok        NA*1      ?*1       Ok        Ok         SP*1
 SVR4              Ok        NA*1      SP*1      SP*1      NA         ?
 PANIX             Ok        ?         SP*1      SP*1      NA         ?
 
@@ -243,14 +243,21 @@ protocol type.
 The <tt>"OSMouse"</tt> may also be used with the serial mouse.
 
 <sect1>Solaris <p>
-Testing has been done with Solaris 2.5.1 and 2.6.  Logitech and
-Microsoft bus mice
+Testing has been done with Solaris 2.5.1, 2.6, 7, 8, 9 and pre-release
+versions of Solaris 10.  Logitech and Microsoft bus mice
 have not been tested, but might work with the <tt>/dev/logi</tt> and
 <tt>/dev/msm</tt> devices.
 Standard 2 and 3 button PS/2 mice work with the <tt>"PS/2"</tt> protocol
 type and the <tt>/dev/kdmouse</tt> device.
+USB mice work with the <tt>"VUID"</tt> protocol type and the 
+<tt>/dev/mouse</tt> device.
 The PnP serial mouse support (the <tt>"Auto"</tt> protocol) has been tested
-and does not work.
+and does not work.  The <tt>"Auto"</tt> protocol can however detect PS/2 and
+USB mice correctly.
+
+Additional USB mice can be connected using the <tt>"VUID"</tt> protocol type
+and the appropriate <tt>"/dev/usb/hid"</tt> device with the <tt>Option "StreamsModule" "usbms"</tt> line included in the associated <tt>"InputDevice"</tt>
+section.
 
 <sect1>SVR4 <p>
 The bus and PS/2 mouse may be supported with the <tt>"Xqueue"</tt> 
@@ -269,7 +276,7 @@ The PC-98 version of PANIX supports the bus mouse with the
 
 <sect>Configuring Your Mouse <p>
 
-Before using the <tt>xf86config</tt> program
+Before using the <tt>xorgconfig</tt> program
 to set up mouse configuration, you must identify the interface type,
 the device name and the protocol type of your mouse.
 Blindly trying every possible combination of mouse settings 
