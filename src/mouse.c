@@ -1,4 +1,4 @@
-/* $XdotOrg$ */
+/* $XdotOrg: xc/programs/Xserver/hw/xfree86/input/mouse/mouse.c,v 1.2 2004/04/23 19:54:04 eich Exp $ */
 /* $XFree86: xc/programs/Xserver/hw/xfree86/input/mouse/mouse.c,v 1.79 2003/11/03 05:11:48 tsi Exp $ */
 /*
  *
@@ -1636,7 +1636,10 @@ MouseProc(DeviceIntPtr device, int what)
 	if (pInfo->fd == -1)
 	    xf86Msg(X_WARNING, "%s: cannot open input device\n", pInfo->name);
 	else {
-	    pMse->buffer = XisbNew(pInfo->fd, 64);
+	    if (pMse->xisbscale)
+		pMse->buffer = XisbNew(pInfo->fd, pMse->xisbscale * 4);
+	    else
+		pMse->buffer = XisbNew(pInfo->fd, 64);
 	    if (!pMse->buffer) {
 		xf86CloseSerial(pInfo->fd);
 		pInfo->fd = -1;
