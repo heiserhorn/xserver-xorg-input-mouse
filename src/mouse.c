@@ -1,4 +1,4 @@
-/* $XdotOrg: xc/programs/Xserver/hw/xfree86/input/mouse/mouse.c,v 1.2 2004/04/23 19:54:04 eich Exp $ */
+/* $XdotOrg: xc/programs/Xserver/hw/xfree86/input/mouse/mouse.c,v 1.3 2004/07/24 17:35:39 herrb Exp $ */
 /* $XFree86: xc/programs/Xserver/hw/xfree86/input/mouse/mouse.c,v 1.79 2003/11/03 05:11:48 tsi Exp $ */
 /*
  *
@@ -187,6 +187,7 @@ typedef enum {
     OPTION_EMULATE_WHEEL,
     OPTION_EMU_WHEEL_BUTTON,
     OPTION_EMU_WHEEL_INERTIA,
+    OPTION_EMU_WHEEL_TIMEOUT,
     OPTION_X_AXIS_MAPPING,
     OPTION_Y_AXIS_MAPPING,
     OPTION_AUTO_SOFT,
@@ -199,7 +200,8 @@ typedef enum {
     OPTION_FLOW_CONTROL,
     OPTION_VTIME,
     OPTION_VMIN,
-    OPTION_DRAGLOCKBUTTONS
+    OPTION_DRAGLOCKBUTTONS,
+    OPTION_DOUBLECLICK_BUTTONS
 } MouseOpts;
 
 #ifdef XFree86LOADER
@@ -225,6 +227,7 @@ static const OptionInfoRec mouseOptions[] = {
     { OPTION_EMULATE_WHEEL,	"EmulateWheel",	  OPTV_BOOLEAN, {0}, FALSE },
     { OPTION_EMU_WHEEL_BUTTON,	"EmulateWheelButton", OPTV_INTEGER, {0}, FALSE },
     { OPTION_EMU_WHEEL_INERTIA,	"EmulateWheelInertia", OPTV_INTEGER, {0}, FALSE },
+    { OPTION_EMU_WHEEL_TIMEOUT,	"EmulateWheelTimeout", OPTV_INTEGER, {0}, FALSE },
     { OPTION_X_AXIS_MAPPING,	"XAxisMapping",	  OPTV_STRING,	{0}, FALSE },
     { OPTION_Y_AXIS_MAPPING,	"YAxisMapping",	  OPTV_STRING,	{0}, FALSE },
     { OPTION_AUTO_SOFT,		"AutoSoft",	  OPTV_BOOLEAN, {0}, FALSE },
@@ -239,6 +242,7 @@ static const OptionInfoRec mouseOptions[] = {
     { OPTION_VTIME,		"VTime",	  OPTV_INTEGER,	{0}, FALSE },
     { OPTION_VMIN,		"VMin",		  OPTV_INTEGER,	{0}, FALSE },
     { OPTION_DRAGLOCKBUTTONS,	"DragLockButtons",OPTV_STRING,	{0}, FALSE },
+    { OPTION_DOUBLECLICK_BUTTONS,"DoubleClickButtons", OPTV_STRING, {0}, FALSE },
     /* end serial options */
     { -1,			NULL,		  OPTV_NONE,	{0}, FALSE }
 };
@@ -586,7 +590,7 @@ MouseCommonOptions(InputInfoPtr pInfo)
 			pInfo->name, wheelButton);
 	    wheelButton = 4;
 	}
-	pMse->wheelButtonMask = 1 << (wheelButton - 1);
+	pMse->wheelButton = wheelButton;
 	
 	pMse->wheelInertia = xf86SetIntOption(pInfo->options,
 					"EmulateWheelInertia", 10);
@@ -594,6 +598,13 @@ MouseCommonOptions(InputInfoPtr pInfo)
 	    xf86Msg(X_WARNING, "%s: Invalid EmulateWheelInertia value: %d\n",
 			pInfo->name, pMse->wheelInertia);
 	    pMse->wheelInertia = 50;
+	}
+	pMse->wheelButtonTimeout = xf86SetIntOption(pInfo->options,
+					"EmulateWheelButtonTimeout", 200);
+	if (pMse->wheelButtonTimeout <= 0) {
+	    xf86Msg(X_WARNING, "%s: Invalid EmulateWheelButtonTimeout value: %d\n",
+			pInfo->name, pMse->wheelButtonTimeout);
+	    pMse->wheelButtonTimeout = 200;
 	}
 
 	pMse->negativeX = MSE_NOAXISMAP;
@@ -658,13 +669,42 @@ MouseCommonOptions(InputInfoPtr pInfo)
 		    pInfo->name, pMse->negativeY, pMse->positiveY);
 	}
 	xf86Msg(X_CONFIG, "%s: EmulateWheel, EmulateWheelButton: %d, "
-			  "EmulateWheelInertia: %d\n",
-		pInfo->name, wheelButton, pMse->wheelInertia);
+			  "EmulateWheelInertia: %d, "
+			  "EmulateWheelButtonTimeout: %d\n",
+		pInfo->name, wheelButton, pMse->wheelInertia,
+		pMse->wheelButtonTimeout);
     }
     if (origButtons != pMse->buttons)
 	buttons_from = X_CONFIG;
     xf86Msg(buttons_from, "%s: Buttons: %d\n", pInfo->name, pMse->buttons);
-    
+
+    pMse->doubleClickSourceButtonMask = 0;
+    pMse->doubleClickTargetButtonMask = 0;
+    pMse->doubleClickTargetButton = 0;
+    s = xf86SetStrOption(pInfo->options, "DoubleClickButtons", NULL);
+    if (s) {
+        int b1 = 0, b2 = 0;
+        char *msg = NULL;
+
+        if ((sscanf(s, "%d %d", &b1, &b2) == 2) &&
+        (b1 > 0) && (b1 <= MSE_MAXBUTTONS) && (b2 > 0) && (b2 <= MSE_MAXBUTTONS)) {
+            msg = xstrdup("buttons XX and YY");
+            if (msg)
+                sprintf(msg, "buttons %d and %d", b1, b2);
+            pMse->doubleClickTargetButton = b1;
+            pMse->doubleClickTargetButtonMask = 1 << (b1 - 1);
+            pMse->doubleClickSourceButtonMask = 1 << (b2 - 1);
+            if (b1 > pMse->buttons) pMse->buttons = b1;
+            if (b2 > pMse->buttons) pMse->buttons = b2;
+        } else {
+            xf86Msg(X_WARNING, "%s: Invalid DoubleClickButtons value: \"%s\"\n",
+                    pInfo->name, s);
+        }
+        if (msg) {
+            xf86Msg(X_CONFIG, "%s: DoubleClickButtons: %s\n", pInfo->name, msg);
+            xfree(msg);
+        }
+    }
 }
 /*
  * map bits corresponding to lock buttons.
@@ -1673,6 +1713,7 @@ MouseProc(DeviceIntPtr device, int what)
 	pMse->lastButtons = 0;
 	pMse->emulateState = 0;
 	pMse->emulate3Pending = FALSE;
+	pMse->wheelButtonExpires = GetTimeInMillis ();
 	device->public.on = TRUE;
 	FlushButtons(pMse);
 	if (pMse->emulate3Buttons || pMse->emulate3ButtonsSoft)
@@ -2003,6 +2044,8 @@ MouseDoPostEvent(InputInfoPtr pInfo, int buttons, int dx, int dy)
     int truebuttons, emulateButtons;
     int id, change;
     int emuWheelDelta, emuWheelButton, emuWheelButtonMask;
+    int wheelButtonMask;
+    int ms;
 
     pMse = pInfo->private;
 
@@ -2012,64 +2055,128 @@ MouseDoPostEvent(InputInfoPtr pInfo, int buttons, int dx, int dy)
     else
 	buttons = reverseBits(reverseMap, buttons);
 
-    /* Intercept wheel emulation. */
-    if (pMse->emulateWheel && (buttons & pMse->wheelButtonMask)) {
-	/* Y axis movement */
-	if (pMse->negativeY != MSE_NOAXISMAP) {
-	    pMse->wheelYDistance += dy;
-	    if (pMse->wheelYDistance < 0) {
-		emuWheelDelta = -pMse->wheelInertia;
-		emuWheelButton = pMse->negativeY;
-	    } else {
-		emuWheelDelta = pMse->wheelInertia;
-		emuWheelButton = pMse->positiveY;
-	    }
-	    emuWheelButtonMask = 1 << (emuWheelButton - 1);
-	    while (abs(pMse->wheelYDistance) > pMse->wheelInertia) {
-		pMse->wheelYDistance -= emuWheelDelta;
+    /* Do single button double click */
+    if (pMse->doubleClickSourceButtonMask) {
+        if (buttons & pMse->doubleClickSourceButtonMask) {
+            if (!(pMse->doubleClickOldSourceState)) {
+                /* double-click button has just been pressed. Ignore it if target button
+                 * is already down.
+                 */
+                if (!(buttons & pMse->doubleClickTargetButtonMask)) {
+                    /* Target button isn't down, so send a double-click */
+                    xf86PostButtonEvent(pInfo->dev, 0, pMse->doubleClickTargetButton, 1, 0, 0);
+                    xf86PostButtonEvent(pInfo->dev, 0, pMse->doubleClickTargetButton, 0, 0, 0);
+                    xf86PostButtonEvent(pInfo->dev, 0, pMse->doubleClickTargetButton, 1, 0, 0);
+                    xf86PostButtonEvent(pInfo->dev, 0, pMse->doubleClickTargetButton, 0, 0, 0);
+                }
+            }
+            pMse->doubleClickOldSourceState = 1;
+        }
+        else
+            pMse->doubleClickOldSourceState = 0;
 
-		/*
-		 * Synthesize the press and release, but not when the button
-		 * to be synthesized is already pressed "for real".
-		 */
-		if (!(emuWheelButtonMask & buttons) ||
-		    (emuWheelButtonMask & pMse->wheelButtonMask)) {
-		    xf86PostButtonEvent(pInfo->dev, 0, emuWheelButton, 1, 0, 0);
-		    xf86PostButtonEvent(pInfo->dev, 0, emuWheelButton, 0, 0, 0);
+        /* Whatever happened, mask the double-click button so it doesn't get
+         * processed as a normal button as well.
+         */
+        buttons &= ~(pMse->doubleClickSourceButtonMask);
+    }
+
+    if (pMse->emulateWheel) {
+	/* Emulate wheel button handling */
+	wheelButtonMask = 1 << (pMse->wheelButton - 1);
+
+	if (pMse->protocolID == PROT_MMHIT)
+	    change = buttons ^ reverseBits(hitachMap, pMse->lastButtons);
+	else
+	    change = buttons ^ reverseBits(reverseMap, pMse->lastButtons);
+
+	if (change & wheelButtonMask) {
+	    if (buttons & wheelButtonMask) {
+		/* Start timeout handling */
+		pMse->wheelButtonExpires = GetTimeInMillis () + pMse->wheelButtonTimeout;
+		ms = - pMse->wheelButtonTimeout;  
+	    } else {
+		ms = pMse->wheelButtonExpires - GetTimeInMillis ();
+
+		if (0 < ms) {
+		    /*
+		     * If the button is released early enough emit the button
+		     * press/release events
+		     */
+		    xf86PostButtonEvent(pInfo->dev, 0, pMse->wheelButton, 1, 0, 0);
+		    xf86PostButtonEvent(pInfo->dev, 0, pMse->wheelButton, 0, 0, 0);
 		}
 	    }
-	}
+	} else
+	    ms = pMse->wheelButtonExpires - GetTimeInMillis ();
 
-	/* X axis movement */
-	if (pMse->negativeX != MSE_NOAXISMAP) {
-	    pMse->wheelXDistance += dx;
-	    if (pMse->wheelXDistance < 0) {
-		emuWheelDelta = -pMse->wheelInertia;
-		emuWheelButton = pMse->negativeX;
-	    } else {
-		emuWheelDelta = pMse->wheelInertia;
-		emuWheelButton = pMse->positiveX;
-	    }
-	    emuWheelButtonMask = 1 << (emuWheelButton - 1);
-	    while (abs(pMse->wheelXDistance) > pMse->wheelInertia) {
-		pMse->wheelXDistance -= emuWheelDelta;
+	/* Intercept wheel emulation. */
+	if (buttons & wheelButtonMask) {
+	    if (ms <= 0) {
+		/* Y axis movement */
+		if (pMse->negativeY != MSE_NOAXISMAP) {
+		    pMse->wheelYDistance += dy;
+		    if (pMse->wheelYDistance < 0) {
+			emuWheelDelta = -pMse->wheelInertia;
+			emuWheelButton = pMse->negativeY;
+		    } else {
+			emuWheelDelta = pMse->wheelInertia;
+			emuWheelButton = pMse->positiveY;
+		    }
+		    emuWheelButtonMask = 1 << (emuWheelButton - 1);
+		    while (abs(pMse->wheelYDistance) > pMse->wheelInertia) {
+			pMse->wheelYDistance -= emuWheelDelta;
 
-		/*
-		 * Synthesize the press and release, but not when the button
-		 * to be synthesized is already pressed "for real".
-		 */
-		if (!(emuWheelButtonMask & buttons) ||
-		    (emuWheelButtonMask & pMse->wheelButtonMask)) {
-		    xf86PostButtonEvent(pInfo->dev, 0, emuWheelButton, 1, 0, 0);
-		    xf86PostButtonEvent(pInfo->dev, 0, emuWheelButton, 0, 0, 0);
+			/*
+			 * Synthesize the press and release, but not when
+			 * the button to be synthesized is already pressed
+			 * "for real".
+			 */
+			if (!(emuWheelButtonMask & buttons) ||
+			    (emuWheelButtonMask & wheelButtonMask)) {
+			    xf86PostButtonEvent(pInfo->dev, 0, emuWheelButton, 1, 0, 0);
+			    xf86PostButtonEvent(pInfo->dev, 0, emuWheelButton, 0, 0, 0);
+			}
+		    }
+		}
+
+		/* X axis movement */
+		if (pMse->negativeX != MSE_NOAXISMAP) {
+		    pMse->wheelXDistance += dx;
+		    if (pMse->wheelXDistance < 0) {
+			emuWheelDelta = -pMse->wheelInertia;
+			emuWheelButton = pMse->negativeX;
+		    } else {
+			emuWheelDelta = pMse->wheelInertia;
+			emuWheelButton = pMse->positiveX;
+		    }
+		    emuWheelButtonMask = 1 << (emuWheelButton - 1);
+		    while (abs(pMse->wheelXDistance) > pMse->wheelInertia) {
+			pMse->wheelXDistance -= emuWheelDelta;
+
+			/*
+			 * Synthesize the press and release, but not when
+			 * the button to be synthesized is already pressed
+			 * "for real".
+			 */
+			if (!(emuWheelButtonMask & buttons) ||
+			    (emuWheelButtonMask & wheelButtonMask)) {
+			    xf86PostButtonEvent(pInfo->dev, 0, emuWheelButton, 1, 0, 0);
+			    xf86PostButtonEvent(pInfo->dev, 0, emuWheelButton, 0, 0, 0);
+			}
+		    }
 		}
 	    }
-	}
 
-	/* Absorb the mouse movement and the wheel button press. */
-	dx = 0;
-	dy = 0;
-	buttons &= ~pMse->wheelButtonMask;
+	    /* Absorb the mouse movement while the wheel button is pressed. */
+	    dx = 0;
+	    dy = 0;
+	}
+	/*
+	 * Button events for the wheel button are only emitted through
+	 * the timeout code.
+	 */
+	buttons &= ~wheelButtonMask;
     }
 
     if (dx || dy)
