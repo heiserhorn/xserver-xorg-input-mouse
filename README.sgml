@@ -14,7 +14,7 @@
  
 <sect>Introduction <p>
 
-This document describes mouse support in X.org Foundation's X11 &relvers; server.
+This document describes mouse support in X.org Foundation's X11R&relvers; server.
 
 Mouse configuration has often been mysterious task for
 novice users.
@@ -83,7 +83,7 @@ used in such a way, even if you can find an appropriate
 adapter with which you can connect the PS/2 mouse to a serial port
 or visa versa.
 
-X11R6.7 supports the mouse with a wheel, a roller or a knob.
+X11R&relvers; supports the mouse with a wheel, a roller or a knob.
 Its action is detected as the Z (third) axis motion of the mouse.
 As the X server or clients normally do not use the Z axis movement of the 
 pointing device, a configuration option, <tt>"ZAxisMapping"</tt>,
@@ -119,7 +119,7 @@ Ok: support is available,  NA: not available, ?: untested or unknown.
 SP: support is available in a different form
 
 *1 Refer to the following sections for details.
-*2 X11R6.7/OS2 will support any type of mouse that the OS supports, 
+*2 X11R&relvers;/OS2 will support any type of mouse that the OS supports, 
    whether it is serial, bus mouse, or PnP type. 
 
 </verb>
@@ -228,11 +228,11 @@ generic Human Interface Device (hid) <tt>/dev/uhid*</tt>. Select the
 corresponding to your mouse as the device name.
 
 <sect1>OS/2 <p>
-X11R6.7/OS2 always uses the native mouse driver of the operating system
+X11R&relvers;/OS2 always uses the native mouse driver of the operating system
 and will support any type of pointer that the OS supports, whether it is
 serial, bus mouse, or PnP type.
 If the mouse works under Presentation Manager, 
-it will also work under X11R6.7/OS2.
+it will also work under X11R&relvers;/OS2.
 
 Always specify <tt>"OSMouse"</tt> as the protocol type.
 
@@ -475,7 +475,7 @@ If the buttons <tt>N3</tt> and <tt>N4</tt> actually exist in this mouse,
 their actions won't be detected by the X server.
 
 NOTE #1: horizontal movement may not always be detected
-by the current version of the X11R6.7 X servers,
+by the current version of the X11R&relvers; X servers,
 because there appears to be no accepted standard as to how the horizontal
 direction is encoded in mouse data.
 
