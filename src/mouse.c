@@ -1,4 +1,4 @@
-/* $XdotOrg: xc/programs/Xserver/hw/xfree86/input/mouse/mouse.c,v 1.3 2004/07/24 17:35:39 herrb Exp $ */
+/* $XdotOrg: xc/programs/Xserver/hw/xfree86/input/mouse/mouse.c,v 1.4 2004/10/17 20:29:35 agd5f Exp $ */
 /* $XFree86: xc/programs/Xserver/hw/xfree86/input/mouse/mouse.c,v 1.79 2003/11/03 05:11:48 tsi Exp $ */
 /*
  *
@@ -597,7 +597,7 @@ MouseCommonOptions(InputInfoPtr pInfo)
 	if (pMse->wheelInertia <= 0) {
 	    xf86Msg(X_WARNING, "%s: Invalid EmulateWheelInertia value: %d\n",
 			pInfo->name, pMse->wheelInertia);
-	    pMse->wheelInertia = 50;
+	    pMse->wheelInertia = 10;
 	}
 	pMse->wheelButtonTimeout = xf86SetIntOption(pInfo->options,
 					"EmulateWheelButtonTimeout", 200);

@@ -114,7 +114,7 @@ settings.  Default: 4.
 .TP 7
 .BI "Option \*qEmulateWheelInertia\*q \*q" integer \*q
 Specifies how far (in pixels) the pointer must move to generate button
-press/release events in wheel emulation mode.  Default: 50.
+press/release events in wheel emulation mode.  Default: 10.
 .TP 7
 .BI "Option \*qEmulateWheelTimeout\*q \*q" integer \*q
 Specifies the time in milliseconds the
