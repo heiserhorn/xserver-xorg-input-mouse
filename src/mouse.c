@@ -1,4 +1,4 @@
-/* $XdotOrg: xc/programs/Xserver/hw/xfree86/input/mouse/mouse.c,v 1.4 2004/10/17 20:29:35 agd5f Exp $ */
+/* $XdotOrg: xc/programs/Xserver/hw/xfree86/input/mouse/mouse.c,v 1.5 2004/10/17 22:45:57 agd5f Exp $ */
 /* $XFree86: xc/programs/Xserver/hw/xfree86/input/mouse/mouse.c,v 1.79 2003/11/03 05:11:48 tsi Exp $ */
 /*
  *
@@ -46,14 +46,14 @@
  */
 
 #define NEED_EVENTS
-#include "X.h"
-#include "Xproto.h"
+#include <X11/X.h>
+#include <X11/Xproto.h>
 
 #include "xf86.h"
 
 #ifdef XINPUT
-#include "XI.h"
-#include "XIproto.h"
+#include <X11/extensions/XI.h>
+#include <X11/extensions/XIproto.h>
 #include "extnsionst.h"
 #include "extinit.h"
 #else
