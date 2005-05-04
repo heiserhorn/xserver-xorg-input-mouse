@@ -1,4 +1,4 @@
-/* $XdotOrg: xc/programs/Xserver/hw/xfree86/input/mouse/mouse.c,v 1.5 2004/10/17 22:45:57 agd5f Exp $ */
+/* $XdotOrg: xc/programs/Xserver/hw/xfree86/input/mouse/mouse.c,v 1.6 2005/04/20 12:25:34 daniels Exp $ */
 /* $XFree86: xc/programs/Xserver/hw/xfree86/input/mouse/mouse.c,v 1.79 2003/11/03 05:11:48 tsi Exp $ */
 /*
  *
@@ -1541,8 +1541,8 @@ MouseReadInput(InputInfoPtr pInfo)
 
 	case PROT_SYSMOUSE:	/* sysmouse */
 	    buttons = (~pBuf[0]) & 0x07;
-	    dx =    (char)(pBuf[1]) + (char)(pBuf[3]);
-	    dy = - ((char)(pBuf[2]) + (char)(pBuf[4]));
+	    dx =    (signed char)(pBuf[1]) + (signed char)(pBuf[3]);
+	    dy = - ((signed char)(pBuf[2]) + (signed char)(pBuf[4]));
 	    /* FreeBSD sysmouse sends additional data bytes */
 	    if (pMse->protoPara[4] >= 8) {
 		/*
