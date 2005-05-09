@@ -38,7 +38,7 @@ Please refer to __xconfigfile__(__filemansuffix__) for general configuration
 details and for options that can be used with all input drivers.  This
 section only covers configuration details specific to this driver.
 .PP
-The driver can auto-detect the mouse type on some platforms  On some
+The driver can auto-detect the mouse type on some platforms.  On some
 platforms this is limited to plug and play serial mice, and on some the
 auto-detection works for any mouse that the OS's kernel driver supports.
 On others, it is always necessary to specify the mouse protocol in the
@@ -73,7 +73,7 @@ device.  This option is mandatory, and there is no default setting.
 .TP 7
 .BI "Option \*qButtons\*q \*q" integer \*q
 Specifies the number of mouse buttons.  In cases where the number of buttons
-cannot be auto-detected, the default value is 3.
+cannot be auto-detected, the default value is 3.  The maximum number is 24.
 .TP 7
 .BI "Option \*qEmulate3Buttons\*q \*q" boolean \*q
 Enable/disable the emulation of the third (middle) mouse button for mice
