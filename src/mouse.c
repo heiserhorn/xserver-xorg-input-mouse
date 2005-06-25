@@ -155,7 +155,7 @@ static void SetMouseProto(MouseDevPtr pMse, MouseProtocolID protocolID);
 static Bool autoGood(MouseDevPtr pMse);
 
 #undef MOUSE
-InputDriverRec MOUSE = {
+_X_EXPORT InputDriverRec MOUSE = {
 	1,
 	"mouse",
 	NULL,
@@ -3687,9 +3687,11 @@ static XF86ModuleVersionInfo xf86MouseVersionRec =
 				/* a tool */
 };
 
-XF86ModuleData mouseModuleData = {&xf86MouseVersionRec,
-				  xf86MousePlug,
-				  xf86MouseUnplug};
+_X_EXPORT XF86ModuleData mouseModuleData = {
+    &xf86MouseVersionRec,
+    xf86MousePlug,
+    xf86MouseUnplug
+};
 
 /*
   Look at hitachi device stuff.
