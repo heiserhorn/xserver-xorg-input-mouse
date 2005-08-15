@@ -161,7 +161,7 @@ of the second wheel mapped respectively to buttons number
 .I N3
 and
 .IR N4 .
-Default: no mapping.
+Default: "4 5 6 7".
 .TP 7
 .BI "Option \*qFlipXY\*q \*q" boolean \*q
 Enable/disable swapping the X and Y axes.  This transformation is applied
