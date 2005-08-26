@@ -2747,7 +2747,7 @@ initMouseHW(InputInfoPtr pInfo)
 	case PROT_NETPS2:		/* NetMouse, NetMouse Pro, Mie Mouse */
 	case PROT_NETSCPS2:		/* NetScroll */
 	{
-	    static unsigned char seq[] = { 232, 3, 230, 230, 230 };
+	    static unsigned char seq[] = { 232, 3, 230, 230, 230, 233 };
 	
 	    param = seq;
 	    paramlen = sizeof(seq);
