@@ -604,9 +604,9 @@ MouseCommonOptions(InputInfoPtr pInfo)
 	    pMse->wheelInertia = 10;
 	}
 	pMse->wheelButtonTimeout = xf86SetIntOption(pInfo->options,
-					"EmulateWheelButtonTimeout", 200);
+					"EmulateWheelTimeout", 200);
 	if (pMse->wheelButtonTimeout <= 0) {
-	    xf86Msg(X_WARNING, "%s: Invalid EmulateWheelButtonTimeout value: %d\n",
+	    xf86Msg(X_WARNING, "%s: Invalid EmulateWheelTimeout value: %d\n",
 			pInfo->name, pMse->wheelButtonTimeout);
 	    pMse->wheelButtonTimeout = 200;
 	}
@@ -674,7 +674,7 @@ MouseCommonOptions(InputInfoPtr pInfo)
 	}
 	xf86Msg(X_CONFIG, "%s: EmulateWheel, EmulateWheelButton: %d, "
 			  "EmulateWheelInertia: %d, "
-			  "EmulateWheelButtonTimeout: %d\n",
+			  "EmulateWheelTimeout: %d\n",
 		pInfo->name, wheelButton, pMse->wheelInertia,
 		pMse->wheelButtonTimeout);
     }
