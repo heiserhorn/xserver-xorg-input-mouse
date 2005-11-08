@@ -535,7 +535,7 @@ MouseCommonOptions(InputInfoPtr pInfo)
 	}
     }
 
-    s = xf86SetStrOption(pInfo->options, "ZAxisMapping", "4 5 6 7");
+    s = xf86SetStrOption(pInfo->options, "ZAxisMapping", 0);
     if (s) {
 	int b1 = 0, b2 = 0, b3 = 0, b4 = 0;
 	char *msg = NULL;
