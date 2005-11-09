@@ -163,6 +163,16 @@ and
 .IR N4 .
 Default: no mapping.
 .TP 7
+.BI "Option \*qButtonMapping\*q \*q" "N1 N2 [...]" \*q
+Specifies how physical mouse buttons are mapped to logical buttons.
+Physcial button 1 is mapped to logical button
+.IR N1 ,
+physical button 2 to
+.IR N2 ,
+and so forth.  This enables the use of physical buttons that are obscured by
+.IR ZAxisMapping .
+Default: 1-to-1 mapping.
+.TP 7
 .BI "Option \*qFlipXY\*q \*q" boolean \*q
 Enable/disable swapping the X and Y axes.  This transformation is applied
 after the

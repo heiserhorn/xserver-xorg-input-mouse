@@ -205,7 +205,8 @@ typedef enum {
     OPTION_VTIME,
     OPTION_VMIN,
     OPTION_DRAGLOCKBUTTONS,
-    OPTION_DOUBLECLICK_BUTTONS
+    OPTION_DOUBLECLICK_BUTTONS,
+    OPTION_BUTTON_MAPPING
 } MouseOpts;
 
 #ifdef XFree86LOADER
@@ -245,9 +246,10 @@ static const OptionInfoRec mouseOptions[] = {
     { OPTION_FLOW_CONTROL,	"FlowControl",	  OPTV_STRING,	{0}, FALSE },
     { OPTION_VTIME,		"VTime",	  OPTV_INTEGER,	{0}, FALSE },
     { OPTION_VMIN,		"VMin",		  OPTV_INTEGER,	{0}, FALSE },
+    /* end serial options */
     { OPTION_DRAGLOCKBUTTONS,	"DragLockButtons",OPTV_STRING,	{0}, FALSE },
     { OPTION_DOUBLECLICK_BUTTONS,"DoubleClickButtons", OPTV_STRING, {0}, FALSE },
-    /* end serial options */
+    { OPTION_BUTTON_MAPPING,   "ButtonMapping",   OPTV_STRING,  {0}, FALSE },
     { -1,			NULL,		  OPTV_NONE,	{0}, FALSE }
 };
 #endif
@@ -384,6 +386,7 @@ MouseCommonOptions(InputInfoPtr pInfo)
     MessageType buttons_from = X_CONFIG;
     char *s;
     int origButtons;
+    int i;
 
     pMse = pInfo->private;
 
@@ -678,6 +681,27 @@ MouseCommonOptions(InputInfoPtr pInfo)
 		pInfo->name, wheelButton, pMse->wheelInertia,
 		pMse->wheelButtonTimeout);
     }
+    s = xf86SetStrOption(pInfo->options, "ButtonMapping", NULL);
+    if (s) {
+       int b, n = 0;
+       /* keep getting numbers which are buttons */
+       while (s && n < MSE_MAXBUTTONS && (b = strtol(s, &s, 10)) != 0) {
+	   /* check sanity for a button */
+	   if (b < 0 || b > MSE_MAXBUTTONS) {
+	       xf86Msg(X_WARNING,
+		       "ButtonMapping: Invalid button number = %d\n", b);
+	       break;
+	   };
+	   pMse->buttonMap[n++] = 1 << (b-1);
+	   if (b > pMse->buttons) pMse->buttons = b;
+       }
+    }
+    /* get maximum of mapped buttons */
+    for (i = pMse->buttons-1; i >= 0; i--) {
+	int f = ffs (pMse->buttonMap[i]);
+	if (f > pMse->buttons)
+	    pMse->buttons = f;
+    }
     if (origButtons != pMse->buttons)
 	buttons_from = X_CONFIG;
     xf86Msg(buttons_from, "%s: Buttons: %d\n", pInfo->name, pMse->buttons);
@@ -932,6 +956,7 @@ MousePreInit(InputDriverPtr drv, IDevPtr dev, int flags)
     MouseProtocolID protocolID;
     MouseProtocolPtr pProto;
     Bool detected;
+    int i;
     
     if (!InitProtocols())
 	return NULL;
@@ -1065,6 +1090,13 @@ MousePreInit(InputDriverPtr drv, IDevPtr dev, int flags)
     pMse->oldProtocolID = protocolID;  /* hack */
 
     pMse->autoProbe = FALSE;
+    /* XXX If the default for ZAxisMapping is decided to be "4 5 6 7" again,
+     * ButtonMapping should by default remap all button >= 4 to button+4 :
+     * for (i = 0; i < MSE_MAXBUTTONS; i++)
+     *     pMse->buttonMap[i] = 1 << (i > 2 && i < MSE_MAXBUTTONS-4 ? i+4 : i);
+     */
+    for (i = 0; i < MSE_MAXBUTTONS; i++)
+	pMse->buttonMap[i] = 1 << i;
 
     /* Collect the options, and process the common options. */
     xf86CollectInputOptions(pInfo, pProto->defaults, NULL);
@@ -1715,6 +1747,7 @@ MouseProc(DeviceIntPtr device, int what)
 	    }
 	}
 	pMse->lastButtons = 0;
+	pMse->lastMappedButtons = 0;
 	pMse->emulateState = 0;
 	pMse->emulate3Pending = FALSE;
 	pMse->wheelButtonExpires = GetTimeInMillis ();
@@ -1787,6 +1820,7 @@ FlushButtons(MouseDevPtr pMse)
     int i, blocked;
 
     pMse->lastButtons = 0;
+    pMse->lastMappedButtons = 0;
 
     blocked = xf86BlockSIGIO ();
     for (i = 1; i <= 5; i++)
@@ -1948,11 +1982,10 @@ static signed char stateTab[11][5][3] = {
  * And we remap them (MSBit described first) :
  * 0 | 4th | 3rd | 2nd | 1st
  */
-static char reverseMap[32] = { 0,  4,  2,  6,  1,  5,  3,  7,
-			       8, 12, 10, 14,  9, 13, 11, 15,
-			      16, 20, 18, 22, 17, 21, 19, 23,
-			      24, 28, 26, 30, 25, 29, 27, 31};
-
+static char reverseMap[16] = { 0,  4,  2,  6,
+			       1,  5,  3,  7,
+			       8, 12, 10, 14,
+			       9, 13, 11, 15 };
 
 static char hitachMap[16] = {  0,  2,  1,  3, 
 			       8, 10,  9, 11,
@@ -2045,19 +2078,13 @@ static void
 MouseDoPostEvent(InputInfoPtr pInfo, int buttons, int dx, int dy)
 {
     MouseDevPtr pMse;
-    int truebuttons, emulateButtons;
+    int emulateButtons;
     int id, change;
     int emuWheelDelta, emuWheelButton, emuWheelButtonMask;
     int wheelButtonMask;
     int ms;
 
     pMse = pInfo->private;
-
-    truebuttons = buttons;
-    if (pMse->protocolID == PROT_MMHIT)
-	buttons = reverseBits(hitachMap, buttons);
-    else
-	buttons = reverseBits(reverseMap, buttons);
 
     /* Do single button double click */
     if (pMse->doubleClickSourceButtonMask) {
@@ -2089,10 +2116,7 @@ MouseDoPostEvent(InputInfoPtr pInfo, int buttons, int dx, int dy)
 	/* Emulate wheel button handling */
 	wheelButtonMask = 1 << (pMse->wheelButton - 1);
 
-	if (pMse->protocolID == PROT_MMHIT)
-	    change = buttons ^ reverseBits(hitachMap, pMse->lastButtons);
-	else
-	    change = buttons ^ reverseBits(reverseMap, pMse->lastButtons);
+	change = buttons ^ pMse->lastMappedButtons;
 
 	if (change & wheelButtonMask) {
 	    if (buttons & wheelButtonMask) {
@@ -2186,12 +2210,9 @@ MouseDoPostEvent(InputInfoPtr pInfo, int buttons, int dx, int dy)
     if (dx || dy)
 	xf86PostMotionEvent(pInfo->dev, 0, 0, 2, dx, dy);
 
-    if (truebuttons != pMse->lastButtons) {
+    if (buttons != pMse->lastMappedButtons) {
 
-	if (pMse->protocolID == PROT_MMHIT)
-	    change = buttons ^ reverseBits(hitachMap, pMse->lastButtons);
-	else
-	    change = buttons ^ reverseBits(reverseMap, pMse->lastButtons);
+	change = buttons ^ pMse->lastMappedButtons;
 
 	/*
 	 * adjust buttons state for drag locks!
@@ -2292,17 +2313,31 @@ MouseDoPostEvent(InputInfoPtr pInfo, int buttons, int dx, int dy)
 				(buttons & (1 << (id - 1))), 0, 0);
 	}
 
-        pMse->lastButtons = truebuttons;
+        pMse->lastMappedButtons = buttons;
     }
 }
 
 static void
-MousePostEvent(InputInfoPtr pInfo, int buttons, int dx, int dy, int dz, int dw)
+MousePostEvent(InputInfoPtr pInfo, int truebuttons,
+	       int dx, int dy, int dz, int dw)
 {
     MouseDevPtr pMse;
     int zbutton = 0;
+    int i, b, buttons = 0;
 
     pMse = pInfo->private;
+    if (pMse->protocolID == PROT_MMHIT)
+	b = reverseBits(hitachMap, truebuttons);
+    else
+	b = reverseBits(reverseMap, truebuttons);
+
+    /* Remap mouse buttons */
+    b &= (1<<MSE_MAXBUTTONS)-1;
+    for (i = 0; b; i++) {
+       if (b & 1)
+	   buttons |= pMse->buttonMap[i];
+       b >>= 1;
+    }
 
     /* Map the Z axis movement. */
     /* XXX Could this go in the conversion_proc? */
@@ -2362,6 +2397,8 @@ MousePostEvent(InputInfoPtr pInfo, int buttons, int dx, int dy, int dz, int dw)
 	buttons &= ~zbutton;
 	MouseDoPostEvent(pInfo, buttons, 0, 0);
     }
+
+    pMse->lastButtons = truebuttons;
 }
 /******************************************************************
  *
