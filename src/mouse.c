@@ -1013,6 +1013,14 @@ MousePreInit(InputDriverPtr drv, IDevPtr dev, int flags)
 	return pInfo;
     }
 
+    /* XXX If the default for ZAxisMapping is decided to be "4 5 6 7" again,
+     * ButtonMapping should by default remap all button >= 4 to button+4 :
+     * for (i = 0; i < MSE_MAXBUTTONS; i++)
+     *     pMse->buttonMap[i] = 1 << (i > 2 && i < MSE_MAXBUTTONS-4 ? i+4 : i);
+     */
+    for (i = 0; i < MSE_MAXBUTTONS; i++)
+	pMse->buttonMap[i] = 1 << i;
+
     protocolID = ProtocolNameToID(protocol);
     do {
 	detected = TRUE;
@@ -1090,14 +1098,6 @@ MousePreInit(InputDriverPtr drv, IDevPtr dev, int flags)
     pMse->oldProtocolID = protocolID;  /* hack */
 
     pMse->autoProbe = FALSE;
-    /* XXX If the default for ZAxisMapping is decided to be "4 5 6 7" again,
-     * ButtonMapping should by default remap all button >= 4 to button+4 :
-     * for (i = 0; i < MSE_MAXBUTTONS; i++)
-     *     pMse->buttonMap[i] = 1 << (i > 2 && i < MSE_MAXBUTTONS-4 ? i+4 : i);
-     */
-    for (i = 0; i < MSE_MAXBUTTONS; i++)
-	pMse->buttonMap[i] = 1 << i;
-
     /* Collect the options, and process the common options. */
     xf86CollectInputOptions(pInfo, pProto->defaults, NULL);
     xf86ProcessCommonOptions(pInfo, pInfo->options);
