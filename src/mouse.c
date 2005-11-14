@@ -1013,13 +1013,9 @@ MousePreInit(InputDriverPtr drv, IDevPtr dev, int flags)
 	return pInfo;
     }
 
-    /* XXX If the default for ZAxisMapping is decided to be "4 5 6 7" again,
-     * ButtonMapping should by default remap all button >= 4 to button+4 :
-     * for (i = 0; i < MSE_MAXBUTTONS; i++)
-     *     pMse->buttonMap[i] = 1 << (i > 2 && i < MSE_MAXBUTTONS-4 ? i+4 : i);
-     */
+    /* Default Mapping: 1 2 3 8 9 10 11 ... */
     for (i = 0; i < MSE_MAXBUTTONS; i++)
-	pMse->buttonMap[i] = 1 << i;
+	pMse->buttonMap[i] = 1 << (i > 2 && i < MSE_MAXBUTTONS-4 ? i+4 : i);
 
     protocolID = ProtocolNameToID(protocol);
     do {
