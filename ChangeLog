@@ -1,3 +1,8 @@
+2005-11-22  Daniel Stone  <daniel@freedesktop.org>
+
+	* configure.ac:
+	Update dependency on xorg-server to >= 0.99.3, for MouseDriverRec changes.
+
 2005-11-09  Kevin E. Martin  <kem-at-freedesktop-dot-org>
 
 	* configure.ac:
