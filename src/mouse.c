@@ -3716,7 +3716,7 @@ static XF86ModuleVersionInfo xf86MouseVersionRec =
     MODINFOSTRING1,
     MODINFOSTRING2,
     XORG_VERSION_CURRENT,
-    1, 0, 1,
+    1, 0, 2,
     ABI_CLASS_XINPUT,
     ABI_XINPUT_VERSION,
     MOD_CLASS_XINPUT,
