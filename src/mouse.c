@@ -399,8 +399,10 @@ MouseCommonOptions(InputInfoPtr pInfo)
 
     pMse->emulate3Buttons = xf86SetBoolOption(pInfo->options,
 					      "Emulate3Buttons", FALSE);
-    if (!xf86FindOptionValue(pInfo->options,"Emulate3Buttons"))
+    if (!xf86FindOptionValue(pInfo->options,"Emulate3Buttons")) {
 	pMse->emulate3ButtonsSoft = TRUE;
+	pMse->emulate3Buttons = TRUE;
+    }
     
     pMse->emulate3Timeout = xf86SetIntOption(pInfo->options,
 					     "Emulate3Timeout", 50);
@@ -2202,6 +2204,9 @@ MouseDoPostEvent(InputInfoPtr pInfo, int buttons, int dx, int dy)
 	 */
 	buttons &= ~wheelButtonMask;
     }
+
+    if (pMse->emulate3ButtonsSoft && pMse->emulate3Pending && (dx || dy))
+	buttonTimer(pInfo);
 
     if (dx || dy)
 	xf86PostMotionEvent(pInfo->dev, 0, 0, 2, dx, dy);
