@@ -32,7 +32,7 @@ driver supports in the
 .I README.mouse
 document.  This can be found
 in __projectroot__/lib/X11/doc/, or online at
-http://www.xfree86.org/current/mouse.html.
+http://www.x.org/current/mouse.html.
 .SH CONFIGURATION DETAILS
 Please refer to __xconfigfile__(__filemansuffix__) for general configuration
 details and for options that can be used with all input drivers.  This
@@ -57,7 +57,7 @@ Specify the mouse protocol.  Valid protocol types include:
 Auto, Microsoft, MouseSystems, MMSeries, Logitech, MouseMan, MMHitTab,
 GlidePoint, IntelliMouse, ThinkingMouse, ValuMouseScroll, AceCad, PS/2, ImPS/2,
 ExplorerPS/2, ThinkingMousePS/2, MouseManPlusPS/2, GlidePointPS/2,
-NetMousePS/2, NetScrollPS/2, BusMouse, SysMouse, WSMouse, USB, Xqueue.
+NetMousePS/2, NetScrollPS/2, BusMouse, SysMouse, WSMouse, USB, VUID, Xqueue.
 .RE
 .PP
 .RS 7

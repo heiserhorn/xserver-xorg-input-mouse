@@ -1,3 +1,15 @@
+2005-12-19  Alan Coopersmith  <alan.coopersmith@sun.com>
+
+	* man/mouse.man:
+	Update URL for mouse docs online.
+	Add VUID to supported protocols (used on Solaris).
+
+	* README.sgml:
+	Update docs for X11R6.9 & 7.0 releases.
+	Add note about new ButtonMapping option.
+	Explain changes due to "virtual mouse" support in Solaris 10.
+	Change "mices" to "mice".
+
 2005-12-14  Kevin E. Martin  <kem-at-freedesktop-dot-org>
 
 	* configure.ac:
