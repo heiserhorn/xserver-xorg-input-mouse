@@ -1,4 +1,4 @@
-/* $XdotOrg: xc/programs/Xserver/hw/xfree86/input/mouse/mouse.c,v 1.8 2005/06/25 21:17:02 ajax Exp $ */
+/* $XdotOrg: driver/xf86-input-mouse/src/mouse.c,v 1.22 2005/12/15 00:21:33 kem Exp $ */
 /* $XFree86: xc/programs/Xserver/hw/xfree86/input/mouse/mouse.c,v 1.79 2003/11/03 05:11:48 tsi Exp $ */
 /*
  *
@@ -3126,7 +3126,6 @@ autoOSProtocol(InputInfoPtr pInfo, int *protoPara)
 	    }
 	}
     }
-#ifdef PNP_MOUSE
     if (!name) {
 	/* A PnP serial mouse? */
 	protocolID = MouseGetPnpProtocol(pInfo);
@@ -3136,7 +3135,6 @@ autoOSProtocol(InputInfoPtr pInfo, int *protoPara)
 		    pInfo->name, name);
 	}
     }
-#endif
     if (!name && HAVE_GUESS_PROTOCOL && osInfo->GuessProtocol) {
 	name = osInfo->GuessProtocol(pInfo, 0);
 	if (name)

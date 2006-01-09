@@ -1,3 +1,9 @@
+2006-01-09  Daniel Stone  <daniel@freedesktop.org>
+
+	* src/mouse.c:
+	Remove #ifdef PNP_MOUSE blocks, as it was always defined in the
+	monolith.
+
 2005-12-20  Kevin E. Martin  <kem-at-freedesktop-dot-org>
 
 	* configure.ac:
