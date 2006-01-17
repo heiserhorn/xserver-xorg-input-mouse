@@ -1,4 +1,4 @@
-/* $XdotOrg: driver/xf86-input-mouse/src/mouse.c,v 1.22 2005/12/15 00:21:33 kem Exp $ */
+/* $XdotOrg: driver/xf86-input-mouse/src/mouse.c,v 1.23 2006/01/09 02:30:15 daniels Exp $ */
 /* $XFree86: xc/programs/Xserver/hw/xfree86/input/mouse/mouse.c,v 1.79 2003/11/03 05:11:48 tsi Exp $ */
 /*
  *
@@ -2084,6 +2084,9 @@ MouseDoPostEvent(InputInfoPtr pInfo, int buttons, int dx, int dy)
 
     pMse = pInfo->private;
 
+    change = buttons ^ pMse->lastMappedButtons;
+    pMse->lastMappedButtons = buttons;
+
     /* Do single button double click */
     if (pMse->doubleClickSourceButtonMask) {
         if (buttons & pMse->doubleClickSourceButtonMask) {
@@ -2108,13 +2111,12 @@ MouseDoPostEvent(InputInfoPtr pInfo, int buttons, int dx, int dy)
          * processed as a normal button as well.
          */
         buttons &= ~(pMse->doubleClickSourceButtonMask);
+        change  &= ~(pMse->doubleClickSourceButtonMask);
     }
 
     if (pMse->emulateWheel) {
 	/* Emulate wheel button handling */
 	wheelButtonMask = 1 << (pMse->wheelButton - 1);
-
-	change = buttons ^ pMse->lastMappedButtons;
 
 	if (change & wheelButtonMask) {
 	    if (buttons & wheelButtonMask) {
@@ -2203,6 +2205,7 @@ MouseDoPostEvent(InputInfoPtr pInfo, int buttons, int dx, int dy)
 	 * the timeout code.
 	 */
 	buttons &= ~wheelButtonMask;
+	change  &= ~wheelButtonMask;
     }
 
     if (pMse->emulate3ButtonsSoft && pMse->emulate3Pending && (dx || dy))
@@ -2211,9 +2214,7 @@ MouseDoPostEvent(InputInfoPtr pInfo, int buttons, int dx, int dy)
     if (dx || dy)
 	xf86PostMotionEvent(pInfo->dev, 0, 0, 2, dx, dy);
 
-    if (buttons != pMse->lastMappedButtons) {
-
-	change = buttons ^ pMse->lastMappedButtons;
+    if (change) {
 
 	/*
 	 * adjust buttons state for drag locks!
@@ -2314,7 +2315,6 @@ MouseDoPostEvent(InputInfoPtr pInfo, int buttons, int dx, int dy)
 				(buttons & (1 << (id - 1))), 0, 0);
 	}
 
-        pMse->lastMappedButtons = buttons;
     }
 }
 
