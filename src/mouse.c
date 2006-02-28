@@ -1,4 +1,4 @@
-/* $XdotOrg: driver/xf86-input-mouse/src/mouse.c,v 1.23 2006/01/09 02:30:15 daniels Exp $ */
+/* $XdotOrg: driver/xf86-input-mouse/src/mouse.c,v 1.24 2006/01/17 11:49:57 mhopf Exp $ */
 /* $XFree86: xc/programs/Xserver/hw/xfree86/input/mouse/mouse.c,v 1.79 2003/11/03 05:11:48 tsi Exp $ */
 /*
  *
@@ -3719,7 +3719,7 @@ static XF86ModuleVersionInfo xf86MouseVersionRec =
     MODINFOSTRING1,
     MODINFOSTRING2,
     XORG_VERSION_CURRENT,
-    1, 0, 3,
+    1, 0, 4,
     ABI_CLASS_XINPUT,
     ABI_XINPUT_VERSION,
     MOD_CLASS_XINPUT,
