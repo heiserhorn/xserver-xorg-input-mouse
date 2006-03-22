@@ -1,0 +1,64 @@
+xserver-xorg-input-mouse (1:1.0.4-1) experimental; urgency=low
+
+  * New upstream release
+
+ -- David Nusinow <dnusinow@debian.org>  Tue, 21 Mar 2006 21:46:36 -0500
+
+xserver-xorg-input-mouse (1:1.0.3.1-1) experimental; urgency=low
+
+  * First upload to Debian
+  * Fill in copyright information
+  * Change source package, package, and provides names to denote the
+    type of driver and that they are for xserver-xorg
+
+ -- David Nusinow <dnusinow@debian.org>  Thu, 19 Jan 2006 19:51:24 -0500
+
+xserver-xorg-input-mouse (1:1.0.3.1-0ubuntu1) dapper; urgency=low
+
+  * New upstream release.
+  * Add provides on xserver-xorg-input.
+
+ -- David Nusinow <dnusinow@debian.org>  Fri, 13 Jan 2006 00:28:29 -0500
+
+xserver-xorg-input-mouse (1:1.0.3-0ubuntu1) dapper; urgency=low
+
+  * New upstream release.
+
+ -- Daniel Stone <daniel.stone@ubuntu.com>  Mon, 19 Dec 2005 08:57:45 +1100
+
+xserver-xorg-input-mouse (1:1.0.2-0ubuntu1) dapper; urgency=low
+
+  * New upstream release.
+
+ -- Daniel Stone <daniel.stone@ubuntu.com>  Mon, 12 Dec 2005 13:39:36 +1100
+
+xserver-xorg-input-mouse (1:1.0.1-0ubuntu2) dapper; urgency=low
+
+  * Add missing Build-Depends (x11proto-core-dev, x11proto-randr-dev).
+
+ -- Daniel Stone <daniel.stone@ubuntu.com>  Mon,  5 Dec 2005 12:49:36 +1100
+
+xserver-xorg-input-mouse (1:1.0.1-0ubuntu1) dapper; urgency=low
+
+  * New upstream release.
+  * Bump Build-Depends on xserver-xorg-dev.
+
+ -- Daniel Stone <daniel.stone@ubuntu.com>  Tue, 22 Nov 2005 12:48:05 +1100
+
+xserver-xorg-input-mouse (1:1.0.0.1-2) dapper; urgency=low
+
+  * Add an actual, er, copyright file.  *cough*
+
+ -- Daniel Stone <daniel.stone@ubuntu.com>  Wed, 26 Oct 2005 11:05:30 +1000
+
+xserver-xorg-input-mouse (1:1.0.0.1-1) dapper; urgency=low
+
+  * New upstream release.
+
+ -- Daniel Stone <daniel.stone@ubuntu.com>  Thu, 20 Oct 2005 13:49:22 +1000
+
+xserver-xorg-input-mouse (1:1.0.0-1) breezy; urgency=low
+
+  * First xserver-xorg-input-mouse release.
+
+ -- Daniel Stone <daniel.stone@ubuntu.com>  Wed,  6 Jul 2005 15:48:17 +1000
