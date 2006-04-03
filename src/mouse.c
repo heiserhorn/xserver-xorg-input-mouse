@@ -1,4 +1,4 @@
-/* $XdotOrg: driver/xf86-input-mouse/src/mouse.c,v 1.24 2006/01/17 11:49:57 mhopf Exp $ */
+/* $XdotOrg: driver/xf86-input-mouse/src/mouse.c,v 1.25 2006/02/28 19:44:45 ajax Exp $ */
 /* $XFree86: xc/programs/Xserver/hw/xfree86/input/mouse/mouse.c,v 1.79 2003/11/03 05:11:48 tsi Exp $ */
 /*
  *
@@ -538,6 +538,7 @@ MouseCommonOptions(InputInfoPtr pInfo)
 		}
 	    }
 	}
+	xfree(s);
     }
 
     s = xf86SetStrOption(pInfo->options, "ZAxisMapping", "4 5 6 7");
@@ -586,6 +587,7 @@ MouseCommonOptions(InputInfoPtr pInfo)
 	    xf86Msg(X_WARNING, "%s: Invalid ZAxisMapping value: \"%s\"\n",
 		    pInfo->name, s);
 	}
+	xfree(s);
     }
     if (xf86SetBoolOption(pInfo->options, "EmulateWheel", FALSE)) {
 	Bool yFromConfig = FALSE;
@@ -641,6 +643,7 @@ MouseCommonOptions(InputInfoPtr pInfo)
 		xf86Msg(X_CONFIG, "%s: XAxisMapping: %s\n", pInfo->name, msg);
 		xfree(msg);
 	    }
+	    xfree(s);
 	}
 	s = xf86SetStrOption(pInfo->options, "YAxisMapping", NULL);
 	if (s) {
@@ -666,6 +669,7 @@ MouseCommonOptions(InputInfoPtr pInfo)
 		xf86Msg(X_CONFIG, "%s: YAxisMapping: %s\n", pInfo->name, msg);
 		xfree(msg);
 	    }
+	    xfree(s);
 	}
 	if (!yFromConfig) {
 	    pMse->negativeY = 4;
@@ -686,8 +690,9 @@ MouseCommonOptions(InputInfoPtr pInfo)
     s = xf86SetStrOption(pInfo->options, "ButtonMapping", NULL);
     if (s) {
        int b, n = 0;
+       char *s1 = s;
        /* keep getting numbers which are buttons */
-       while (s && n < MSE_MAXBUTTONS && (b = strtol(s, &s, 10)) != 0) {
+       while (s1 && n < MSE_MAXBUTTONS && (b = strtol(s1, &s1, 10)) != 0) {
 	   /* check sanity for a button */
 	   if (b < 0 || b > MSE_MAXBUTTONS) {
 	       xf86Msg(X_WARNING,
@@ -697,6 +702,7 @@ MouseCommonOptions(InputInfoPtr pInfo)
 	   pMse->buttonMap[n++] = 1 << (b-1);
 	   if (b > pMse->buttons) pMse->buttons = b;
        }
+       xfree(s);
     }
     /* get maximum of mapped buttons */
     for (i = pMse->buttons-1; i >= 0; i--) {
@@ -734,6 +740,7 @@ MouseCommonOptions(InputInfoPtr pInfo)
             xf86Msg(X_CONFIG, "%s: DoubleClickButtons: %s\n", pInfo->name, msg);
             xfree(msg);
         }
+	xfree(s);
     }
 }
 /*
