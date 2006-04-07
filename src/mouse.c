@@ -1,4 +1,4 @@
-/* $XdotOrg: driver/xf86-input-mouse/src/mouse.c,v 1.25 2006/02/28 19:44:45 ajax Exp $ */
+/* $XdotOrg: driver/xf86-input-mouse/src/mouse.c,v 1.26 2006/04/03 21:18:50 anholt Exp $ */
 /* $XFree86: xc/programs/Xserver/hw/xfree86/input/mouse/mouse.c,v 1.79 2003/11/03 05:11:48 tsi Exp $ */
 /*
  *
@@ -49,6 +49,9 @@
 #include "config.h"
 #endif
 
+#include <math.h>
+#include <string.h>
+#include <stdio.h>
 #define NEED_EVENTS
 #include <X11/X.h>
 #include <X11/Xproto.h>
@@ -68,7 +71,6 @@
 #include "xf86_OSproc.h"
 #include "xf86OSmouse.h"
 #define NEED_XF86_TYPES	/* for xisb.h when !XFree86LOADER */
-#include "xf86_ansic.h"
 #include "compiler.h"
 
 #include "xisb.h"
@@ -3726,7 +3728,7 @@ static XF86ModuleVersionInfo xf86MouseVersionRec =
     MODINFOSTRING1,
     MODINFOSTRING2,
     XORG_VERSION_CURRENT,
-    1, 0, 4,
+    1, 1, 0,
     ABI_CLASS_XINPUT,
     ABI_XINPUT_VERSION,
     MOD_CLASS_XINPUT,
