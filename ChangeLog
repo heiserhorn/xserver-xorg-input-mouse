@@ -1,3 +1,9 @@
+2006-04-20  Matthias Hopf  <mhopf@suse.de>
+
+	* src/mouse.c: (MousePostEvent):
+	Overhaul of wheel processing. Does work correctly with multibit
+	zaxis events now.
+
 2006-04-06  Adam Jackson  <ajax@freedesktop.org>
 
 	* configure.ac:

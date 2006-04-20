@@ -1,4 +1,4 @@
-/* $XdotOrg: driver/xf86-input-mouse/src/mouse.c,v 1.26 2006/04/03 21:18:50 anholt Exp $ */
+/* $XdotOrg: driver/xf86-input-mouse/src/mouse.c,v 1.27 2006/04/07 17:59:54 ajax Exp $ */
 /* $XFree86: xc/programs/Xserver/hw/xfree86/input/mouse/mouse.c,v 1.79 2003/11/03 05:11:48 tsi Exp $ */
 /*
  *
@@ -2332,7 +2332,7 @@ MousePostEvent(InputInfoPtr pInfo, int truebuttons,
 	       int dx, int dy, int dz, int dw)
 {
     MouseDevPtr pMse;
-    int zbutton = 0;
+    int zbutton = 0, wbutton = 0, zbuttoncount = 0, wbuttoncount = 0;
     int i, b, buttons = 0;
 
     pMse = pInfo->private;
@@ -2353,6 +2353,7 @@ MousePostEvent(InputInfoPtr pInfo, int truebuttons,
     /* XXX Could this go in the conversion_proc? */
     switch (pMse->negativeZ) {
     case MSE_NOZMAP:	/* do nothing */
+	dz = 0;
 	break;
     case MSE_MAPTOX:
 	if (dz != 0) {
@@ -2367,20 +2368,46 @@ MousePostEvent(InputInfoPtr pInfo, int truebuttons,
 	}
 	break;
     default:	/* buttons */
-	buttons &= ~(pMse->negativeZ | pMse->positiveZ
-		   | pMse->negativeW | pMse->positiveW);
-	if (dw < 0 || dz < -1)
-	    zbutton = pMse->negativeW;
-	else if (dz < 0)
+	buttons &= ~(pMse->negativeZ | pMse->positiveZ);
+	if (dz < 0) {
 	    zbutton = pMse->negativeZ;
-	else if (dw > 0 || dz > 1)
-	    zbutton = pMse->positiveW;
-	else if (dz > 0)
+	    zbuttoncount = -dz;
+	} else if (dz > 0) {
 	    zbutton = pMse->positiveZ;
-	buttons |= zbutton;
+	    zbuttoncount = dz;
+	}
 	dz = 0;
 	break;
     }
+    switch (pMse->negativeW) {
+    case MSE_NOZMAP:	/* do nothing */
+	dw = 0;
+	break;
+    case MSE_MAPTOX:
+	if (dw != 0) {
+	    dx = dw;
+	    dw = 0;
+	}
+	break;
+    case MSE_MAPTOY:
+	if (dw != 0) {
+	    dy = dw;
+	    dw = 0;
+	}
+	break;
+    default:	/* buttons */
+	buttons &= ~(pMse->negativeW | pMse->positiveW);
+	if (dw < 0) {
+	    wbutton = pMse->negativeW;
+	    wbuttoncount = -dw;
+	} else if (dw > 0) {
+	    wbutton = pMse->positiveW;
+	    wbuttoncount = dw;
+	}
+	dw = 0;
+	break;
+    }
+
 
     /* Apply angle offset */
     if (pMse->angleOffset != 0) {
@@ -2397,16 +2424,19 @@ MousePostEvent(InputInfoPtr pInfo, int truebuttons,
 	dx = dy;
 	dy = tmp;
     }
-    MouseDoPostEvent(pInfo, buttons, dx, dy);
 
-    /*
-     * If dz has been mapped to a button `down' event, we need to cook up
-     * a corresponding button `up' event.
-     */
-    if (zbutton) {
-	buttons &= ~zbutton;
-	MouseDoPostEvent(pInfo, buttons, 0, 0);
-    }
+    /* If mouse wheel movement has to be mapped on a button, we need to
+     * loop for button press and release events. */
+    do {
+        MouseDoPostEvent(pInfo, buttons | zbutton | wbutton, dx, dy);
+	dx = dy = 0;
+	if (zbutton || wbutton)
+	    MouseDoPostEvent(pInfo, buttons, 0, 0);
+	if (--zbuttoncount <= 0)
+	    zbutton = 0;
+	if (--wbuttoncount <= 0)
+	    wbutton = 0;
+    } while (zbutton || wbutton);
 
     pMse->lastButtons = truebuttons;
 }
