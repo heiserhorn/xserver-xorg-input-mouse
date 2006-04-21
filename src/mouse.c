@@ -1,4 +1,4 @@
-/* $XdotOrg: driver/xf86-input-mouse/src/mouse.c,v 1.27 2006/04/07 17:59:54 ajax Exp $ */
+/* $XdotOrg: driver/xf86-input-mouse/src/mouse.c,v 1.28 2006/04/20 18:25:32 mhopf Exp $ */
 /* $XFree86: xc/programs/Xserver/hw/xfree86/input/mouse/mouse.c,v 1.79 2003/11/03 05:11:48 tsi Exp $ */
 /*
  *
@@ -543,18 +543,18 @@ MouseCommonOptions(InputInfoPtr pInfo)
 	xfree(s);
     }
 
-    s = xf86SetStrOption(pInfo->options, "ZAxisMapping", "4 5 6 7");
+    s = xf86SetStrOption(pInfo->options, "ZAxisMapping", "4 5");
     if (s) {
 	int b1 = 0, b2 = 0, b3 = 0, b4 = 0;
 	char *msg = NULL;
 
+	pMse->negativeZ = pMse->positiveZ = MSE_NOAXISMAP;
+	pMse->negativeW = pMse->positiveW = MSE_NOAXISMAP;
 	if (!xf86NameCmp(s, "x")) {
 	    pMse->negativeZ = pMse->positiveZ = MSE_MAPTOX;
-	    pMse->negativeW = pMse->positiveW = MSE_MAPTOX;
 	    msg = xstrdup("X axis");
 	} else if (!xf86NameCmp(s, "y")) {
 	    pMse->negativeZ = pMse->positiveZ = MSE_MAPTOY;
-	    pMse->negativeW = pMse->positiveW = MSE_MAPTOY;
 	    msg = xstrdup("Y axis");
 	} else if (sscanf(s, "%d %d %d %d", &b1, &b2, &b3, &b4) >= 2 &&
 		 b1 > 0 && b1 <= MSE_MAXBUTTONS &&
@@ -562,8 +562,8 @@ MouseCommonOptions(InputInfoPtr pInfo)
 	    msg = xstrdup("buttons XX and YY");
 	    if (msg)
 		sprintf(msg, "buttons %d and %d", b1, b2);
-	    pMse->negativeZ = pMse->negativeW = 1 << (b1-1);
-	    pMse->positiveZ = pMse->positiveW = 1 << (b2-1);
+	    pMse->negativeZ = 1 << (b1-1);
+	    pMse->positiveZ = 1 << (b2-1);
 	    if (b3 > 0 && b3 <= MSE_MAXBUTTONS &&
 		b4 > 0 && b4 <= MSE_MAXBUTTONS) {
 		if (msg)
@@ -578,9 +578,6 @@ MouseCommonOptions(InputInfoPtr pInfo)
 	    if (b2 > pMse->buttons) pMse->buttons = b2;
 	    if (b3 > pMse->buttons) pMse->buttons = b3;
 	    if (b4 > pMse->buttons) pMse->buttons = b4;
-	} else {
-	    pMse->negativeZ = pMse->positiveZ = MSE_NOZMAP;
-	    pMse->negativeW = pMse->positiveW = MSE_NOZMAP;
 	}
 	if (msg) {
 	    xf86Msg(X_CONFIG, "%s: ZAxisMapping: %s\n", pInfo->name, msg);
@@ -1506,7 +1503,21 @@ MouseReadInput(InputInfoPtr pInfo)
 		      (pBuf[3] & 0x20) >> 1;        /* button 5 */
 	    dx = (pBuf[0] & 0x10) ?    pBuf[1]-256  :  pBuf[1];
 	    dy = (pBuf[0] & 0x20) ?  -(pBuf[2]-256) : -pBuf[2];
-	    dz = (pBuf[3] & 0x08) ? (pBuf[3] & 0x0f) - 16 : (pBuf[3] & 0x0f);
+	    if (pMse->negativeW != MSE_NOAXISMAP) {
+		switch (pBuf[3] & 0x0f) {
+		case 0x00:          break;
+		case 0x01: dz =  1; break;
+		case 0x02: dw =  1; break;
+		case 0x0e: dw = -1; break;
+		case 0x0f: dz = -1; break;
+		default:
+		    xf86Msg(X_INFO,
+			    "Mouse autoprobe: Disabling secondary wheel\n");
+		    pMse->negativeW = pMse->positiveW = MSE_NOAXISMAP;
+		}
+	    }
+	    if (pMse->negativeW == MSE_NOAXISMAP)
+	        dz = (pBuf[3]&0x08) ? (pBuf[3]&0x0f) - 16 : (pBuf[3]&0x0f);
 	    break;
 
 	case PROT_MMPS2:	/* MouseMan+ PS/2 */

@@ -138,7 +138,7 @@ emulation mode.  Button number
 .I N1
 is mapped to the negative Y axis motion and button number
 .I N2
-is mapped to the positive Y axis motion.  Default: "4 5".
+is mapped to the positive Y axis motion.  Default: no mapping.
 .TP 7
 .BI "Option \*qZAxisMapping\*q \*qX\*q"
 .TP 7
@@ -161,7 +161,9 @@ of the second wheel mapped respectively to buttons number
 .I N3
 and
 .IR N4 .
-Default: "4 5 6 7".
+Note that the protocols for mice with one and two wheels can be different
+and the driver may not be able to autodetect it.
+Default: "4 5".
 .TP 7
 .BI "Option \*qButtonMapping\*q \*q" "N1 N2 [...]" \*q
 Specifies how physical mouse buttons are mapped to logical buttons.
