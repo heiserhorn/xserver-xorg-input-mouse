@@ -1,3 +1,11 @@
+xserver-xorg-input-mouse (1:1.0.4-3) unstable; urgency=low
+
+  * debian/rules: Added support for patches.
+  * 01_stolen_fron_HEAD_spurious_mouse_events.diff: Added patch for mouse.c
+    from CVS in order to fix fast scrolling and wrong events. Closes: #366787.
+
+ -- David Martínez Moreno <ender@debian.org>  Fri, 12 May 2006 14:07:21 +0200
+
 xserver-xorg-input-mouse (1:1.0.4-2) unstable; urgency=low
 
   * Upload to modular
