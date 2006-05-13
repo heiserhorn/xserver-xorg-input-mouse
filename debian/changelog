@@ -4,9 +4,10 @@ xserver-xorg-input-mouse (1:1.0.4-3) unstable; urgency=low
   * debian/rules:
     - Added support for patches.
     - Added --list-missing to dh_install.
-    - Added DRIVER_MAN_SUFFIX=4x in order to ship mouse.man as mouse.4x (I
-      *know* that it makes lintian shout).  I did this because otherwise it
-       would conflict witn mouse.4 from manpages.
+    - Added DRIVER_MAN_SUFFIX=4x and DRIVER_MAN_DIR=\$$\(mandir\)/man4 to
+      configure call in order to ship mouse.man as mouse.4x, but inside
+      /usr/share/man/man4/.  I did this because otherwise it would conflict
+      with mouse.4 from manpages.  Many thanks to Russ Albery for the hint.
     - Added README to installed docs.
   * 01_stolen_fron_HEAD_spurious_mouse_events.diff: Added patch for mouse.c
     from CVS in order to fix fast scrolling and wrong events.  Closes: #366787.
@@ -18,7 +19,7 @@ xserver-xorg-input-mouse (1:1.0.4-3) unstable; urgency=low
   [ David Nusinow ]
   * Add quilt to Build-Depends.
 
- -- David Martínez Moreno <ender@debian.org>  Sat, 13 May 2006 23:38:49 +0200
+ -- David Martínez Moreno <ender@debian.org>  Sat, 13 May 2006 23:59:58 +0200
 
 xserver-xorg-input-mouse (1:1.0.4-2) unstable; urgency=low
 
