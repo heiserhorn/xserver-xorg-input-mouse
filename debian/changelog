@@ -1,4 +1,4 @@
-xserver-xorg-input-mouse (1:1.0.4-3) UNRELEASED; urgency=low
+xserver-xorg-input-mouse (1:1.0.4-3) unstable; urgency=low
 
   [ David Martínez Moreno ]
   * debian/rules:
@@ -18,7 +18,7 @@ xserver-xorg-input-mouse (1:1.0.4-3) UNRELEASED; urgency=low
   [ David Nusinow ]
   * Add quilt to Build-Depends.
 
- -- David Martínez Moreno <ender@debian.org>  Sat, 13 May 2006 14:08:51 +0200
+ -- David Martínez Moreno <ender@debian.org>  Sat, 13 May 2006 23:38:49 +0200
 
 xserver-xorg-input-mouse (1:1.0.4-2) unstable; urgency=low
 
