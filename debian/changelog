@@ -1,14 +1,19 @@
 xserver-xorg-input-mouse (1:1.0.4-3) UNRELEASED; urgency=low
 
   [ David Martínez Moreno ]
-  * debian/rules: Added support for patches.
+  * debian/rules:
+    - Added support for patches.
+    - Added --list-missing to dh_install.
   * 01_stolen_fron_HEAD_spurious_mouse_events.diff: Added patch for mouse.c
     from CVS in order to fix fast scrolling and wrong events. Closes: #366787.
+  * debian/control:
+    - Updated Standards-Version to 3.7.2.0.
+    - Added Depends on xserver-xorg-core (>= 1:0.99.0-1).
 
   [ David Nusinow ]
-  * Add quilt to build-depends
+  * Add quilt to Build-Depends.
 
- -- David Nusinow <dnusinow@debian.org>  Fri, 12 May 2006 11:37:03 -0400
+ -- David Martínez Moreno <ender@debian.org>  Sat, 13 May 2006 13:21:28 +0200
 
 xserver-xorg-input-mouse (1:1.0.4-2) unstable; urgency=low
 
