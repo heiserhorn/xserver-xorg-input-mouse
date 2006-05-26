@@ -1,3 +1,8 @@
+2006-05-15  Matthias Hopf  <mhopf@suse.de>
+
+	* configure.ac,src/mouse.c:
+	Bump to 1.1.1.
+
 2006-04-21  Matthias Hopf  <mhopf@suse.de>
 
 	* man/mouse.man:
