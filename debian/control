@@ -1,0 +1,22 @@
+Source: xserver-xorg-input-mouse
+Section: x11
+Priority: optional
+Maintainer: Debian X Strike Force <debian-x@lists.debian.org>
+Uploaders: David Nusinow <dnusinow@debian.org>, Branden Robinson <branden@debian.org>, Fabio M. Di Nitto <fabbione@fabbione.net>
+Build-Depends: debhelper (>= 4.0.0), pkg-config, xserver-xorg-dev (>> 1:0.99.3), x11proto-input-dev, x11proto-core-dev, x11proto-randr-dev, quilt
+Standards-Version: 3.7.2
+
+Package: xserver-xorg-input-mouse
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, xserver-xorg-core (>= 1:0.99.0-1)
+Provides: xserver-xorg-input
+Replaces: xserver-xorg (<< 6.8.2-35)
+Description: X.Org X server -- mouse input driver
+ This package provides the driver for mouse input devices.
+ .
+ More information about X.Org can be found at:
+ <URL:http://xorg.freedesktop.org>
+ <URL:http://lists.freedesktop.org/mailman/listinfo/xorg>
+ .
+ This module can be found as the module 'driver/xf86-input-mouse' at
+ :pserver:anoncvs@cvs.freedesktop.org:/cvs/xorg
