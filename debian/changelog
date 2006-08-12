@@ -1,3 +1,13 @@
+xserver-xorg-input-mouse (1:1.1.1-1) experimental; urgency=low
+
+  * New upstream release (X11R7.1, xf86-input-mouse-1.1.1).
+    - applies patch 01_stolen_fron_HEAD_spurious_mouse_events.diff.
+  * Use debhelper v5.
+  * Use dh_installman to install man page.
+  * Exclude .la (and manpages) from dh_install.
+
+ -- Drew Parsons <dparsons@debian.org>  Sun, 13 Aug 2006 00:51:02 +1000
+
 xserver-xorg-input-mouse (1:1.0.4-4) UNRELEASED; urgency=low
 
   * Test for obj-$(DEB_BUILD_GNU_TYPE) before creating it during build;
