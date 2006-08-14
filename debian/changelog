@@ -1,3 +1,9 @@
+xserver-xorg-input-mouse (1:1.1.1-2) experimental; urgency=low
+
+  * Updated dependencies to xserver-xorg (>= 1:1.1.1-1). Closes: #382979.
+
+ -- Drew Parsons <dparsons@debian.org>  Mon, 14 Aug 2006 23:43:09 +1000
+
 xserver-xorg-input-mouse (1:1.1.1-1) experimental; urgency=low
 
   * New upstream release (X11R7.1, xf86-input-mouse-1.1.1).
