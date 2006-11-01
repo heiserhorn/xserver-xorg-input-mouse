@@ -983,8 +983,10 @@ MousePreInit(InputDriverPtr drv, IDevPtr dev, int flags)
     pInfo->flags = XI86_POINTER_CAPABLE | XI86_SEND_DRAG_EVENTS;
     pInfo->device_control = MouseProc;
     pInfo->read_input = MouseReadInput;
+#if GET_ABI_MAJOR(ABI_XINPUT_VERSION) == 0
     pInfo->motion_history_proc = xf86GetMotionEvents;
     pInfo->history_size = 0;
+#endif
     pInfo->control_proc = NULL;
     pInfo->close_proc = NULL;
     pInfo->switch_mode = NULL;
@@ -1713,8 +1715,18 @@ MouseProc(DeviceIntPtr device, int what)
 
 	InitPointerDeviceStruct((DevicePtr)device, map,
 				min(pMse->buttons, MSE_MAXBUTTONS),
-				miPointerGetMotionEvents, pMse->Ctrl,
-				miPointerGetMotionBufferSize());
+#if GET_ABI_MAJOR(ABI_XINPUT_VERSION) == 0
+				miPointerGetMotionEvents,
+#else
+                                GetMotionHistory,
+#endif
+                                pMse->Ctrl,
+#if GET_ABI_MAJOR(ABI_XINPUT_VERSION) == 0
+				miPointerGetMotionBufferSize()
+#else
+                                GetMotionHistorySize(), 2
+#endif
+                                );
 
 	/* X valuator */
 	xf86InitValuatorAxisStruct(device, 0, 0, -1, 1, 0, 1);
@@ -1722,7 +1734,9 @@ MouseProc(DeviceIntPtr device, int what)
 	/* Y valuator */
 	xf86InitValuatorAxisStruct(device, 1, 0, -1, 1, 0, 1);
 	xf86InitValuatorDefaults(device, 1);
+#if GET_ABI_MAJOR(ABI_XINPUT_VERSION) == 0
 	xf86MotionHistoryAllocate(pInfo);
+#endif
 
 #ifdef EXTMOUSEDEBUG
 	ErrorF("assigning %p atom=%d name=%s\n", device, pInfo->atom,
