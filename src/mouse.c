@@ -1166,6 +1166,9 @@ MouseReadInput(InputInfoPtr pInfo)
     pBufP = pMse->protoBufTail;
     pBuf = pMse->protoBuf;
 
+    if (pInfo->fd == -1)
+	return;
+
     /*
      * Set blocking to -1 on the first call because we know there is data to
      * read. Xisb automatically clears it after one successful read so that
