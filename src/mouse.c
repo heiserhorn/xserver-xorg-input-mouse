@@ -52,6 +52,7 @@
 #include <math.h>
 #include <string.h>
 #include <stdio.h>
+#include <stdlib.h>
 #define NEED_EVENTS
 #include <X11/X.h>
 #include <X11/Xproto.h>
@@ -70,7 +71,11 @@
 #include "xf86Xinput.h"
 #include "xf86_OSproc.h"
 #include "xf86OSmouse.h"
+
+#ifndef NEED_XF86_TYPES
 #define NEED_XF86_TYPES	/* for xisb.h when !XFree86LOADER */
+#endif
+
 #include "compiler.h"
 
 #include "xisb.h"
