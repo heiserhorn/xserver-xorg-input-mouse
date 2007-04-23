@@ -213,7 +213,8 @@ typedef enum {
     OPTION_VMIN,
     OPTION_DRAGLOCKBUTTONS,
     OPTION_DOUBLECLICK_BUTTONS,
-    OPTION_BUTTON_MAPPING
+    OPTION_BUTTON_MAPPING,
+    OPTION_SENSITIVITY
 } MouseOpts;
 
 #ifdef XFree86LOADER
@@ -257,6 +258,7 @@ static const OptionInfoRec mouseOptions[] = {
     { OPTION_DRAGLOCKBUTTONS,	"DragLockButtons",OPTV_STRING,	{0}, FALSE },
     { OPTION_DOUBLECLICK_BUTTONS,"DoubleClickButtons", OPTV_STRING, {0}, FALSE },
     { OPTION_BUTTON_MAPPING,   "ButtonMapping",   OPTV_STRING,  {0}, FALSE },
+    { OPTION_SENSITIVITY,      "Sensitivity",     OPTV_REAL,    {0}, FALSE },
     { -1,			NULL,		  OPTV_NONE,	{0}, FALSE }
 };
 #endif
@@ -798,6 +800,12 @@ MouseHWOptions(InputInfoPtr pInfo)
     if (pMse->resolution) {
 	xf86Msg(X_CONFIG, "%s: Resolution: %d\n", pInfo->name,
 		pMse->resolution);
+    }
+
+    if (mPriv->sensitivity 
+	= xf86SetRealOption(pInfo->options, "Sensitivity", 1.0)) {
+	xf86Msg(X_CONFIG, "%s: Sensitivity: %g\n", pInfo->name,
+		mPriv->sensitivity);
     }
 }
 
@@ -2365,10 +2373,13 @@ MousePostEvent(InputInfoPtr pInfo, int truebuttons,
 	       int dx, int dy, int dz, int dw)
 {
     MouseDevPtr pMse;
+    mousePrivPtr mousepriv;
     int zbutton = 0, wbutton = 0, zbuttoncount = 0, wbuttoncount = 0;
     int i, b, buttons = 0;
 
     pMse = pInfo->private;
+    mousepriv = (mousePrivPtr)pMse->mousePriv;
+    
     if (pMse->protocolID == PROT_MMHIT)
 	b = reverseBits(hitachMap, truebuttons);
     else
@@ -2458,6 +2469,15 @@ MousePostEvent(InputInfoPtr pInfo, int truebuttons,
 	dy = tmp;
     }
 
+    /* Accumulate the scaled dx, dy in the private variables 
+       fracdx,fracdy and return the integer number part */
+    if (mousepriv) {
+	mousepriv->fracdx += mousepriv->sensitivity*dx;
+	mousepriv->fracdy += mousepriv->sensitivity*dy;
+	mousepriv->fracdx -= ( dx=(int)(mousepriv->fracdx) );
+	mousepriv->fracdy -= ( dy=(int)(mousepriv->fracdy) );
+    }
+    
     /* If mouse wheel movement has to be mapped on a button, we need to
      * loop for button press and release events. */
     do {
