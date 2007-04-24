@@ -5,8 +5,9 @@ xserver-xorg-input-mouse (1:1.1.2-2) UNRELEASED; urgency=low
     (needed to let xsfbs get access to serverminver).
   * Add a link to www.X.org and a reference to the xf86-input-mouse
     module in the long description.
+  * Add 01_work_around_race_condition_during_VT_switch.patch
 
- -- Brice Goglin <Brice.Goglin@ens-lyon.org>  Wed, 25 Apr 2007 00:24:22 +0200
+ -- Brice Goglin <Brice.Goglin@ens-lyon.org>  Wed, 25 Apr 2007 00:41:46 +0200
 
 xserver-xorg-input-mouse (1:1.1.2-1) experimental; urgency=low
 

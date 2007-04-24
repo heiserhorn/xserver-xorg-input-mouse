@@ -1,0 +1,22 @@
+commit fb347fb74e1a50fa900f225d13eee1aa829fa2f9
+Author: Matthias Hopf <mhopf@suse.de>
+Date:   Thu Nov 23 18:17:33 2006 +0100
+
+    Work around race condition during VT switch.
+    
+    https://bugzilla.novell.com/show_bug.cgi?id=219946
+
+Index: xserver-xorg-input-mouse/src/mouse.c
+===================================================================
+--- xserver-xorg-input-mouse.orig/src/mouse.c	2007-04-25 00:26:29.000000000 +0200
++++ xserver-xorg-input-mouse/src/mouse.c	2007-04-25 00:40:52.000000000 +0200
+@@ -1164,6 +1164,9 @@
+     pBufP = pMse->protoBufTail;
+     pBuf = pMse->protoBuf;
+ 
++    if (pInfo->fd == -1)
++	return;
++
+     /*
+      * Set blocking to -1 on the first call because we know there is data to
+      * read. Xisb automatically clears it after one successful read so that
