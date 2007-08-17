@@ -1,3 +1,18 @@
+commit 111081a2f15b416c2fd05b667bca3b3982f93245
+Author: Matthias Hopf <mhopf@suse.de>
+Date:   Wed Aug 1 15:55:51 2007 +0200
+
+    bump to 1.2.2
+
+commit 8d329a4a23cdaa970e41fa33ee2babc4687189f2
+Author: Brice Goglin <Brice.Goglin@ens-lyon.org>
+Date:   Wed Jul 25 19:22:27 2007 +0200
+
+    Fix typo in mousedrv.man
+    
+    Reported by "A. Costa" <agcosta@gis.net> in
+    http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=432060
+
 commit c7c012d8bf735dfa894146b379a2e1fd55f57fca
 Author: Drew Parsons <dparsons@debian.org>
 Date:   Thu Jun 14 00:24:07 2007 +1000
