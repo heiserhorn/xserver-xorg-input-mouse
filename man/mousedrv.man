@@ -167,7 +167,7 @@ Default: "4 5".
 .TP 7
 .BI "Option \*qButtonMapping\*q \*q" "N1 N2 [...]" \*q
 Specifies how physical mouse buttons are mapped to logical buttons.
-Physcial button 1 is mapped to logical button
+Physical button 1 is mapped to logical button
 .IR N1 ,
 physical button 2 to
 .IR N2 ,
