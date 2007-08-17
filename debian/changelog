@@ -1,8 +1,9 @@
 xserver-xorg-input-mouse (1:1.2.2-1) unstable; urgency=low
 
   * New upstream release.
+  * Remove Branden from Uploaders with his permission, and add myself.
 
- -- Julien Cristau <jcristau@debian.org>  Fri, 17 Aug 2007 12:40:39 +0200
+ -- Julien Cristau <jcristau@debian.org>  Fri, 17 Aug 2007 13:02:57 +0200
 
 xserver-xorg-input-mouse (1:1.2.1-1) unstable; urgency=low
 
