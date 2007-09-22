@@ -1,3 +1,19 @@
+commit f42ea3027c13046dfa7a603737b476fbf2833764
+Author: Fredrik Rinnestam <fredrik@obra.se>
+Date:   Wed Sep 19 23:24:13 2007 +0200
+
+    Bug #12145: Don't confine the pointer to one screen in zaphod mode.
+    
+    Fix ported from evdev's b4a5a20476f7bc77d54a860d7cdd81c223bdb81f.
+
+commit 53bdd4db01f05595beb37e68842118eb649308d3
+Author: Daniel Drake <ddrake@brontes3d.com>
+Date:   Tue May 29 12:14:00 2007 -0800
+
+    Bug #11089: xf86-input-mouse COPYING file
+    
+    X.Org Bugzilla #11089 <https://bugs.freedesktop.org/show_bug.cgi?id=11089>
+
 commit 111081a2f15b416c2fd05b667bca3b3982f93245
 Author: Matthias Hopf <mhopf@suse.de>
 Date:   Wed Aug 1 15:55:51 2007 +0200

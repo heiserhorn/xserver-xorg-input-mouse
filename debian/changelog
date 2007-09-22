@@ -1,3 +1,12 @@
+xserver-xorg-input-mouse (1:1.2.2-6) unstable; urgency=low
+
+  * Grab upstream commits up to f42ea3027c13046dfa7a603737b476fbf2833764
+    so that the pointer is not confined in the right screen in zaphod mode,
+    closes: #443552.
+    + Update debian/copyright using the new upstream COPYING file.
+
+ -- Brice Goglin <bgoglin@debian.org>  Sat, 22 Sep 2007 16:22:22 +0200
+
 xserver-xorg-input-mouse (1:1.2.2-5) unstable; urgency=low
 
   * Upload to unstable
