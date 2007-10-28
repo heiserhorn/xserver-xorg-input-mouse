@@ -1,3 +1,9 @@
+commit 0352a4db368eaab2df5fa77d4003e1363b3ea4fb
+Author: Tilman Sauerbeck <tilman@code-monkey.de>
+Date:   Wed Oct 3 14:06:50 2007 +0200
+
+    Bumped version to 1.2.3.
+
 commit f42ea3027c13046dfa7a603737b476fbf2833764
 Author: Fredrik Rinnestam <fredrik@obra.se>
 Date:   Wed Sep 19 23:24:13 2007 +0200

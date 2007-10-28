@@ -1,3 +1,9 @@
+xserver-xorg-input-mouse (1:1.2.3-1) unstable; urgency=low
+
+  * New upstream version.
+
+ -- Drew Parsons <dparsons@debian.org>  Mon, 29 Oct 2007 01:05:21 +1100
+
 xserver-xorg-input-mouse (1:1.2.2-6) unstable; urgency=low
 
   * Grab upstream commits up to f42ea3027c13046dfa7a603737b476fbf2833764
