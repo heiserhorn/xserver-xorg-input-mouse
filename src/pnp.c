@@ -551,10 +551,7 @@ pnpproto(pnpid_t *id)
 /* name/val mapping */
 
 static symtab_t *
-gettoken(tab, s, len)
-symtab_t *tab;
-char *s;
-int len;
+gettoken(symtab_t *tab, char *s, int len)
 {
     int i;
 

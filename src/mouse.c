@@ -802,8 +802,8 @@ MouseHWOptions(InputInfoPtr pInfo)
 		pMse->resolution);
     }
 
-    if (mPriv->sensitivity 
-	= xf86SetRealOption(pInfo->options, "Sensitivity", 1.0)) {
+    if ((mPriv->sensitivity 
+	 = xf86SetRealOption(pInfo->options, "Sensitivity", 1.0))) {
 	xf86Msg(X_CONFIG, "%s: Sensitivity: %g\n", pInfo->name,
 		mPriv->sensitivity);
     }
@@ -1860,8 +1860,6 @@ MouseConvert(InputInfoPtr pInfo, int first, int num, int v0, int v1, int v2,
 static void
 FlushButtons(MouseDevPtr pMse)
 {
-    int i, blocked;
-
     pMse->lastButtons = 0;
     pMse->lastMappedButtons = 0;
 }
