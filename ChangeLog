@@ -1,3 +1,33 @@
+commit 9192640066e3917062cb3ee1c761a83196bfb721
+Author: Adam Jackson <ajax@redhat.com>
+Date:   Thu Mar 20 16:26:52 2008 -0400
+
+    mouse 1.3.0
+
+commit d6ceabc1b58d752cb2af03519c15012206904f70
+Author: Matthieu Herrb <matthieu@bluenote.herrb.net>
+Date:   Sat Mar 8 23:10:03 2008 +0100
+
+    Makefile.am: nuke RCS Id
+
+commit 78272e117ceea12b8863f31688da66b20e160311
+Author: Alan Coopersmith <alan.coopersmith@sun.com>
+Date:   Thu Jan 3 13:27:02 2008 -0800
+
+    Update Emulate3Button default in mouse man page to cover Emulate3ButtonsSoft
+
+commit 6a03e8bd9699a33dabcdd2bbcf51a001ddfd5534
+Author: Peter Hutterer <peter@cs.unisa.edu.au>
+Date:   Fri Nov 16 16:45:45 2007 +1030
+
+    Bug #13144: Don't flush buttons, release events can cause paste events.
+
+commit 76a2231f87551f7c1943df18bc537b9b15987562
+Author: Adam Jackson <ajax@redhat.com>
+Date:   Mon Dec 3 11:59:12 2007 -0500
+
+    Don't sleep(0.3) on shutdown.
+
 commit 0352a4db368eaab2df5fa77d4003e1363b3ea4fb
 Author: Tilman Sauerbeck <tilman@code-monkey.de>
 Date:   Wed Oct 3 14:06:50 2007 +0200
