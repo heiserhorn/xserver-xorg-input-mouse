@@ -69,7 +69,8 @@ default protocol setting, and specifying this option is mandatory.
 .BI "Option \*qDevice\*q \*q" string \*q
 Specifies the device through which the mouse can be accessed.  A common
 setting is "/dev/mouse", which is often a symbolic link to the real
-device.  This option is mandatory, and there is no default setting.
+device.  This option is mandatory, and there is no default setting. The server
+may however attempt to probe some default devices if this option is missing.
 .TP 7
 .BI "Option \*qButtons\*q \*q" integer \*q
 Specifies the number of mouse buttons.  In cases where the number of buttons
