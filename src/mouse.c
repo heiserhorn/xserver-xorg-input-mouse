@@ -1,5 +1,3 @@
-/* $XdotOrg: driver/xf86-input-mouse/src/mouse.c,v 1.29 2006/04/21 11:15:23 mhopf Exp $ */
-/* $XFree86: xc/programs/Xserver/hw/xfree86/input/mouse/mouse.c,v 1.79 2003/11/03 05:11:48 tsi Exp $ */
 /*
  *
  * Copyright 1990,91 by Thomas Roell, Dinkelscherben, Germany.
