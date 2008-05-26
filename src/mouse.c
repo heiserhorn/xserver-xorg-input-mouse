@@ -1726,7 +1726,7 @@ MouseProc(DeviceIntPtr device, int what)
 				min(pMse->buttons, MSE_MAXBUTTONS),
 #if GET_ABI_MAJOR(ABI_XINPUT_VERSION) == 0
 				miPointerGetMotionEvents,
-#else
+#elif GET_ABI_MAJOR(ABI_XINPUT_VERSION) < 3
                                 GetMotionHistory,
 #endif
                                 pMse->Ctrl,
