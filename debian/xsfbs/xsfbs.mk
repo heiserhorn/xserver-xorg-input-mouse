@@ -192,7 +192,7 @@ cleanscripts:
 .PHONY: xsfclean
 xsfclean: cleanscripts unpatch
 	dh_testdir
-	rm -f .pc patches
+	rm -rf .pc patches
 	rm -rf $(STAMP_DIR) $(SOURCE_DIR)
 	rm -rf imports
 	dh_clean debian/shlibs.local \
@@ -306,7 +306,5 @@ else
 	echo "xviddriver:Provides=$(VIDDRIVER_PROVIDES)" >> debian/$(PACKAGE).substvars
 	echo "xinpdriver:Provides=$(INPDRIVER_PROVIDES)" >> debian/$(PACKAGE).substvars
 endif
-
-include debian/xsfbs/xsfbs-autoreconf.mk
 
 # vim:set noet ai sts=8 sw=8 tw=0:
