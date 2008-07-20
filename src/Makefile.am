@@ -28,4 +28,16 @@
 @DRIVER_NAME@_drv_la_LDFLAGS = -module -avoid-version
 @DRIVER_NAME@_drv_ladir = @inputdir@
 
-@DRIVER_NAME@_drv_la_SOURCES = @DRIVER_NAME@.c @DRIVER_NAME@.h pnp.c mousePriv.h
+# We have to list all the mouse drivers here, even if we don't build them, so
+# they get included in distcheck.
+OS_SOURCES = bsd_mouse.c hurd_mouse.c lnx_mouse.c sun_mouse.c
+
+@DRIVER_NAME@_drv_la_SOURCES = \
+	mouse.c \
+	mouse.h \
+	pnp.c \
+	mousePriv.h \
+	xf86OSMouse.h \
+	@OS_MOUSE_NAME@_mouse.c
+
+EXTRA_DIST = $(OS_SOURCES)

@@ -1060,7 +1060,7 @@ MousePreInit(InputDriverPtr drv, IDevPtr dev, int flags)
 	    if (osInfo->CheckProtocol
 		&& osInfo->CheckProtocol(protocol)) {
 		if (!xf86CheckStrOption(dev->commonOptions, "Device", NULL) &&
-		    HAVE_FIND_DEVICE && osInfo->FindDevice) {
+		    osInfo->FindDevice) {
 		    xf86Msg(X_WARNING, "%s: No Device specified, "
 			    "looking for one...\n", pInfo->name);
 		    if (!osInfo->FindDevice(pInfo, protocol, 0)) {
@@ -1091,7 +1091,7 @@ MousePreInit(InputDriverPtr drv, IDevPtr dev, int flags)
     } while (!detected);
     
     if (!xf86CheckStrOption(dev->commonOptions, "Device", NULL) &&
-	HAVE_FIND_DEVICE && osInfo->FindDevice) {
+	osInfo->FindDevice) {
 	xf86Msg(X_WARNING, "%s: No Device specified, looking for one...\n",
 		pInfo->name);
 	if (!osInfo->FindDevice(pInfo, protocol, 0)) {
@@ -3213,7 +3213,7 @@ autoOSProtocol(InputInfoPtr pInfo, int *protoPara)
 		    pInfo->name, name);
 	}
     }
-    if (!name && HAVE_GUESS_PROTOCOL && osInfo->GuessProtocol) {
+    if (!name && osInfo->GuessProtocol) {
 	name = osInfo->GuessProtocol(pInfo, 0);
 	if (name)
 	    protocolID = ProtocolNameToID(name);

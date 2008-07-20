@@ -44,24 +44,6 @@ AC_PROG_CC
 
 AH_TOP([#include "xorg-server.h"])
 
-#AC_DEFINE(XFree86LOADER,1,[Stub define for loadable drivers])
-#
-#AC_ARG_ENABLE(XINPUT, AS_HELP_STRING([--enable-xinput],
-#              [Build XInput support (default: yes)]),
-#              [XINPUT=$enableval],[XINPUT=yes])
-#AM_CONDITIONAL(XINPUT, test "x$XINPUT" = "xyes")
-#if test "x$XINPUT" = "xyes" ; then
-#    AC_DEFINE(XINPUT,1,[Enable XInput support])
-#fi
-#
-#AC_ARG_ENABLE(XKB, AS_HELP_STRING([--enable-xkb],
-#              [Build XKB support (default: yes)]),
-#              [XKB=$enableval],[XKB=yes])
-#AM_CONDITIONAL(XKB, test "x$XKB" = "xyes")
-#if test "x$XKB" = "xyes" ; then
-#    AC_DEFINE(XKB,1,[Enable XKB support])
-#fi
-
 AC_ARG_WITH(xorg-module-dir,
             AC_HELP_STRING([--with-xorg-module-dir=DIR],
                            [Default xorg module directory [[default=$libdir/xorg/modules]]]),
@@ -85,6 +67,23 @@ AC_SUBST([CFLAGS])
 
 # Checks for header files.
 AC_HEADER_STDC
+
+# Work out which OS mouse driver we need to build
+case $host_os in
+  linux*)
+    OS_MOUSE_NAME=lnx
+    ;;
+  freebsd*|kfreebsd*-gnu|dragonfly*|netbsd*|openbsd*)
+    OS_MOUSE_NAME=bsd
+    ;;
+  solaris*)
+    OS_MOUSE_NAME=sun
+    ;;
+  gnu*)
+    OS_MOUSE_NAME=hurd
+    ;;
+esac
+AC_SUBST([OS_MOUSE_NAME])
 
 XORG_MANPAGE_SECTIONS
 XORG_RELEASE_VERSION
