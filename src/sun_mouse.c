@@ -55,6 +55,7 @@
 #include <xorg-config.h>
 #endif
 
+#include "xorg-server.h"
 #include "xf86.h"
 #include "xf86_OSlib.h"
 #include "xf86OSmouse.h"
