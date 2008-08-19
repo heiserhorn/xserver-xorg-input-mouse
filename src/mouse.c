@@ -3777,13 +3777,8 @@ xf86MousePlug(pointer	module,
 {
     static Bool Initialised = FALSE;
 
-    if (!Initialised) {
+    if (!Initialised)
 	Initialised = TRUE;
-#ifndef REMOVE_LOADER_CHECK_MODULE_INFO
-	if (xf86LoaderCheckSymbol("xf86AddModuleInfo"))
-#endif
-	xf86AddModuleInfo(&MouseInfo, module);
-    }
 
     xf86AddInputDriver(&MOUSE, module, 0);
 
