@@ -122,11 +122,11 @@ static void vuidMouseSendScreenSize(ScreenPtr pScreen, VuidMsePtr pVuidMse);
 static void vuidMouseAdjustFrame(int index, int x, int y, int flags);
 
 static int vuidMouseGeneration = 0;
-static DevPrivateKey vuidMouseScreenKey = &vuidMouseScreenKey;
+static int vuidMouseScreenIndex;
 #define vuidMouseGetScreenPrivate(s) ( \
-    dixLookupPrivate(&(s)->devPrivates, vuidMouseScreenKey))
+    dixLookupPrivate(&(s)->devPrivates, &vuidMouseScreenIndex))
 #define vuidMouseSetScreenPrivate(s,p) \
-    dixSetPrivate(&(s)->devPrivates, vuidMouseScreenKey, (void *) p)
+    dixSetPrivate(&(s)->devPrivates, &vuidMouseScreenIndex, (void *) p)
 #endif /* HAVE_ABSOLUTE_MOUSE_SCALING */
 
 static inline
