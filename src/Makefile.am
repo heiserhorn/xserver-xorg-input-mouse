@@ -37,7 +37,7 @@ OS_SOURCES = bsd_mouse.c hurd_mouse.c lnx_mouse.c sun_mouse.c
 	mouse.h \
 	pnp.c \
 	mousePriv.h \
-	xf86OSMouse.h \
+	xf86OSmouse.h \
 	@OS_MOUSE_NAME@_mouse.c
 
 EXTRA_DIST = $(OS_SOURCES)
