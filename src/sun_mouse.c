@@ -59,9 +59,6 @@
 #include "xf86.h"
 #include "xf86_OSlib.h"
 #include "xf86OSmouse.h"
-
-#if defined(__SOL8__) || !defined(__i386)
-
 #include "xisb.h"
 #include "mipointer.h"
 #include <sys/stropts.h>
@@ -682,13 +679,6 @@ FindDevice(InputInfoPtr pInfo, const char *protocol, int flags)
     return pdev;
 }
 
-#else /* __SOL8__ || !__i386 */
-
-#undef MSE_MISC
-#define MSE_MISC 0
-
-#endif /* !__SOL8__ && __i386 */
-
 static int
 SupportedInterfaces(void)
 {
@@ -705,14 +695,13 @@ xf86OSMouseInit(int flags)
     if (!p)
 	return NULL;
     p->SupportedInterfaces = SupportedInterfaces;
-#if defined(__SOL8__) || !defined(__i386)
     p->BuiltinNames = BuiltinNames;
     p->CheckProtocol = CheckProtocol;
     p->PreInit = sunMousePreInit;
     p->DefaultProtocol = DefaultProtocol;
     p->SetupAuto = SetupAuto;
     p->FindDevice = FindDevice;
-#endif
+
     return p;
 }
 
