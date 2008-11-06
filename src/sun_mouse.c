@@ -397,9 +397,16 @@ vuidReadInput(InputInfoPtr pInfo)
 #endif
 #ifdef HAVE_ABSOLUTE_MOUSE_SCALING
 	else if (pVuidMse->event.id == MOUSE_TYPE_ABSOLUTE) {
+	    ScreenPtr 	ptrCurScreen;
+
 	    /* force sending absolute resolution scaling ioctl */
 	    pVuidMse->absres.height = pVuidMse->absres.width = 0;
-	    vuidMouseSendScreenSize(miPointerCurrentScreen(), pVuidMse);
+#if GET_ABI_MAJOR(ABI_XINPUT_VERSION) == 0
+	    ptrCurScreen = miPointerCurrentScreen();
+#else
+	    ptrCurScreen = miPointerGetScreen(pInfo->dev);
+#endif	    
+	    vuidMouseSendScreenSize(ptrCurScreen, pVuidMse);
 	}
 #endif
 
@@ -457,6 +464,7 @@ static void vuidMouseAdjustFrame(int index, int x, int y, int flags)
       xf86AdjustFrameProc *wrappedAdjustFrame 
 	  = (xf86AdjustFrameProc *) vuidMouseGetScreenPrivate(pScreen);
       VuidMsePtr	m;
+      ScreenPtr 	ptrCurScreen;
 
       if(wrappedAdjustFrame) {
         pScrn->AdjustFrame = wrappedAdjustFrame;
@@ -464,8 +472,16 @@ static void vuidMouseAdjustFrame(int index, int x, int y, int flags)
         pScrn->AdjustFrame = vuidMouseAdjustFrame;
       }
 
-      if (miPointerCurrentScreen() == pScreen) {
-	  for (m = vuidMouseList; m != NULL ; m = m->next) {
+#if GET_ABI_MAJOR(ABI_XINPUT_VERSION) == 0
+      ptrCurScreen = miPointerCurrentScreen();
+#endif
+      
+      for (m = vuidMouseList; m != NULL ; m = m->next) {
+#if GET_ABI_MAJOR(ABI_XINPUT_VERSION) >= 0
+	  ptrCurScreen = miPointerGetScreen(m->pInfo->dev);
+#endif
+	  if (ptrCurScreen == pScreen)
+	  {
 	      vuidMouseSendScreenSize(pScreen, m);
 	  }
       }
