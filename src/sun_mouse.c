@@ -617,6 +617,24 @@ solarisMouseAutoProbe(InputInfoPtr pInfo, const char **protocol,
     const char **pdev, **pproto;
     int fd = -1;
     Bool found;
+    char *strmod;
+
+    if (*device == NULL) {
+	/* Check to see if xorg.conf or HAL specified a device to use */
+	*device = xf86CheckStrOption(pInfo->options, "Device", NULL);
+    }
+
+    if (*device != NULL) {
+	strmod = xf86CheckStrOption(pInfo->options, "StreamsModule", NULL);
+	if (strmod) {
+	    /* if a device name is already known, and a StreamsModule is
+	       specified to convert events to VUID, then we don't need to
+	       probe further */
+	    *protocol = "VUID";
+	    return TRUE;
+	}
+    }
+
 
     for (pdev = solarisMouseDevs; *pdev; pdev += 2) {
 	pproto = pdev + 1;
