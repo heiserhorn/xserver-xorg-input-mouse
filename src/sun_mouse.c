@@ -322,7 +322,6 @@ vuidReadInput(InputInfoPtr pInfo)
     unsigned int n;
     int c; 
     unsigned char *pBuf;
-    int wmask;
     int absX, absY;
     Bool absXset = FALSE, absYset = FALSE;
 
@@ -599,7 +598,7 @@ static Bool
 solarisMouseAutoProbe(InputInfoPtr pInfo, const char **protocol, 
 	const char **device)
 {
-    const char **pdev, **pproto, *dev = NULL;
+    const char **pdev, **pproto;
     int fd = -1;
     Bool found;
 
