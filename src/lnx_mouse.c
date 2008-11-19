@@ -3,8 +3,8 @@
  * Copyright 1999 by The XFree86 Project, Inc.
  */
 
-#ifdef HAVE_XORG_CONFIG_H
-#include <xorg-config.h>
+#ifdef HAVE_CONFIG_H
+#include "config.h"
 #endif
 
 #include <X11/X.h>
