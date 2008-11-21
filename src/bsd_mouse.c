@@ -464,6 +464,7 @@ wsconsPreInit(InputInfoPtr pInfo, const char *protocol, int flags)
 	else {
 	    xf86Msg(X_ERROR, "%s: cannot open input device\n", pInfo->name);
 	    xfree(pMse);
+	    pInfo->private = NULL;
 	    return FALSE;
 	}
     }
