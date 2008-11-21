@@ -26,9 +26,7 @@
  * authorization from the copyright holder(s) and author(s).
  */
 
-#ifdef HAVE_XORG_CONFIG_H
-#include <xorg-config.h>
-#endif
+#include <xorg-server.h>
 
 #include <X11/X.h>
 #include "xf86.h"
