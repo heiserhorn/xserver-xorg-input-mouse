@@ -70,6 +70,7 @@
 #ifdef USBMOUSE_SUPPORT
 static void usbSigioReadInput (int fd, void *closure);
 #endif
+static const char *FindDevice(InputInfoPtr, const char *, int);
 
 #if defined(__FreeBSD__) || defined(__FreeBSD_kernel__) || defined(__DragonFly__)
 /* These are for FreeBSD and DragonFly */
