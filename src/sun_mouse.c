@@ -622,6 +622,10 @@ solarisMouseAutoProbe(InputInfoPtr pInfo, const char **protocol,
     if (*device == NULL) {
 	/* Check to see if xorg.conf or HAL specified a device to use */
 	*device = xf86CheckStrOption(pInfo->options, "Device", NULL);
+	if (*device == NULL) {
+	    *device = xf86CheckStrOption(pInfo->conf_idev->commonOptions,
+					 "Device", NULL);
+	}
     }
 
     if (*device != NULL) {
