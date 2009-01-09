@@ -26,6 +26,10 @@ AC_INIT([xf86-input-mouse],
         [https://bugs.freedesktop.org/enter_bug.cgi?product=xorg],
         xf86-input-mouse)
 
+# Require xorg-macros version >= 1.2.0 for XORG_CWARNFLAGS & XORG_CHANGELOG
+m4_ifndef([XORG_MACROS_VERSION], [AC_FATAL([must install xorg-macros 1.2 or later before running autoconf/autogen])])
+XORG_MACROS_VERSION(1.2)
+
 AC_CONFIG_SRCDIR([Makefile.am])
 AC_CONFIG_AUX_DIR(.)
 AM_INIT_AUTOMAKE([dist-bzip2])
@@ -87,6 +91,7 @@ AC_SUBST([OS_MOUSE_NAME])
 
 XORG_MANPAGE_SECTIONS
 XORG_RELEASE_VERSION
+XORG_CHANGELOG
 
 XORG_CHECK_LINUXDOC
 

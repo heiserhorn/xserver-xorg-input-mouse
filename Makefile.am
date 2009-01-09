@@ -27,3 +27,12 @@ README: README.sgml
 endif
 
 EXTRA_DIST = README.sgml
+
+MAINTAINERCLEANFILES=ChangeLog
+
+.PHONY: ChangeLog
+
+ChangeLog:
+	$(CHANGELOG_CMD)
+
+dist-hook: ChangeLog
