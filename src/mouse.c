@@ -124,9 +124,7 @@ typedef struct _DragLockRec {
 
 
 
-#ifdef XFree86LOADER
 static const OptionInfoRec *MouseAvailableOptions(void *unused);
-#endif
 static InputInfoPtr MousePreInit(InputDriverPtr drv, IDevPtr dev, int flags);
 #if 0
 static void MouseUnInit(InputDriverPtr drv, InputInfoPtr pInfo, int flags);
@@ -215,7 +213,6 @@ typedef enum {
     OPTION_SENSITIVITY
 } MouseOpts;
 
-#ifdef XFree86LOADER
 static const OptionInfoRec mouseOptions[] = {
     { OPTION_ALWAYS_CORE,	"AlwaysCore",	  OPTV_BOOLEAN,	{0}, FALSE },
     { OPTION_SEND_CORE_EVENTS,	"SendCoreEvents", OPTV_BOOLEAN,	{0}, FALSE },
@@ -259,7 +256,6 @@ static const OptionInfoRec mouseOptions[] = {
     { OPTION_SENSITIVITY,      "Sensitivity",     OPTV_REAL,    {0}, FALSE },
     { -1,			NULL,		  OPTV_NONE,	{0}, FALSE }
 };
-#endif
 
 #define RETRY_COUNT 4
 
@@ -376,14 +372,12 @@ static MouseProtocolRec mouseProtocols[] = {
     { NULL,			MSE_NONE,	NULL,		PROT_UNKNOWN }
 };
 
-#ifdef XFree86LOADER
 /*ARGSUSED*/
 static const OptionInfoRec *
 MouseAvailableOptions(void *unused)
 {
     return (mouseOptions);
 }
-#endif
 
 /* Process options common to all mouse types. */
 static void
@@ -3757,7 +3751,6 @@ collectData(MouseDevPtr pMse, unsigned char u)
 
 
 
-#ifdef XFree86LOADER
 ModuleInfoRec MouseInfo = {
     1,
     "MOUSE",
@@ -3810,6 +3803,3 @@ _X_EXPORT XF86ModuleData mouseModuleData = {
 /*
   Look at hitachi device stuff.
 */
-#endif /* XFree86LOADER */
-
-
