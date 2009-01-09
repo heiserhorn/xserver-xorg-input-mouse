@@ -45,6 +45,7 @@ AM_CONFIG_HEADER([config.h])
 AC_DISABLE_STATIC
 AC_PROG_LIBTOOL
 AC_PROG_CC
+XORG_CWARNFLAGS
 
 AH_TOP([#include "xorg-server.h"])
 
@@ -63,9 +64,6 @@ XORG_DRIVER_CHECK_EXT(XINPUT, inputproto)
 # Checks for pkg-config packages
 PKG_CHECK_MODULES(XORG, [xorg-server >= 1.0.99.901] xproto $REQUIRED_MODULES)
 sdkdir=$(pkg-config --variable=sdkdir xorg-server)
-
-CFLAGS="$CFLAGS $XORG_CFLAGS "' -I$(top_srcdir)/src'
-AC_SUBST([CFLAGS])
 
 # Checks for libraries.
 
@@ -88,6 +86,9 @@ case $host_os in
     ;;
 esac
 AC_SUBST([OS_MOUSE_NAME])
+
+dnl Allow checking code with lint, sparse, etc.
+XORG_WITH_LINT
 
 XORG_MANPAGE_SECTIONS
 XORG_RELEASE_VERSION
