@@ -630,6 +630,10 @@ solarisMouseAutoProbe(InputInfoPtr pInfo, const char **protocol,
 
     if (*device != NULL) {
 	strmod = xf86CheckStrOption(pInfo->options, "StreamsModule", NULL);
+	if (strmod == NULL) {
+	    strmod = xf86CheckStrOption(pInfo->conf_idev->commonOptions,
+					"StreamsModule", NULL);
+	}
 	if (strmod) {
 	    /* if a device name is already known, and a StreamsModule is
 	       specified to convert events to VUID, then we don't need to
