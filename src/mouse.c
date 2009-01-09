@@ -3050,7 +3050,7 @@ mouseReset(InputInfoPtr pInfo, unsigned char val)
     ErrorF("Mouse Current: %i 0x%x\n",mousepriv->current, val);
 #endif
     
-    /* here we put the mouse specific reset detction */
+    /* here we put the mouse specific reset detection */
     /* They need to do three things:                 */
     /*  Check if byte may be a reset byte            */
     /*  If so: Set expectReset TRUE                  */
