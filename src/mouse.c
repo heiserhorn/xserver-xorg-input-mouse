@@ -1190,12 +1190,11 @@ MouseReadInput(InputInfoPtr pInfo)
 	ErrorF("mouse byte: %2.2x\n",u);
 #endif
 
-#if 1
 	/* if we do autoprobing collect the data */
 	if (pMse->collectData && pMse->autoProbe)
 	    if (pMse->collectData(pMse,u))
 		continue;
-#endif
+
 #ifdef SUPPORT_MOUSE_RESET
 	if (mouseReset(pInfo,u)) {
 	    pBufP = 0;
@@ -3675,10 +3674,10 @@ checkForErraticMovements(InputInfoPtr pInfo, int dx, int dy)
 {
     MouseDevPtr pMse = pInfo->private;
     mousePrivPtr mPriv = (mousePrivPtr)pMse->mousePriv;
-#if 1
+
     if (!mPriv->goodCount)
 	return;
-#endif
+
 #if 0
     if (abs(dx - mPriv->prevDx) > 300 
 	|| abs(dy - mPriv->prevDy) > 300)

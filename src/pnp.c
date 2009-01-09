@@ -187,7 +187,6 @@ MouseGetPnpProtocol(InputInfoPtr pInfo)
 	    return val;
     }
 
-#if 1
     last = mPriv->pnpLast;
     mPriv->pnpLast = currentTime.milliseconds;
 
@@ -213,9 +212,6 @@ MouseGetPnpProtocol(InputInfoPtr pInfo)
 	return getPs2ProtocolPnP(pInfo);
     else
 	return probePs2ProtocolPnP(pInfo);
-#else
-    return PROT_UNKNOWN;
-#endif
 }
 
 /*
