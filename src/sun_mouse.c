@@ -155,7 +155,7 @@ vuidMouseWheelInit(InputInfoPtr pInfo)
 
     wstate.vers = VUID_WHEEL_STATE_VERS;
     wstate.id = 0;
-    wstate.stateflags = -1;
+    wstate.stateflags = (uint32_t) -1;
 
     SYSCALL(i = ioctl(pInfo->fd, VUIDGWHEELCOUNT, &nwheel));
     if (i != 0)
@@ -322,7 +322,7 @@ vuidReadInput(InputInfoPtr pInfo)
     unsigned int n;
     int c; 
     unsigned char *pBuf;
-    int absX, absY;
+    int absX = 0, absY = 0;
     Bool absXset = FALSE, absYset = FALSE;
 
     pMse = pInfo->private;

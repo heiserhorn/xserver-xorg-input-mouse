@@ -1001,7 +1001,7 @@ MousePreInit(InputDriverPtr drv, IDevPtr dev, int flags)
     pInfo->fd = -1;
     pInfo->dev = NULL;
     pInfo->private_flags = 0;
-    pInfo->always_core_feedback = 0;
+    pInfo->always_core_feedback = NULL;
     pInfo->conf_idev = dev;
 
     /* Check if SendDragEvents has been disabled. */
@@ -3148,6 +3148,7 @@ ps2WakeupHandler(pointer data, int i, pointer LastSelectMask)
 #  define AP_DBGC(x)
 #endif
 
+static
 MouseProtocolID hardProtocolList[] = { 	PROT_MSC, PROT_MM, PROT_LOGI, 
 					PROT_LOGIMAN, PROT_MMHIT,
 					PROT_GLIDE, PROT_IMSERIAL,
@@ -3160,6 +3161,7 @@ MouseProtocolID hardProtocolList[] = { 	PROT_MSC, PROT_MM, PROT_LOGI,
 					PROT_UNKNOWN
 };
 
+static
 MouseProtocolID softProtocolList[] = { 	PROT_MSC, PROT_MM, PROT_LOGI, 
 					PROT_LOGIMAN, PROT_MMHIT,
 					PROT_GLIDE, PROT_IMSERIAL,
@@ -3287,7 +3289,7 @@ createProtoList(MouseDevPtr pMse, MouseProtocolID *protoList)
 		    break;
 		} else {
 		    /* 
-		     * Bail ot if number of bytes per package have
+		     * Bail out if number of bytes per package have
 		     * been tested for header.
 		     * Take bytes per package of leading garbage into
 		     * account.
@@ -3363,7 +3365,7 @@ createProtoList(MouseDevPtr pMse, MouseProtocolID *protoList)
 
 
 /* This only needs to be done once */
-void **serialDefaultsList = NULL;
+static void **serialDefaultsList = NULL;
 
 /*
  * createSerialDefaultsLists() - create a list of the different default
