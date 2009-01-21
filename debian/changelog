@@ -4,6 +4,8 @@ xserver-xorg-input-mouse (1:1.4.0-1) UNRELEASED; urgency=low
   * Run autoreconf on build.
   * Handle parallel builds.
   * Build-depend on xserver 1.6 rc1, automake, libtool and xutils-dev 1:7.4+4.
+  * Add copyright notices for OS mouse code to debian/copyright (from
+    upstream's COPYING).
 
  -- Julien Cristau <jcristau@debian.org>  Wed, 21 Jan 2009 21:26:52 +0100
 
