@@ -1,3 +1,235 @@
+commit 5058dc340278f2498dd1b4db129dc6dd6b0e0964
+Author: Alan Coopersmith <alan.coopersmith@sun.com>
+Date:   Fri Jan 9 18:38:57 2009 -0800
+
+    Version 1.4.0
+
+commit 194fed98fee47801f1ca8eb926bc10a57b7582cb
+Author: Alan Coopersmith <alan.coopersmith@sun.com>
+Date:   Fri Jan 9 14:41:26 2009 -0800
+
+    Add note on hal-based configuration to man page
+
+commit 299bd6c164e4e91cf69c41b3c7b97879cfcc0d32
+Author: Alan Coopersmith <alan.coopersmith@sun.com>
+Date:   Fri Jan 9 08:45:38 2009 -0800
+
+    Add copyright notices for OS mouse code to COPYING file
+
+commit 0968d56233804515d347b2001bf817d0fa3611ea
+Author: Alan Coopersmith <alan.coopersmith@sun.com>
+Date:   Thu Jan 8 21:48:13 2009 -0800
+
+    Unifdef XFree86LOADER
+
+commit 47c5e3a368a2922c4cc5e3a9769501fe399287ae
+Author: Alan Coopersmith <alan.coopersmith@sun.com>
+Date:   Thu Jan 8 21:43:58 2009 -0800
+
+    Remove some #if 1 statements
+
+commit 7039165d70079f2e8573ada9323fbc582c825248
+Author: Alan Coopersmith <alan.coopersmith@sun.com>
+Date:   Thu Jan 8 21:38:54 2009 -0800
+
+    Comment typo fixes
+
+commit a61f0f92299037fe818a54c2cd9a2d3836698b43
+Author: Alan Coopersmith <alan.coopersmith@sun.com>
+Date:   Thu Jan 8 21:29:00 2009 -0800
+
+    sun_mouse: fallback to commonOptions for StreamsModule too
+
+commit 4623258b48f01306309ff9d39a85565bce57946e
+Author: Alan Coopersmith <alan.coopersmith@sun.com>
+Date:   Thu Jan 8 21:21:18 2009 -0800
+
+    Clear assorted compiler, sparse & lint warnings
+    
+    mouse.c:1004:35: warning: Using plain integer as NULL pointer
+    sun_mouse.c:325: warning: 'absX' might be used uninitialized in this function
+    sun_mouse.c:325: warning: 'absY' might be used uninitialized in this function
+    sun_mouse.c: (158) warning: constant truncated by assignment
+    
+    declared global, could be static:
+        hardProtocolList    mouse.c(3151)
+        softProtocolList    mouse.c(3163)
+        serialDefaultsList  mouse.c(3366)
+
+commit 6f14e8569150b0d6fac7186968cde8b031a1fefc
+Author: Alan Coopersmith <alan.coopersmith@sun.com>
+Date:   Thu Jan 8 21:20:58 2009 -0800
+
+    Add XORG_CWARNFLAGS & XORG_WITH_LINT for more compiler checking
+
+commit 24d9306546d325089c5fb6b78b90c24b38c86338
+Author: Alan Coopersmith <alan.coopersmith@sun.com>
+Date:   Thu Jan 8 20:40:10 2009 -0800
+
+    Replace static changelog with one generated via XORG_CHANGELOG
+
+commit cd476cc0932bf9440a05e460cd22dbe584585746
+Author: Peter Breitenlohner <peb@mppmu.mpg.de>
+Date:   Wed Nov 19 22:23:34 2008 +0100
+
+    Fix linux build
+    
+    HAVE_XORG_CONFIG_H is a leftover from the server sources (where this file used
+    to reside).
+    
+    Signed-off-by: Peter Hutterer <peter.hutterer@redhat.com>
+
+commit 003c297d2902092074ede131db0dbc08d9116a5b
+Author: Alan Coopersmith <alan.coopersmith@sun.com>
+Date:   Mon Dec 1 14:36:06 2008 -0800
+
+    sun_mouse: check for Device in commonOptions if pInfo->options isn't set yet
+
+commit 1e23b944aae3ef50cc764e6d2f0198deabe790ad
+Author: Matthieu Herrb <matthieu.herrb@laas.fr>
+Date:   Sat Nov 22 17:36:14 2008 +0100
+
+    W axis support for bsd_mouse.
+
+commit e7e3cd9bed2bfeb848d62062d0859aa813bf786d
+Author: Matthieu Herrb <matthieu@deville.herrb.net>
+Date:   Fri Nov 21 19:59:22 2008 +0100
+
+    prevent a double free of mouse private structure.
+    
+    Mark pInfo->private as NULL after freeing it on the error path.
+
+commit c98bc45557174f771b031d4a003b54d06b857785
+Author: Matthieu Herrb <matthieu@deville.herrb.net>
+Date:   Fri Nov 21 16:14:01 2008 +0100
+
+    Include xorg-server.h to get the WSCONS_SUPPORT define from
+    xerver SDK configuration.
+
+commit 87f20b0c06bc13ed603d36cca881ccf69ac0a68a
+Author: Matthieu Herrb <matthieu@deville.herrb.net>
+Date:   Fri Nov 21 15:42:31 2008 +0100
+
+    Build fix: Add a prototype for FindDevice function.
+
+commit 790a78d3b3d81ea06fc1a31108a330adba8cc069
+Author: Alan Coopersmith <alan.coopersmith@sun.com>
+Date:   Wed Nov 5 21:47:30 2008 -0800
+
+    Fix solarisMouseAutoProbe to use device name & protocol specified by HAL
+
+commit daac081f34baab7388a8c42e5a80a42cd6810d75
+Author: Alan Coopersmith <alan.coopersmith@sun.com>
+Date:   Wed Nov 5 19:26:38 2008 -0800
+
+    sun_mouse.c: Use miPointerGetScreen instead of miPointerCurrentScreen
+
+commit 431982e7c04ec076eeafd57190db4d7d901efa7c
+Author: Alan Coopersmith <alan.coopersmith@sun.com>
+Date:   Wed Nov 5 19:04:32 2008 -0800
+
+    sun_mouse.c: remove unused variables
+
+commit 7bb59519636a7e0028e6f0f63d8256a68a24792d
+Author: Alan Coopersmith <alan.coopersmith@sun.com>
+Date:   Wed Nov 5 18:55:07 2008 -0800
+
+    Remove checks for Solaris x86 versions older than Solaris 8
+
+commit 898dfc9ce731ea9515f7819a9f0583af81d7d8b2
+Author: Alan Coopersmith <alan.coopersmith@sun.com>
+Date:   Wed Nov 5 18:51:04 2008 -0800
+
+    Rename OS_SOURCES to stop automake complaints about not building program "OS"
+
+commit ea5cfe804e112f320f14ad896c7802d53551d3e6
+Author: Roland Scheidegger <zak@linux-x.site.my>
+Date:   Sat Oct 4 16:02:08 2008 +0200
+
+    fix compilation (upper/lower case typo)
+
+commit da2ab45e3ee85f164b5430a4d0c5d60cdf71a5ec
+Author: Eamon Walsh <ewalsh@tycho.nsa.gov>
+Date:   Tue Aug 26 22:39:27 2008 -0400
+
+    Change screen private key to an integer variable.
+    
+    Prepares for a devPrivates system that will store an index.
+
+commit d4ed78710b19a8b1c9b5349eacd44599ba075527
+Author: Alan Coopersmith <alan.coopersmith@sun.com>
+Date:   Tue Aug 19 15:12:52 2008 -0700
+
+    Fix sun_mouse.c build on Solaris
+
+commit 04730f0be48d464401796a224109adbee9cd51de
+Author: Adam Jackson <ajax@redhat.com>
+Date:   Tue Aug 19 15:28:48 2008 -0400
+
+    Remove useless call to xf86AddModuleInfo
+
+commit f3f0a5520ed7edac3867a97f5a001b91c870563e
+Author: Daniel Stone <daniel@fooishbar.org>
+Date:   Sun Jul 20 04:33:07 2008 +0300
+
+    Add OS mouse sources to the driver build
+    
+    Copy across the OS mouse sources and add them to the driver build.  For
+    convenience, the OS mouse versioning stuff was removed, but we have
+    always had the same featureset in all modular builds, so that's okay.
+    
+    Only compile-tested, not runtime-tested.
+
+commit 1214c4ce571caf0bcdb3d9dc04a2b34f4a23c3c0
+Author: Alan Coopersmith <alan.coopersmith@sun.com>
+Date:   Tue Jun 10 14:38:26 2008 -0700
+
+    Merge some hardware support information from README.mouse into man page
+
+commit 705d0def1092a2121867fae4e7bc944a240d789a
+Author: Peter Hutterer <peter@cs.unisa.edu.au>
+Date:   Mon May 26 21:57:59 2008 +0930
+
+    Check for XINPUT ABI 3.
+
+commit 5d9d865b4ac2d7739ae93a8e0e682535aeb46b6d
+Author: Peter Hutterer <peter@cs.unisa.edu.au>
+Date:   Mon May 19 20:28:04 2008 +0930
+
+    Nuke RCS tags.
+
+commit bf634290f7bdf1f5b922f4c28b333a739057f2f0
+Author: Paulo Cesar Pereira de Andrade <pcpa@mandriva.com.br>
+Date:   Sun Mar 16 02:28:16 2008 -0300
+
+    Compile warning fixes.
+    
+      Ansify a function with K&R style definition.
+      Obey gcc in warning suggest parentheses around assignment used as truth value.
+      Remove some unused variables.
+      Remaining warning is about xf86AddModuleInfo being deprecated.
+    
+    Signed-off-by: Alan Coopersmith <alan.coopersmith@sun.com>
+
+commit 7f0623807366b1bc6c0be2e065220be94b669ea7
+Author: Paulo Cesar Pereira de Andrade <pcpa@mandriva.com.br>
+Date:   Wed Jan 30 17:28:34 2008 -0200
+
+    Make sure xf86MouseProtocolIDToName is of public visibility.
+    
+    This function is called by code in the xf86misc to change mouse parameters,
+    after checking it's availability using LoaderSymbol().
+    
+    Signed-off-by: Alan Coopersmith <alan.coopersmith@sun.com>
+
+commit 82231d2309a54ecf7de3f29809416b2ea5f2d3cd
+Author: Peter Hutterer <peter@cs.unisa.edu.au>
+Date:   Tue Apr 15 15:54:17 2008 +0930
+
+    man: Note that the server may probe default "Device" options.
+    
+    X.Org Bug 15245 <http://bugs.freedesktop.org/show_bug.cgi?id=15425>
+
 commit 9192640066e3917062cb3ee1c761a83196bfb721
 Author: Adam Jackson <ajax@redhat.com>
 Date:   Thu Mar 20 16:26:52 2008 -0400
