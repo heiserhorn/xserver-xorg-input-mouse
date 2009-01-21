@@ -6,12 +6,15 @@ Uploaders: David Nusinow <dnusinow@debian.org>, Drew Parsons <dparsons@debian.or
 Build-Depends:
  debhelper (>= 5),
  pkg-config,
- xserver-xorg-dev (>= 2:1.4.99.905),
+ xserver-xorg-dev (>= 2:1.5.99.901),
  x11proto-input-dev,
  x11proto-core-dev,
  x11proto-randr-dev,
  quilt,
- dpkg-dev (>= 1.14.17)
+ dpkg-dev (>= 1.14.17),
+ automake,
+ libtool,
+ xutils-dev (>= 1:7.4+4)
 Standards-Version: 3.7.3
 Vcs-Git: git://git.debian.org/git/pkg-xorg/driver/xserver-xorg-input-mouse
 Vcs-Browser: http://git.debian.org/?p=pkg-xorg/driver/xserver-xorg-input-mouse.git
