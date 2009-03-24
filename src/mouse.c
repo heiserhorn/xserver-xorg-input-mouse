@@ -866,18 +866,6 @@ ProtocolIDToName(MouseProtocolID id)
     }
 }
 
-_X_EXPORT const char *
-xf86MouseProtocolIDToName(MouseProtocolID id)
-{
-	return ProtocolIDToName(id);
-}
-
-MouseProtocolID
-xf86MouseProtocolNameToID(const char *name)
-{
-    return ProtocolNameToID(name);
-}
-
 static int
 ProtocolIDToClass(MouseProtocolID id)
 {
