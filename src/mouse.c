@@ -123,8 +123,6 @@ typedef struct _DragLockRec {
 } DragLockRec, *DragLockPtr;
 
 
-
-static const OptionInfoRec *MouseAvailableOptions(void *unused);
 static InputInfoPtr MousePreInit(InputDriverPtr drv, IDevPtr dev, int flags);
 #if 0
 static void MouseUnInit(InputDriverPtr drv, InputInfoPtr pInfo, int flags);
@@ -170,91 +168,6 @@ _X_EXPORT InputDriverRec MOUSE = {
 	/*MouseUnInit,*/NULL,
 	NULL,
 	0
-};
-
-typedef enum {
-    OPTION_ALWAYS_CORE,
-    OPTION_SEND_CORE_EVENTS,
-    OPTION_CORE_POINTER,
-    OPTION_SEND_DRAG_EVENTS,
-    OPTION_HISTORY_SIZE,
-    OPTION_DEVICE,
-    OPTION_PROTOCOL,
-    OPTION_BUTTONS,
-    OPTION_EMULATE_3_BUTTONS,
-    OPTION_EMULATE_3_TIMEOUT,
-    OPTION_CHORD_MIDDLE,
-    OPTION_FLIP_XY,
-    OPTION_INV_X,
-    OPTION_INV_Y,
-    OPTION_ANGLE_OFFSET,
-    OPTION_Z_AXIS_MAPPING,
-    OPTION_SAMPLE_RATE,
-    OPTION_RESOLUTION,
-    OPTION_EMULATE_WHEEL,
-    OPTION_EMU_WHEEL_BUTTON,
-    OPTION_EMU_WHEEL_INERTIA,
-    OPTION_EMU_WHEEL_TIMEOUT,
-    OPTION_X_AXIS_MAPPING,
-    OPTION_Y_AXIS_MAPPING,
-    OPTION_AUTO_SOFT,
-    OPTION_CLEAR_DTR,
-    OPTION_CLEAR_RTS,
-    OPTION_BAUD_RATE,
-    OPTION_DATA_BITS,
-    OPTION_STOP_BITS,
-    OPTION_PARITY,
-    OPTION_FLOW_CONTROL,
-    OPTION_VTIME,
-    OPTION_VMIN,
-    OPTION_DRAGLOCKBUTTONS,
-    OPTION_DOUBLECLICK_BUTTONS,
-    OPTION_BUTTON_MAPPING,
-    OPTION_SENSITIVITY
-} MouseOpts;
-
-static const OptionInfoRec mouseOptions[] = {
-    { OPTION_ALWAYS_CORE,	"AlwaysCore",	  OPTV_BOOLEAN,	{0}, FALSE },
-    { OPTION_SEND_CORE_EVENTS,	"SendCoreEvents", OPTV_BOOLEAN,	{0}, FALSE },
-    { OPTION_CORE_POINTER,	"CorePointer",	  OPTV_BOOLEAN,	{0}, FALSE },
-    { OPTION_SEND_DRAG_EVENTS,	"SendDragEvents", OPTV_BOOLEAN,	{0}, FALSE },
-    { OPTION_HISTORY_SIZE,	"HistorySize",	  OPTV_INTEGER,	{0}, FALSE },
-    { OPTION_DEVICE,		"Device",	  OPTV_STRING,	{0}, FALSE },
-    { OPTION_PROTOCOL,		"Protocol",	  OPTV_STRING,	{0}, FALSE },
-    { OPTION_BUTTONS,		"Buttons",	  OPTV_INTEGER,	{0}, FALSE },
-    { OPTION_EMULATE_3_BUTTONS,	"Emulate3Buttons",OPTV_BOOLEAN,	{0}, FALSE },
-    { OPTION_EMULATE_3_TIMEOUT,	"Emulate3Timeout",OPTV_INTEGER,	{0}, FALSE },
-    { OPTION_CHORD_MIDDLE,	"ChordMiddle",	  OPTV_BOOLEAN,	{0}, FALSE },
-    { OPTION_FLIP_XY,		"FlipXY",	  OPTV_BOOLEAN,	{0}, FALSE },
-    { OPTION_INV_X,		"InvX",		  OPTV_BOOLEAN,	{0}, FALSE },
-    { OPTION_INV_Y,		"InvY",		  OPTV_BOOLEAN,	{0}, FALSE },
-    { OPTION_ANGLE_OFFSET,	"AngleOffset",	  OPTV_INTEGER,	{0}, FALSE },
-    { OPTION_Z_AXIS_MAPPING,	"ZAxisMapping",	  OPTV_STRING,	{0}, FALSE },
-    { OPTION_SAMPLE_RATE,	"SampleRate",	  OPTV_INTEGER,	{0}, FALSE },
-    { OPTION_RESOLUTION,	"Resolution",	  OPTV_INTEGER,	{0}, FALSE },
-    { OPTION_EMULATE_WHEEL,	"EmulateWheel",	  OPTV_BOOLEAN, {0}, FALSE },
-    { OPTION_EMU_WHEEL_BUTTON,	"EmulateWheelButton", OPTV_INTEGER, {0}, FALSE },
-    { OPTION_EMU_WHEEL_INERTIA,	"EmulateWheelInertia", OPTV_INTEGER, {0}, FALSE },
-    { OPTION_EMU_WHEEL_TIMEOUT,	"EmulateWheelTimeout", OPTV_INTEGER, {0}, FALSE },
-    { OPTION_X_AXIS_MAPPING,	"XAxisMapping",	  OPTV_STRING,	{0}, FALSE },
-    { OPTION_Y_AXIS_MAPPING,	"YAxisMapping",	  OPTV_STRING,	{0}, FALSE },
-    { OPTION_AUTO_SOFT,		"AutoSoft",	  OPTV_BOOLEAN, {0}, FALSE },
-    /* serial options */
-    { OPTION_CLEAR_DTR,		"ClearDTR",	  OPTV_BOOLEAN,	{0}, FALSE },
-    { OPTION_CLEAR_RTS,		"ClearRTS",	  OPTV_BOOLEAN,	{0}, FALSE },
-    { OPTION_BAUD_RATE,		"BaudRate",	  OPTV_INTEGER,	{0}, FALSE },
-    { OPTION_DATA_BITS,		"DataBits",	  OPTV_INTEGER,	{0}, FALSE },
-    { OPTION_STOP_BITS,		"StopBits",	  OPTV_INTEGER,	{0}, FALSE },
-    { OPTION_PARITY,		"Parity",	  OPTV_STRING,	{0}, FALSE },
-    { OPTION_FLOW_CONTROL,	"FlowControl",	  OPTV_STRING,	{0}, FALSE },
-    { OPTION_VTIME,		"VTime",	  OPTV_INTEGER,	{0}, FALSE },
-    { OPTION_VMIN,		"VMin",		  OPTV_INTEGER,	{0}, FALSE },
-    /* end serial options */
-    { OPTION_DRAGLOCKBUTTONS,	"DragLockButtons",OPTV_STRING,	{0}, FALSE },
-    { OPTION_DOUBLECLICK_BUTTONS,"DoubleClickButtons", OPTV_STRING, {0}, FALSE },
-    { OPTION_BUTTON_MAPPING,   "ButtonMapping",   OPTV_STRING,  {0}, FALSE },
-    { OPTION_SENSITIVITY,      "Sensitivity",     OPTV_REAL,    {0}, FALSE },
-    { -1,			NULL,		  OPTV_NONE,	{0}, FALSE }
 };
 
 #define RETRY_COUNT 4
@@ -371,13 +284,6 @@ static MouseProtocolRec mouseProtocols[] = {
     /* end of list */
     { NULL,			MSE_NONE,	NULL,		PROT_UNKNOWN }
 };
-
-/*ARGSUSED*/
-static const OptionInfoRec *
-MouseAvailableOptions(void *unused)
-{
-    return (mouseOptions);
-}
 
 /* Process options common to all mouse types. */
 static void
@@ -3737,15 +3643,6 @@ collectData(MouseDevPtr pMse, unsigned char u)
 
 /**************** end of autoprobe stuff *****************/
 
-
-
-ModuleInfoRec MouseInfo = {
-    1,
-    "MOUSE",
-    NULL,
-    0,
-    MouseAvailableOptions,
-};
 
 static void
 xf86MouseUnplug(pointer	p)
