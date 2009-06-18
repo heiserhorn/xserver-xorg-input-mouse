@@ -1593,7 +1593,9 @@ MouseProc(DeviceIntPtr device, int what)
     mousePrivPtr mPriv;
     unsigned char map[MSE_MAXBUTTONS + 1];
     int i;
-    
+    Atom btn_labels[MSE_MAXBUTTONS] = {0};
+    Atom axes_labels[2] = { 0, 0 };
+
     pInfo = device->public.devicePrivate;
     pMse = pInfo->private;
     pMse->device = device;
@@ -1609,8 +1611,13 @@ MouseProc(DeviceIntPtr device, int what)
 	for (i = 0; i < MSE_MAXBUTTONS; i++)
 	    map[i + 1] = i + 1;
 
+        /* FIXME: we should probably set the labels here */
+
 	InitPointerDeviceStruct((DevicePtr)device, map,
 				min(pMse->buttons, MSE_MAXBUTTONS),
+#if GET_ABI_MAJOR(ABI_XINPUT_VERSION) >= 7
+                                btn_labels,
+#endif
 #if GET_ABI_MAJOR(ABI_XINPUT_VERSION) == 0
 				miPointerGetMotionEvents,
 #elif GET_ABI_MAJOR(ABI_XINPUT_VERSION) < 3
@@ -1622,13 +1629,24 @@ MouseProc(DeviceIntPtr device, int what)
 #else
                                 GetMotionHistorySize(), 2
 #endif
+#if GET_ABI_MAJOR(ABI_XINPUT_VERSION) >= 7
+                                , axes_labels
+#endif
                                 );
 
 	/* X valuator */
-	xf86InitValuatorAxisStruct(device, 0, -1, -1, 1, 0, 1);
+	xf86InitValuatorAxisStruct(device, 0,
+#if GET_ABI_MAJOR(ABI_XINPUT_VERSION) >= 7
+                axes_labels[0],
+#endif
+                -1, -1, 1, 0, 1);
 	xf86InitValuatorDefaults(device, 0);
 	/* Y valuator */
-	xf86InitValuatorAxisStruct(device, 1, -1, -1, 1, 0, 1);
+	xf86InitValuatorAxisStruct(device, 1,
+#if GET_ABI_MAJOR(ABI_XINPUT_VERSION) >= 7
+                axes_labels[1],
+#endif
+                -1, -1, 1, 0, 1);
 	xf86InitValuatorDefaults(device, 1);
 #if GET_ABI_MAJOR(ABI_XINPUT_VERSION) == 0
 	xf86MotionHistoryAllocate(pInfo);
