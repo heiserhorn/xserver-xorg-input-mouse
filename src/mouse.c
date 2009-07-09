@@ -1593,8 +1593,10 @@ MouseProc(DeviceIntPtr device, int what)
     mousePrivPtr mPriv;
     unsigned char map[MSE_MAXBUTTONS + 1];
     int i;
+#if GET_ABI_MAJOR(ABI_XINPUT_VERSION) >= 7
     Atom btn_labels[MSE_MAXBUTTONS] = {0};
     Atom axes_labels[2] = { 0, 0 };
+#endif
 
     pInfo = device->public.devicePrivate;
     pMse = pInfo->private;
