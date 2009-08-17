@@ -2059,7 +2059,10 @@ MouseDoPostEvent(InputInfoPtr pInfo, int buttons, int dx, int dy)
 
     if (pMse->emulateWheel) {
 	/* Emulate wheel button handling */
-	wheelButtonMask = 1 << (pMse->wheelButton - 1);
+	if(pMse->wheelButton == 0)
+	    wheelButtonMask = 0;
+	else
+	    wheelButtonMask = 1 << (pMse->wheelButton - 1);
 
 	if (change & wheelButtonMask) {
 	    if (buttons & wheelButtonMask) {
@@ -2081,9 +2084,10 @@ MouseDoPostEvent(InputInfoPtr pInfo, int buttons, int dx, int dy)
 	} else
 	    ms = pMse->wheelButtonExpires - GetTimeInMillis ();
 
-	/* Intercept wheel emulation. */
-	if (buttons & wheelButtonMask) {
-	    if (ms <= 0) {
+	/* Intercept wheel emulation if the necessary button is depressed or
+           if no button is necessary */
+	if ((buttons & wheelButtonMask) || wheelButtonMask==0) {
+	    if (ms <= 0 || wheelButtonMask==0) {
 		/* Y axis movement */
 		if (pMse->negativeY != MSE_NOAXISMAP) {
 		    pMse->wheelYDistance += dy;
