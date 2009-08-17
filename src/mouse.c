@@ -2102,6 +2102,7 @@ MouseDoPostEvent(InputInfoPtr pInfo, int buttons, int dx, int dy)
 		    while (abs(pMse->wheelYDistance) > pMse->wheelInertia) {
 			pMse->wheelYDistance -= emuWheelDelta;
 
+			pMse->wheelXDistance = 0;
 			/*
 			 * Synthesize the press and release, but not when
 			 * the button to be synthesized is already pressed
@@ -2129,6 +2130,7 @@ MouseDoPostEvent(InputInfoPtr pInfo, int buttons, int dx, int dy)
 		    while (abs(pMse->wheelXDistance) > pMse->wheelInertia) {
 			pMse->wheelXDistance -= emuWheelDelta;
 
+			pMse->wheelYDistance = 0;
 			/*
 			 * Synthesize the press and release, but not when
 			 * the button to be synthesized is already pressed
