@@ -1007,10 +1007,6 @@ MousePreInit(InputDriverPtr drv, IDevPtr dev, int flags)
     xf86CollectInputOptions(pInfo, pProto->defaults, NULL);
     xf86ProcessCommonOptions(pInfo, pInfo->options);
 
-    /* XXX should handle this OS dependency elsewhere. */
-#ifndef __OS2ELF__
-    /* OS/2 has a mouse handled by the OS - it cannot fail here */
-
     /* Check if the device can be opened. */
     pInfo->fd = xf86OpenSerial(pInfo->options);
     if (pInfo->fd == -1) {
@@ -1026,7 +1022,6 @@ MousePreInit(InputDriverPtr drv, IDevPtr dev, int flags)
 	}
     }
     xf86CloseSerial(pInfo->fd);
-#endif
     pInfo->fd = -1;
 
     if (!(mPriv = (pointer) xcalloc(sizeof(mousePrivRec), 1)))
