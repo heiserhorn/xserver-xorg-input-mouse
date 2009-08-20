@@ -221,17 +221,22 @@ vuidPreInit(InputInfoPtr pInfo, const char *protocol, int flags)
 
     pVuidMse->strmod = xf86SetStrOption(pInfo->options, "StreamsModule", NULL);
     if (pVuidMse->strmod) {
-	SYSCALL(i = ioctl(pInfo->fd, I_PUSH, pVuidMse->strmod));
- 	if (i < 0) {
-	    xf86Msg(X_ERROR,
-		    "%s: cannot push module '%s' onto mouse device: %s\n",
-		    pInfo->name, pVuidMse->strmod, strerror(errno));
-	    xf86CloseSerial(pInfo->fd);
-	    pInfo->fd = -1;
-	    xfree(pVuidMse->strmod);
-	    xfree(pVuidMse);
-	    xfree(pMse);
-	    return FALSE;
+	/* Check to see if module is already pushed */
+	SYSCALL(i = ioctl(pInfo->fd, I_FIND, pVuidMse->strmod));
+
+	if (i == 0) { /* Not already pushed */
+	    SYSCALL(i = ioctl(pInfo->fd, I_PUSH, pVuidMse->strmod));
+	    if (i < 0) {
+		xf86Msg(X_ERROR,
+			"%s: cannot push module '%s' onto mouse device: %s\n",
+			pInfo->name, pVuidMse->strmod, strerror(errno));
+		xf86CloseSerial(pInfo->fd);
+		pInfo->fd = -1;
+		xfree(pVuidMse->strmod);
+		xfree(pVuidMse);
+		xfree(pMse);
+		return FALSE;
+	    }
 	}
     }
 
@@ -531,15 +536,21 @@ vuidMouseProc(DeviceIntPtr pPointer, int what)
 	    int fmt = VUID_FIRM_EVENT;
 	    
 	    if (pVuidMse->strmod) {
-		SYSCALL(i = ioctl(pInfo->fd, I_PUSH, pVuidMse->strmod));
-		if (i < 0) {
-		    xf86Msg(X_WARNING,
-			"%s: cannot push module '%s' onto mouse device: %s\n",
-			pInfo->name, pVuidMse->strmod, strerror(errno));
-		    xfree(pVuidMse->strmod);
-		    pVuidMse->strmod = NULL;
+		/* Check to see if module is already pushed */
+		SYSCALL(i = ioctl(pInfo->fd, I_FIND, pVuidMse->strmod));
+
+		if (i == 0) { /* Not already pushed */
+		    SYSCALL(i = ioctl(pInfo->fd, I_PUSH, pVuidMse->strmod));
+		    if (i < 0) {
+			xf86Msg(X_WARNING, "%s: cannot push module '%s' "
+				"onto mouse device: %s\n", pInfo->name,
+				pVuidMse->strmod, strerror(errno));
+			xfree(pVuidMse->strmod);
+			pVuidMse->strmod = NULL;
+		    }
 		}
 	    }
+
 	    SYSCALL(i = ioctl(pInfo->fd, VUIDSFORMAT, &fmt));
 	    if (i < 0) {
 		xf86Msg(X_WARNING,
