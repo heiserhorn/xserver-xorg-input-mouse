@@ -1,3 +1,9 @@
+xserver-xorg-input-mouse (1:1.4.0-3) UNRELEASED; urgency=low
+
+  * Add README.source, bump Standards-Version to 3.8.3.
+
+ -- Julien Cristau <jcristau@debian.org>  Sat, 22 Aug 2009 22:58:56 +0200
+
 xserver-xorg-input-mouse (1:1.4.0-2) unstable; urgency=low
 
   * Upload to unstable.
