@@ -1,3 +1,9 @@
+xserver-xorg-input-mouse (1:1.4.0-4) unstable; urgency=low
+
+  * Rename the fdi file to match what we're installing... (closes: #542806)
+
+ -- Julien Cristau <jcristau@debian.org>  Sun, 23 Aug 2009 20:12:24 +0200
+
 xserver-xorg-input-mouse (1:1.4.0-3) unstable; urgency=low
 
   * Add README.source, bump Standards-Version to 3.8.3.
