@@ -3,6 +3,7 @@ xserver-xorg-input-mouse (1:1.4.0-3) UNRELEASED; urgency=low
   * Add README.source, bump Standards-Version to 3.8.3.
   * Install an fdi file to pick up the mouse driver on kfreebsd (closes:
     #542806).  Thanks, Aurélien Jarno!
+  * Fix DEB_BUILD_OPTIONS parsing to use space-separated options.
 
  -- Julien Cristau <jcristau@debian.org>  Sat, 22 Aug 2009 22:58:56 +0200
 
