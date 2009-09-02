@@ -1301,8 +1301,8 @@ MouseReadInput(InputInfoPtr pInfo)
         	buttons = (pMse->lastButtons & 2)
 			| ((int)(pBuf[0] & 0x20) >> 3)
 			| ((int)(pBuf[0] & 0x10) >> 4);
-	    dx = (char)(((pBuf[0] & 0x03) << 6) | (pBuf[1] & 0x3F));
-	    dy = (char)(((pBuf[0] & 0x0C) << 4) | (pBuf[2] & 0x3F));
+	    dx = (signed char)(((pBuf[0] & 0x03) << 6) | (pBuf[1] & 0x3F));
+	    dy = (signed char)(((pBuf[0] & 0x0C) << 4) | (pBuf[2] & 0x3F));
 	    break;
 
 	case PROT_GLIDE:	/* ALPS GlidePoint */
@@ -1311,14 +1311,14 @@ MouseReadInput(InputInfoPtr pInfo)
 	    buttons =  (pMse->lastButtons & (8 + 2))
 		     | ((int)(pBuf[0] & 0x20) >> 3)
 		     | ((int)(pBuf[0] & 0x10) >> 4);
-	    dx = (char)(((pBuf[0] & 0x03) << 6) | (pBuf[1] & 0x3F));
-	    dy = (char)(((pBuf[0] & 0x0C) << 4) | (pBuf[2] & 0x3F));
+	    dx = (signed char)(((pBuf[0] & 0x03) << 6) | (pBuf[1] & 0x3F));
+	    dy = (signed char)(((pBuf[0] & 0x0C) << 4) | (pBuf[2] & 0x3F));
 	    break;
 
 	case PROT_MSC:		/* Mouse Systems Corp */
 	    buttons = (~pBuf[0]) & 0x07;
-	    dx =    (char)(pBuf[1]) + (char)(pBuf[3]);
-	    dy = - ((char)(pBuf[2]) + (char)(pBuf[4]));
+	    dx =    (signed char)(pBuf[1]) + (char)(pBuf[3]);
+	    dy = - ((signed char)(pBuf[2]) + (char)(pBuf[4]));
 	    break;
       
 	case PROT_MMHIT:	/* MM_HitTablet */
@@ -1346,8 +1346,8 @@ MouseReadInput(InputInfoPtr pInfo)
 
 	case PROT_BM:		/* BusMouse */
 	    buttons = (~pBuf[0]) & 0x07;
-	    dx =   (char)pBuf[1];
-	    dy = - (char)pBuf[2];
+	    dx =   (signed char)pBuf[1];
+	    dy = - (signed char)pBuf[2];
 	    break;
 
 	case PROT_PS2:		/* PS/2 mouse */
@@ -1511,8 +1511,8 @@ MouseReadInput(InputInfoPtr pInfo)
             buttons = ((int)(pBuf[0] & 0x20) >> 3)
                       | ((int)(pBuf[0] & 0x10) >> 4)
                       | ((int)(pBuf[3] & 0x10) >> 3);
-            dx = (char)(((pBuf[0] & 0x03) << 6) | (pBuf[1] & 0x3F));
-            dy = (char)(((pBuf[0] & 0x0C) << 4) | (pBuf[2] & 0x3F));
+            dx = (signed char)(((pBuf[0] & 0x03) << 6) | (pBuf[1] &  0x3F));
+            dy = (signed char)(((pBuf[0] & 0x0C) << 4) | (pBuf[2] &  0x3F));
 	    dz = (pBuf[3] & 0x08) ? ((int)(pBuf[3] & 0x0F) - 0x10) : 
                                     ((int)(pBuf[3] & 0x0F));
 	    break;
