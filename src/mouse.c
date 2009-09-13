@@ -1691,6 +1691,11 @@ MouseProc(DeviceIntPtr device, int what)
 		    }
 		    xf86FlushInput(pInfo->fd);
 		    xf86AddEnabledDevice(pInfo);
+		    if (pMse->emulate3Buttons || pMse->emulate3ButtonsSoft) {
+			RegisterBlockAndWakeupHandlers (MouseBlockHandler,
+							MouseWakeupHandler,
+							(pointer) pInfo);
+		    }
 		}
 	    }
 	}
@@ -1701,11 +1706,6 @@ MouseProc(DeviceIntPtr device, int what)
 	pMse->wheelButtonExpires = GetTimeInMillis ();
 	device->public.on = TRUE;
 	FlushButtons(pMse);
-	if (pMse->emulate3Buttons || pMse->emulate3ButtonsSoft)
-	{
-	    RegisterBlockAndWakeupHandlers (MouseBlockHandler, MouseWakeupHandler,
-					    (pointer) pInfo);
-	}
 	break;
 	    
     case DEVICE_OFF:
@@ -1720,7 +1720,8 @@ MouseProc(DeviceIntPtr device, int what)
 	    pInfo->fd = -1;
 	    if (pMse->emulate3Buttons || pMse->emulate3ButtonsSoft)
 	    {
-		RemoveBlockAndWakeupHandlers (MouseBlockHandler, MouseWakeupHandler,
+		RemoveBlockAndWakeupHandlers (MouseBlockHandler,
+					      MouseWakeupHandler,
 					      (pointer) pInfo);
 	    }
 	}
@@ -1967,7 +1968,10 @@ Emulate3ButtonsSoft(InputInfoPtr pInfo)
 	buttonTimer(pInfo);
 
     xf86Msg(X_INFO,"3rd Button detected: disabling emulate3Button\n");
-    
+
+    RemoveBlockAndWakeupHandlers (MouseBlockHandler, MouseWakeupHandler,
+				  (pointer) pInfo);
+
     return FALSE;
 }
 
