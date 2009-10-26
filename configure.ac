@@ -26,9 +26,11 @@ AC_INIT([xf86-input-mouse],
         [https://bugs.freedesktop.org/enter_bug.cgi?product=xorg],
         xf86-input-mouse)
 
-# Require xorg-macros version >= 1.3.0 for XORG_DEFAULT_OPTIONS
-m4_ifndef([XORG_MACROS_VERSION], [AC_FATAL([must install xorg-macros 1.3 or later before running autoconf/autogen])])
+# Require xorg-macros: XORG_DEFAULT_OPTIONS
+m4_ifndef([XORG_MACROS_VERSION], 
+          [m4_fatal([must install xorg-macros 1.3 or later before running autoconf/autogen])])
 XORG_MACROS_VERSION(1.3)
+XORG_DEFAULT_OPTIONS
 
 AC_CONFIG_SRCDIR([Makefile.am])
 AC_CONFIG_AUX_DIR(.)
@@ -45,7 +47,6 @@ AM_CONFIG_HEADER([config.h])
 AC_DISABLE_STATIC
 AC_PROG_LIBTOOL
 AC_PROG_CC
-XORG_DEFAULT_OPTIONS
 
 AH_TOP([#include "xorg-server.h"])
 
