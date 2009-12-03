@@ -1709,7 +1709,6 @@ MouseProc(DeviceIntPtr device, int what)
 	break;
 	    
     case DEVICE_OFF:
-    case DEVICE_CLOSE:
 	if (pInfo->fd != -1) {
 	    xf86RemoveEnabledDevice(pInfo);
 	    if (pMse->buffer) {
@@ -1726,6 +1725,10 @@ MouseProc(DeviceIntPtr device, int what)
 	    }
 	}
 	device->public.on = FALSE;
+	break;
+    case DEVICE_CLOSE:
+	xfree(pMse->mousePriv);
+	pMse->mousePriv = NULL;
 	break;
     }
     return Success;
