@@ -1,5 +1,5 @@
 /*
- * Copyright © 2004-2005, 2008-2009 Sun Microsystems, Inc.
+ * Copyright © 2004-2005, 2008-2010 Sun Microsystems, Inc.
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -103,6 +103,7 @@ typedef struct _VuidMseRec {
 #ifdef HAVE_ABSOLUTE_MOUSE_SCALING
     Ms_screen_resolution	 absres;
 #endif
+    OsTimerPtr		remove_timer;   /* Callback for removal on ENODEV */
 } VuidMseRec, *VuidMsePtr;
 
 static VuidMsePtr	vuidMouseList = NULL;
@@ -134,6 +135,18 @@ VuidMsePtr getVuidMsePriv(InputInfoPtr pInfo)
     return m;
 }
 
+/* Called from OsTimer callback, since removing a device from the device
+   list or changing pInfo->fd while xf86Wakeup is looping through the list
+   causes server crashes */
+static CARD32
+vuidRemoveMouse(OsTimerPtr timer, CARD32 time, pointer arg)
+{
+    InputInfoPtr pInfo = (InputInfoPtr) arg;
+
+    xf86DisableDevice(pInfo->dev, TRUE);
+
+    return 0;  /* All done, don't set to run again */
+}
 
 /*
  * Initialize and enable the mouse wheel, if present.
@@ -330,19 +343,40 @@ vuidReadInput(InputInfoPtr pInfo)
     pMse = pInfo->private;
     pVuidMse = getVuidMsePriv(pInfo);
     buttons = pMse->lastButtons;
-    XisbBlockDuration(pMse->buffer, -1);
     pBuf = pVuidMse->buffer;
     n = 0;
 
     do {
-	while (n < sizeof(Firm_event) && (c = XisbRead(pMse->buffer)) >= 0) {
-	    pBuf[n++] = (unsigned char)c;
-	}
+	n = read(pInfo->fd, pBuf, sizeof(Firm_event));
 
-	if (n == 0)
-	    return;
-
-	if (n != sizeof(Firm_event)) {
+	if (n == 0) {
+	    break;
+	} else if (n == -1) {
+	    switch (errno) {
+		case EAGAIN: /* Nothing to read now */
+		    n = 0;   /* End loop, go on to flush events & return */
+		    continue;
+		case EINTR:  /* Interrupted, try again */
+		    continue;
+		case ENODEV: /* May happen when USB mouse is unplugged */
+		    /* We use X_NONE here because it doesn't alloc since we
+		       may be called from SIGIO handler */
+		    xf86MsgVerb(X_NONE, 0,
+				"%s: Device no longer present - removing.\n",
+				pInfo->name);
+		    xf86RemoveEnabledDevice(pInfo);
+		    pVuidMse->remove_timer =
+			TimerSet(pVuidMse->remove_timer, 0, 1,
+				 vuidRemoveMouse, pInfo);
+		    return;
+		default:     /* All other errors */
+		    /* We use X_NONE here because it doesn't alloc since we
+		       may be called from SIGIO handler */
+		    xf86MsgVerb(X_NONE, 0, "%s: Read error: %s\n", pInfo->name,
+				strerror(errno));
+		    return;
+	    }
+	} else if (n != sizeof(Firm_event)) {
 	    xf86Msg(X_WARNING, "%s: incomplete packet, size %d\n",
 			pInfo->name, n);
 	}
@@ -412,11 +446,6 @@ vuidReadInput(InputInfoPtr pInfo)
 	}
 #endif
 
-	n = 0;
-	if ((c = XisbRead(pMse->buffer)) >= 0) {
-	    /* Another packet.  Handle it right away. */
-	    pBuf[n++] = c;
-	}
     } while (n != 0);
 
     if (absXset || absYset) {
@@ -559,6 +588,13 @@ vuidMouseProc(DeviceIntPtr pPointer, int what)
 	    vuidMouseSendScreenSize(screenInfo.screens[0], pVuidMse);
 #endif	    
 	    xf86FlushInput(pInfo->fd);
+
+	    /* Allocate here so we don't alloc in ReadInput which may be called
+	       from SIGIO handler. */
+	    if (pVuidMse->remove_timer == NULL) {
+		pVuidMse->remove_timer = TimerSet(pVuidMse->remove_timer,
+						  0, 0, NULL, NULL);
+	    }
 	}
 	break;
 
@@ -573,6 +609,10 @@ vuidMouseProc(DeviceIntPtr pPointer, int what)
 		      pInfo->name, pVuidMse->strmod, strerror(errno));
 		}
 	    }
+	}
+	if (pVuidMse->remove_timer) {
+	    TimerFree(pVuidMse->remove_timer);
+	    pVuidMse->remove_timer = NULL;
 	}
 	ret = pVuidMse->wrapped_device_control(pPointer, what);
 	break;
