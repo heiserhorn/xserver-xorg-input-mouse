@@ -75,6 +75,7 @@ static symtab_t pnpprod[] = {
     { "KYE0001",  PROT_MS },		/* Genius PnP Mouse */
     { "KYE0002",  PROT_MS },		/* MouseSystem (Genius?) SmartScroll */
     { "KYE0003",  PROT_IMSERIAL },	/* Genius NetMouse */
+    { "KYE0004",  PROT_IMSERIAL },	/* Genius NetScroll+ (serial) */
     { "LGI800C",  PROT_IMSERIAL },	/* Logitech MouseMan (4 button model) */
     { "LGI8033",  PROT_IMSERIAL },	/* Logitech Cordless MouseMan Wheel */
     { "LGI8050",  PROT_IMSERIAL },	/* Logitech MouseMan+ */
