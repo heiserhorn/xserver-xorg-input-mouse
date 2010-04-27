@@ -1,14 +1,11 @@
 <!DOCTYPE linuxdoc PUBLIC "-//Xorg//DTD linuxdoc//EN" [
-<!ENTITY % defs SYSTEM "defs.ent"> %defs;
+<!ENTITY % defs SYSTEM "X11/defs.ent"> %defs;
 ]>
 
 <article>
 <title>Mouse Support in X11R&relvers;
 <author>Kazutaka Yokota
 <date>17 December 2002
-
-<ident>
-</ident>
 
 <toc>
  
@@ -173,7 +170,7 @@ Use <tt>/dev/mouse</tt> for the <tt>"BusMouse"</tt> protocol
 and <tt>/dev/kdmouse</tt> for the <tt>"PS/2"</tt> protocol. 
 These protocols are untested but may work. 
 Please send success/failure reports to
-<email>michael.rohleder@stadt-frankfurt.de</email>.
+<url url="mailto:michael.rohleder@stadt-frankfurt.de">
 
 <sect1>Linux <p>
 All protocol types should work.
@@ -429,14 +426,14 @@ The old <tt>Pointer</tt> section has been replaced by a more general
 <tt>InputDevice</tt> section.  The following is a minimal example
 of an <tt>InputDevice</tt> section for a mouse:
 
-<code>
+<verb>
 Section "InputDevice"
 	Identifier	"Mouse 1"
 	Driver		"mouse"
 	Option		"Device"	"/dev/mouse"
 	Option		"Protocol"	"Auto"
 EndSection
-</code>
+</verb>
 
 The <tt>mouse</tt> driver supports the following config file options:
 
@@ -970,7 +967,7 @@ a link to the PS/2 mouse port.
 Logitech MouseMan+ has 4 buttons and a wheel.  The following example
 makes the wheel movement available as the button 5 and 6.
 
-<code>
+<verb>
 Section "InputDevice"
 	Identifier	"MouseMan+"
 	Driver		"mouse"
@@ -979,7 +976,7 @@ Section "InputDevice"
 	Option		"Buttons"	"6"
 	Option		"ZAxisMapping"	"5 6"
 EndSection
-</code>
+</verb>
 
 You can change button number assignment using the <tt>xmodmap</tt>
 command AFTER you start the X server with the above configuration.
@@ -1016,7 +1013,7 @@ configuration file by adding this to the "InputDevice" section in xorg.conf:
 For the MS IntelliMouse Explorer which as a wheel and 5 buttons,
 you may have the following <tt>InputDevice</tt> section. 
 
-<code>
+<verb>
 Section "InputDevice"
 	Identifier	"IntelliMouse Explorer"
 	Driver		"mouse"
@@ -1025,7 +1022,7 @@ Section "InputDevice"
 	Option		"Buttons"	"7"
 	Option		"ZAxisMapping"	"6 7"
 EndSection
-</code>
+</verb>
 
 The IntelliMouse Explorer has 5 buttons, thus, you should give "7"
 to the <tt>Buttons</tt> option if you want to map the wheel movement
@@ -1071,7 +1068,7 @@ Physical Buttons	Reported as:
 For the A4 Tech WinEasy mouse which has two wheels and 3 buttons,
 you may have the following <tt>InputDevice</tt> section.  
 
-<code>
+<verb>
 Section "InputDevice"
 	Identifier	"WinEasy"
 	Driver		"mouse"
@@ -1080,7 +1077,7 @@ Section "InputDevice"
 	Option		"Buttons"	"7"
 	Option		"ZAxisMapping"	"4 5 6 7"
 EndSection
-</code>
+</verb>
 
 The movement of the first wheel is mapped to the button 4 and 5.  The
 second wheel's movement will be reported as the buttons 6 and 7.
@@ -1088,7 +1085,7 @@ second wheel's movement will be reported as the buttons 6 and 7.
 The Kensington Expert mouse is really a trackball. It has 4 buttons
 arranged in a rectangle around the ball.
 
-<code>
+<verb>
 Section "InputDevice"
 	Identifier  "DLB"
 	Driver      "mouse"
@@ -1098,7 +1095,7 @@ Section "InputDevice"
 	Option      "Device" "/dev/mouse"
 	Option      "DragLockButtons" "2 1 4 3"
 EndSection
-</code>
+</verb>
 In this example, button 2 is a drag lock button for button
 number 1, and button 4 is a drag lock button for button 3.
 Since button 2 is above button 1 and button 4 is above button 3
@@ -1111,7 +1108,7 @@ be unable to press two buttons at the same time. They may
 prefer the following <tt>InputDevice</tt> section which
 defines button 4 as a master drag lock button, and leaves
 button 2 free for ordinary use.
-<code>
+<verb>
 Section "InputDevice"
 	Identifier  "MasterDLB"
 	Driver      "mouse"
@@ -1120,6 +1117,6 @@ Section "InputDevice"
 	Option      "Device" "/dev/mouse"
 	Option      "DragLockButtons" "4"
 EndSection
-</code>
+</verb>
 
 </article>
