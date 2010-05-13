@@ -58,14 +58,10 @@
 
 #include "xf86.h"
 
-#ifdef XINPUT
 #include <X11/extensions/XI.h>
 #include <X11/extensions/XIproto.h>
 #include "extnsionst.h"
 #include "extinit.h"
-#else
-#include "inputstr.h"
-#endif
 
 #include "xf86Xinput.h"
 #include "xf86_OSproc.h"
