@@ -60,9 +60,6 @@ PKG_CHECK_MODULES(XORG, [xorg-server >= 1.5.99.901] xproto inputproto)
 
 # Checks for libraries.
 
-# Checks for header files.
-AC_HEADER_STDC
-
 # Work out which OS mouse driver we need to build
 case $host_os in
   linux*)
