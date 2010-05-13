@@ -47,6 +47,7 @@
 #include "config.h"
 #endif
 
+#include <xorg-server.h>
 #include <math.h>
 #include <string.h>
 #include <stdio.h>
