@@ -45,9 +45,6 @@ XORG_MACROS_VERSION(1.8)
 XORG_DEFAULT_OPTIONS
 XORG_WITH_LINT
 
-# Checks for programs.
-AC_PROG_INSTALL
-
 # Obtain compiler/linker options from server and required extensions
 PKG_CHECK_MODULES(XORG, [xorg-server >= 1.5.99.901] xproto inputproto)
 
