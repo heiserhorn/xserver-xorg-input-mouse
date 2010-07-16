@@ -116,7 +116,13 @@ static void vuidMouseSendScreenSize(ScreenPtr pScreen, VuidMsePtr pVuidMse);
 static void vuidMouseAdjustFrame(int index, int x, int y, int flags);
 
 static int vuidMouseGeneration = 0;
+
+#if HAS_DEVPRIVATEKEYREC
+static DevPrivateKeyRec vuidMouseScreenIndex;
+#else
 static int vuidMouseScreenIndex;
+#endif /* HAS_DEVPRIVATEKEYREC */
+
 #define vuidMouseGetScreenPrivate(s) ( \
     dixLookupPrivate(&(s)->devPrivates, &vuidMouseScreenIndex))
 #define vuidMouseSetScreenPrivate(s,p) \
@@ -542,6 +548,12 @@ vuidMouseProc(DeviceIntPtr pPointer, int what)
 
     case DEVICE_INIT:
 #ifdef HAVE_ABSOLUTE_MOUSE_SCALING
+
+#if HAS_DEVPRIVATEKEYREC
+	if (!dixRegisterPrivateKey(&vuidMouseScreenIndex, PRIVATE_SCREEN, 0))
+		return BadAlloc;
+#endif  /* HAS_DEVPRIVATEKEYREC */
+
 	if (vuidMouseGeneration != serverGeneration) {
 		for (i = 0; i < screenInfo.numScreens; i++) {
 		    ScreenPtr pScreen = screenInfo.screens[i];
