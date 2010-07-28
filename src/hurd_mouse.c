@@ -171,7 +171,7 @@ OsMousePreInit(InputInfoPtr pInfo, const char *protocol, int flags)
 static const char *
 FindDevice(InputInfoPtr pInfo, const char *protocol, int flags)
 {
-    const char path[] = DEFAULT_MOUSE_DEV;
+    static const char path[] = DEFAULT_MOUSE_DEV;
     int fd;
 
     SYSCALL (fd = open(path, O_RDWR | O_NONBLOCK | O_EXCL));
