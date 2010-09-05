@@ -109,13 +109,13 @@ OsMouseReadInput(InputInfoPtr pInfo)
 	int dx = 0, dy = 0;
 	switch (event->type) {
 	case MOUSE_RIGHT:
-	    buttons  = buttons & 6 |(event->value.up ? 0 : 1);
+	    buttons  = (buttons & 6) |(event->value.up ? 0 : 1);
 	    break;
 	case MOUSE_MIDDLE:
-	    buttons  = buttons & 5 |(event->value.up ? 0 : 2);
+	    buttons  = (buttons & 5) |(event->value.up ? 0 : 2);
 	    break;
 	case MOUSE_LEFT:
-	    buttons  = buttons & 3 |(event->value.up ? 0 : 4) ;
+	    buttons  = (buttons & 3) |(event->value.up ? 0 : 4) ;
 	    break;
 	case MOUSE_MOTION:
 	    dx = event->value.mmotion.mm_deltaX;
