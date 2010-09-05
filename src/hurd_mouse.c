@@ -86,6 +86,7 @@ OsMouseReadInput(InputInfoPtr pInfo)
 {
     MouseDevPtr pMse;
     static kd_event eventList[NUMEVENTS];
+    static int remainder = 0;
     int n, c; 
     kd_event *event = eventList;
     unsigned char *pBuf;
@@ -94,13 +95,14 @@ OsMouseReadInput(InputInfoPtr pInfo)
 
     XisbBlockDuration(pMse->buffer, -1);
     pBuf = (unsigned char *)eventList;
-    n = 0;
-    while ((c = XisbRead(pMse->buffer)) >= 0 && n < sizeof(eventList))
+    n = remainder;
+    while (n < sizeof(eventList) && (c = XisbRead(pMse->buffer)) >= 0)
 	pBuf[n++] = (unsigned char)c;
 
-    if (n == 0)
+    if (n == remainder)
 	return;
 
+    remainder = n % sizeof(kd_event);
     n /= sizeof(kd_event);
     while( n-- ) {
 	int buttons = pMse->lastButtons;
@@ -126,6 +128,7 @@ OsMouseReadInput(InputInfoPtr pInfo)
 	pMse->PostEvent(pInfo, buttons, dx, dy, 0, 0);
 	++event;
     }
+    memcpy(eventList, event, remainder);
     return;
 }
 
