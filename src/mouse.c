@@ -1546,26 +1546,14 @@ post_event:
 
 /*
  * MouseCtrl --
- *      Alter the control parameters for the mouse. Note that all special
- *      protocol values are handled by dix.
+ *      Alter the control parameters for the mouse. Note that all
+ *      settings are now handled by dix.
  */
 
 static void
 MouseCtrl(DeviceIntPtr device, PtrCtrl *ctrl)
 {
-    InputInfoPtr pInfo;
-    MouseDevPtr pMse;
-
-    pInfo = device->public.devicePrivate;
-    pMse = pInfo->private;
-
-#ifdef EXTMOUSEDEBUG
-    ErrorF("MouseCtrl pMse=%p\n", pMse);
-#endif
-    
-    pMse->num       = ctrl->num;
-    pMse->den       = ctrl->den;
-    pMse->threshold = ctrl->threshold;
+    /* This function intentionally left blank */
 }
 
 /*

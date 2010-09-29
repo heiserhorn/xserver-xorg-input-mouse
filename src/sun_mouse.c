@@ -1,5 +1,5 @@
 /*
- * Copyright © 2004-2005, 2008-2010 Sun Microsystems, Inc.
+ * Copyright (c) 2004-2005, 2008-2010, Oracle and/or its affiliates.
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -468,6 +468,9 @@ static void vuidMouseSendScreenSize(ScreenPtr pScreen, VuidMsePtr pVuidMse)
     InputInfoPtr pInfo = pVuidMse->pInfo;
     ScrnInfoPtr pScr = XF86SCRNINFO(pScreen);
     int result;
+
+    if (!pScr->currentMode)
+	return;
 
     if ((pVuidMse->absres.width != pScr->currentMode->HDisplay) || 
 	(pVuidMse->absres.height != pScr->currentMode->VDisplay))
