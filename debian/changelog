@@ -1,8 +1,8 @@
-xserver-xorg-input-mouse (1:1.5.0-3) UNRELEASED; urgency=low
+xserver-xorg-input-mouse (1:1.5.0-3) experimental; urgency=low
 
   * Build against Xserver 1.9.1 rc1.
 
- -- Cyril Brulebois <kibi@debian.org>  Wed, 13 Oct 2010 01:10:22 +0200
+ -- Cyril Brulebois <kibi@debian.org>  Wed, 13 Oct 2010 01:10:55 +0200
 
 xserver-xorg-input-mouse (1:1.5.0-2) unstable; urgency=medium
 
