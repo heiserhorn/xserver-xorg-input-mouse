@@ -867,7 +867,7 @@ MousePreInit(InputDriverPtr drv, IDevPtr dev, int flags)
     /* Initialise the InputInfoRec. */
     pInfo->name = dev->identifier;
     pInfo->type_name = XI_MOUSE;
-    pInfo->flags = XI86_POINTER_CAPABLE | XI86_SEND_DRAG_EVENTS;
+    pInfo->flags = XI86_SEND_DRAG_EVENTS;
     pInfo->device_control = MouseProc;
     pInfo->read_input = MouseReadInput;
 #if GET_ABI_MAJOR(ABI_XINPUT_VERSION) == 0
