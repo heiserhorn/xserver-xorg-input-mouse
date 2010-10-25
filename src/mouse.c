@@ -66,10 +66,6 @@
 #include "xf86_OSproc.h"
 #include "xf86OSmouse.h"
 
-#ifndef NEED_XF86_TYPES
-#define NEED_XF86_TYPES	/* for xisb.h when !XFree86LOADER */
-#endif
-
 #include "compiler.h"
 
 #include "xisb.h"
