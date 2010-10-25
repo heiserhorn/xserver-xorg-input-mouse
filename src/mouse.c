@@ -291,19 +291,13 @@ MouseCommonOptions(InputInfoPtr pInfo)
     }
 
     pMse->chordMiddle = xf86SetBoolOption(pInfo->options, "ChordMiddle", FALSE);
-    if (pMse->chordMiddle)
-	xf86Msg(X_CONFIG, "%s: ChordMiddle\n", pInfo->name);
     pMse->flipXY = xf86SetBoolOption(pInfo->options, "FlipXY", FALSE);
-    if (pMse->flipXY)
-	xf86Msg(X_CONFIG, "%s: FlipXY\n", pInfo->name);
     if (xf86SetBoolOption(pInfo->options, "InvX", FALSE)) {
 	pMse->invX = -1;
-	xf86Msg(X_CONFIG, "%s: InvX\n", pInfo->name);
     } else
 	pMse->invX = 1;
     if (xf86SetBoolOption(pInfo->options, "InvY", FALSE)) {
 	pMse->invY = -1;
-	xf86Msg(X_CONFIG, "%s: InvY\n", pInfo->name);
     } else
 	pMse->invY = 1;
     pMse->angleOffset = xf86SetIntOption(pInfo->options, "AngleOffset", 0);
@@ -659,21 +653,8 @@ MouseHWOptions(InputInfoPtr pInfo)
 	xf86Msg(X_CONFIG, "Don't initialize mouse when auto-probing\n");
     }
     pMse->sampleRate = xf86SetIntOption(pInfo->options, "SampleRate", 0);
-    if (pMse->sampleRate) {
-	xf86Msg(X_CONFIG, "%s: SampleRate: %d\n", pInfo->name,
-		pMse->sampleRate);
-    }
     pMse->resolution = xf86SetIntOption(pInfo->options, "Resolution", 0);
-    if (pMse->resolution) {
-	xf86Msg(X_CONFIG, "%s: Resolution: %d\n", pInfo->name,
-		pMse->resolution);
-    }
-
-    if ((mPriv->sensitivity 
-	 = xf86SetRealOption(pInfo->options, "Sensitivity", 1.0))) {
-	xf86Msg(X_CONFIG, "%s: Sensitivity: %g\n", pInfo->name,
-		mPriv->sensitivity);
-    }
+    mPriv->sensitivity = xf86SetRealOption(pInfo->options, "Sensitivity", 1.0);
 }
 
 static void
@@ -684,11 +665,6 @@ MouseSerialOptions(InputInfoPtr pInfo)
     
     
     pMse->baudRate = xf86SetIntOption(pInfo->options, "BaudRate", 0);
-    if (pMse->baudRate) {
-	xf86Msg(X_CONFIG, "%s: BaudRate: %d\n", pInfo->name,
-		pMse->baudRate);
-    }
-
     if ((clearDTR = xf86SetBoolOption(pInfo->options, "ClearDTR",FALSE)))
 	pMse->mouseFlags |= MF_CLEAR_DTR;
 	
