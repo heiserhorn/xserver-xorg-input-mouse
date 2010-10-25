@@ -190,19 +190,6 @@ static const char *mmDefaults[] = {
 	"VMin",		"1",
 	NULL
 };
-#if 0 
-/* Logitech series 9 *//* same as msc: now mlDefaults */
-static const char *logiDefaults[] = {
-	"BaudRate",	"1200",
-	"DataBits",	"8",
-	"StopBits",	"2",
-	"Parity",	"None",
-	"FlowControl",	"None",
-	"VTime",	"0",
-	"VMin",		"1",
-	NULL
-};
-#endif
 /* Hitachi Tablet */
 static const char *mmhitDefaults[] = {
 	"BaudRate",	"1200",
