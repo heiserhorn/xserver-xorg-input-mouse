@@ -204,7 +204,6 @@ typedef struct _MouseDevRec {
     PostMseEventProc	PostEvent;
     MouseCommonOptProc	CommonOptions;
     DeviceIntPtr	device;
-    const char *	mseDevice;
     const char *	protocol;
     MouseProtocolID	protocolID;
     MouseProtocolID	oldProtocolID; /* hack */
@@ -225,9 +224,6 @@ typedef struct _MouseDevRec {
     int                 invY;
     int			mouseFlags;	/* Flags to Clear after opening
 					 * mouse dev */
-    int			truebuttons;	/* (not used)
-					 * Arg to maintain before
-					 * emulate3buttons timer callback */
     int			resolution;
     int			negativeZ;	/* button mask */
     int			positiveZ;	/* button mask */
@@ -240,8 +236,6 @@ typedef struct _MouseDevRec {
     unsigned char	inSync;		/* driver in sync with datastream */
     pointer		mousePriv;	/* private area */
     InputInfoPtr	pInfo;
-    int			origProtocolID;
-    const char *	origProtocol;
     Bool		emulate3Pending;/* timer waiting */
     CARD32		emulate3Expires;/* time to fire emulation code */
     Bool		emulateWheel;
