@@ -891,10 +891,6 @@ MousePreInit(InputDriverPtr drv, IDevPtr dev, int flags)
     }
 
     /* Allocate the MouseDevRec and initialise it. */
-    /*
-     * XXX This should be done by a function in the core server since the
-     * MouseDevRec is defined in the os-support layer.
-     */
     if (!(pMse = calloc(sizeof(MouseDevRec), 1)))
 	return pInfo;
     pInfo->private = pMse;
