@@ -205,10 +205,10 @@ vuidPreInit(InputInfoPtr pInfo, const char *protocol, int flags)
     VuidMsePtr pVuidMse;
     int buttons, i;
 
-    pVuidMse = xcalloc(sizeof(VuidMseRec), 1);
+    pVuidMse = calloc(sizeof(VuidMseRec), 1);
     if (pVuidMse == NULL) {
 	xf86Msg(X_ERROR, "%s: cannot allocate VuidMouseRec\n", pInfo->name);
-	xfree(pMse);
+	free(pMse);
 	return FALSE;
     }
 
@@ -229,9 +229,9 @@ vuidPreInit(InputInfoPtr pInfo, const char *protocol, int flags)
 	    xf86Msg(X_WARNING, "%s: cannot open input device\n", pInfo->name);
 	} else {
 	    xf86Msg(X_ERROR, "%s: cannot open input device\n", pInfo->name);
-	    xfree(pVuidMse->strmod);
-	    xfree(pVuidMse);
-	    xfree(pMse);
+	    free(pVuidMse->strmod);
+	    free(pVuidMse);
+	    free(pMse);
 	    return FALSE;
 	}
     } else {
@@ -247,9 +247,9 @@ vuidPreInit(InputInfoPtr pInfo, const char *protocol, int flags)
 			pInfo->name, pVuidMse->strmod, strerror(errno));
 		    xf86CloseSerial(pInfo->fd);
 		    pInfo->fd = -1;
-		    xfree(pVuidMse->strmod);
-		    xfree(pVuidMse);
-		    xfree(pMse);
+		    free(pVuidMse->strmod);
+		    free(pVuidMse);
+		    free(pMse);
 		    return FALSE;
 		}
 	    }
@@ -586,7 +586,7 @@ vuidMouseProc(DeviceIntPtr pPointer, int what)
 			xf86Msg(X_WARNING, "%s: cannot push module '%s' "
 				"onto mouse device: %s\n", pInfo->name,
 				pVuidMse->strmod, strerror(errno));
-			xfree(pVuidMse->strmod);
+			free(pVuidMse->strmod);
 			pVuidMse->strmod = NULL;
 		    }
 		}
@@ -795,7 +795,7 @@ xf86OSMouseInit(int flags)
 {
     OSMouseInfoPtr p;
 
-    p = xcalloc(sizeof(OSMouseInfoRec), 1);
+    p = calloc(sizeof(OSMouseInfoRec), 1);
     if (!p)
 	return NULL;
     p->SupportedInterfaces = SupportedInterfaces;

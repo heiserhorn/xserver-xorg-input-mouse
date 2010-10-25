@@ -122,7 +122,7 @@ lnxMouseMagic(InputInfoPtr pInfo)
 #ifdef DEBUG
 		ErrorF("readlink failed for %s (%s)\n", dev, strerror(errno));
 #endif
-		xfree(realdev);
+		free(realdev);
 		return NULL;
 	    }
 	    realdev[i] = '\0';
@@ -135,7 +135,7 @@ lnxMouseMagic(InputInfoPtr pInfo)
 	if (!strchr(realdev, '/')) {
 	    char *tmp = xnfalloc(strlen(realdev) + 5 + 1);
 	    sprintf(tmp, "/dev/%s", realdev);
-	    xfree(realdev);
+	    free(realdev);
 	    realdev = tmp;
 	}
     }
@@ -148,7 +148,7 @@ lnxMouseMagic(InputInfoPtr pInfo)
 	proto = MOUSE_PROTO_MSC;
     else if (strcmp(realdev, DEFAULT_GPM_CTL_DEV) == 0)
 	proto = MOUSE_PROTO_GPM;
-    xfree(realdev);
+    free(realdev);
     /*
      * If the protocol can't be guessed from the device name,
      * try to characterise it.
@@ -209,7 +209,7 @@ xf86OSMouseInit(int flags)
 {
     OSMouseInfoPtr p;
 
-    p = xcalloc(sizeof(OSMouseInfoRec), 1);
+    p = calloc(sizeof(OSMouseInfoRec), 1);
     if (!p)
 	return NULL;
     p->SupportedInterfaces = SupportedInterfaces;

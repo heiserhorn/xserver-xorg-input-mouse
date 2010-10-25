@@ -337,7 +337,7 @@ MouseCommonOptions(InputInfoPtr pInfo)
     
 
     if (pMse->pDragLock)
-	xfree(pMse->pDragLock);
+	free(pMse->pDragLock);
     pMse->pDragLock = NULL;
       
     s = xf86SetStrOption(pInfo->options, "DragLockButtons", NULL);
@@ -350,7 +350,7 @@ MouseCommonOptions(InputInfoPtr pInfo)
 	char *s1;             /* parse input string */
 	DragLockPtr pLock;
       
-	pLock = pMse->pDragLock = xcalloc(1, sizeof(DragLockRec));
+	pLock = pMse->pDragLock = calloc(1, sizeof(DragLockRec));
 	/* init code */
 
 	/* initial string to be taken apart */
@@ -441,7 +441,7 @@ MouseCommonOptions(InputInfoPtr pInfo)
 		}
 	    }
 	}
-	xfree(s);
+	free(s);
     }
 
     s = xf86SetStrOption(pInfo->options, "ZAxisMapping", "4 5");
@@ -468,7 +468,7 @@ MouseCommonOptions(InputInfoPtr pInfo)
 	    if (b3 > 0 && b3 <= MSE_MAXBUTTONS &&
 		b4 > 0 && b4 <= MSE_MAXBUTTONS) {
 		if (msg)
-		    xfree(msg);
+		    free(msg);
 		msg = xstrdup("buttons XX, YY, ZZ and WW");
 		if (msg)
 		    sprintf(msg, "buttons %d, %d, %d and %d", b1, b2, b3, b4);
@@ -482,12 +482,12 @@ MouseCommonOptions(InputInfoPtr pInfo)
 	}
 	if (msg) {
 	    xf86Msg(X_CONFIG, "%s: ZAxisMapping: %s\n", pInfo->name, msg);
-	    xfree(msg);
+	    free(msg);
 	} else {
 	    xf86Msg(X_WARNING, "%s: Invalid ZAxisMapping value: \"%s\"\n",
 		    pInfo->name, s);
 	}
-	xfree(s);
+	free(s);
     }
     if (xf86SetBoolOption(pInfo->options, "EmulateWheel", FALSE)) {
 	Bool yFromConfig = FALSE;
@@ -541,9 +541,9 @@ MouseCommonOptions(InputInfoPtr pInfo)
 	    }
 	    if (msg) {
 		xf86Msg(X_CONFIG, "%s: XAxisMapping: %s\n", pInfo->name, msg);
-		xfree(msg);
+		free(msg);
 	    }
-	    xfree(s);
+	    free(s);
 	}
 	s = xf86SetStrOption(pInfo->options, "YAxisMapping", NULL);
 	if (s) {
@@ -567,9 +567,9 @@ MouseCommonOptions(InputInfoPtr pInfo)
 	    }
 	    if (msg) {
 		xf86Msg(X_CONFIG, "%s: YAxisMapping: %s\n", pInfo->name, msg);
-		xfree(msg);
+		free(msg);
 	    }
-	    xfree(s);
+	    free(s);
 	}
 	if (!yFromConfig) {
 	    pMse->negativeY = 4;
@@ -602,7 +602,7 @@ MouseCommonOptions(InputInfoPtr pInfo)
 	   pMse->buttonMap[n++] = 1 << (b-1);
 	   if (b > pMse->buttons) pMse->buttons = b;
        }
-       xfree(s);
+       free(s);
     }
     /* get maximum of mapped buttons */
     for (i = pMse->buttons-1; i >= 0; i--) {
@@ -638,9 +638,9 @@ MouseCommonOptions(InputInfoPtr pInfo)
         }
         if (msg) {
             xf86Msg(X_CONFIG, "%s: DoubleClickButtons: %s\n", pInfo->name, msg);
-            xfree(msg);
+            free(msg);
         }
-	xfree(s);
+	free(s);
     }
 }
 /*
@@ -898,7 +898,7 @@ MousePreInit(InputDriverPtr drv, IDevPtr dev, int flags)
      * XXX This should be done by a function in the core server since the
      * MouseDevRec is defined in the os-support layer.
      */
-    if (!(pMse = xcalloc(sizeof(MouseDevRec), 1)))
+    if (!(pMse = calloc(sizeof(MouseDevRec), 1)))
 	return pInfo;
     pInfo->private = pMse;
     pMse->Ctrl = MouseCtrl;
@@ -1011,8 +1011,8 @@ MousePreInit(InputDriverPtr drv, IDevPtr dev, int flags)
 	else {
 	    xf86Msg(X_ERROR, "%s: cannot open input device\n", pInfo->name);
 	    if (pMse->mousePriv)
-		xfree(pMse->mousePriv);
-	    xfree(pMse);
+		free(pMse->mousePriv);
+	    free(pMse);
 	    pInfo->private = NULL;
 	    return pInfo;
 	}
@@ -1020,7 +1020,7 @@ MousePreInit(InputDriverPtr drv, IDevPtr dev, int flags)
     xf86CloseSerial(pInfo->fd);
     pInfo->fd = -1;
 
-    if (!(mPriv = (pointer) xcalloc(sizeof(mousePrivRec), 1)))
+    if (!(mPriv = (pointer) calloc(sizeof(mousePrivRec), 1)))
 	return pInfo;
     pMse->mousePriv = mPriv;
     pMse->CommonOptions(pInfo);
@@ -1711,7 +1711,7 @@ MouseProc(DeviceIntPtr device, int what)
 	device->public.on = FALSE;
 	break;
     case DEVICE_CLOSE:
-	xfree(pMse->mousePriv);
+	free(pMse->mousePriv);
 	pMse->mousePriv = NULL;
 	break;
     }
@@ -3149,7 +3149,7 @@ createProtoList(MouseDevPtr pMse, MouseProtocolID *protoList)
     blocked = xf86BlockSIGIO ();
 
     /* create a private copy first so we can write in the old list */
-    if ((tmplist = xalloc(sizeof(MouseProtocolID) * NUM_AUTOPROBE_PROTOS))){
+    if ((tmplist = malloc(sizeof(MouseProtocolID) * NUM_AUTOPROBE_PROTOS))){
 	for (i = 0; protoList[i] != PROT_UNKNOWN; i++) {
 	    tmplist[i] = protoList[i];
 	}
@@ -3259,7 +3259,7 @@ createProtoList(MouseDevPtr pMse, MouseProtocolID *protoList)
     
     mPriv->protoList[k] = PROT_UNKNOWN;
 
-    xfree(tmplist);
+    free(tmplist);
 }
 
 

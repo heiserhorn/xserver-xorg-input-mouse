@@ -468,7 +468,7 @@ wsconsPreInit(InputInfoPtr pInfo, const char *protocol, int flags)
 	    xf86Msg(X_WARNING, "%s: cannot open input device\n", pInfo->name);
 	else {
 	    xf86Msg(X_ERROR, "%s: cannot open input device\n", pInfo->name);
-	    xfree(pMse);
+	    free(pMse);
 	    pInfo->private = NULL;
 	    return FALSE;
 	}
@@ -545,7 +545,7 @@ usbMouseProc(DeviceIntPtr pPointer, int what)
 	else {
 	    pMse->buffer = XisbNew(pInfo->fd, pUsbMse->packetSize);
 	    if (!pMse->buffer) {
-		xfree(pMse);
+		free(pMse);
 		xf86CloseSerial(pInfo->fd);
 		pInfo->fd = -1;
 	    } else {
@@ -566,7 +566,7 @@ usbMouseProc(DeviceIntPtr pPointer, int what)
 	if (pInfo->fd != -1) {
 	    RemoveEnabledDevice(pInfo->fd);
 	    if (pUsbMse->packetSize > 8 && pUsbMse->buffer) {
-		xfree(pUsbMse->buffer);
+		free(pUsbMse->buffer);
 	    }
 	    if (pMse->buffer) {
 		XisbFree(pMse->buffer);
@@ -642,10 +642,10 @@ usbPreInit(InputInfoPtr pInfo, const char *protocol, int flags)
     report_desc_t reportDesc;
     int i;
 
-    pUsbMse = xalloc(sizeof(UsbMseRec));
+    pUsbMse = malloc(sizeof(UsbMseRec));
     if (pUsbMse == NULL) {
 	xf86Msg(X_ERROR, "%s: cannot allocate UsbMouseRec\n", pInfo->name);
-	xfree(pMse);
+	free(pMse);
 	return FALSE;
     }
 
@@ -663,8 +663,8 @@ usbPreInit(InputInfoPtr pInfo, const char *protocol, int flags)
 	    xf86Msg(X_WARNING, "%s: cannot open input device\n", pInfo->name);
 	else {
 	    xf86Msg(X_ERROR, "%s: cannot open input device\n", pInfo->name);
-	    xfree(pUsbMse);
-	    xfree(pMse);
+	    free(pUsbMse);
+	    free(pMse);
 	    return FALSE;
 	}
     }
@@ -687,12 +687,12 @@ usbPreInit(InputInfoPtr pInfo, const char *protocol, int flags)
     if (pUsbMse->packetSize <= 8) {
 	pUsbMse->buffer = pMse->protoBuf;
     } else {
-	pUsbMse->buffer = xalloc(pUsbMse->packetSize);
+	pUsbMse->buffer = malloc(pUsbMse->packetSize);
     }
     if (pUsbMse->buffer == NULL) {
 	xf86Msg(X_ERROR, "%s: cannot allocate buffer\n", pInfo->name);
-	xfree(pUsbMse);
-	xfree(pMse);
+	free(pUsbMse);
+	free(pMse);
 	xf86CloseSerial(pInfo->fd);
 	return FALSE;
     }
@@ -773,7 +773,7 @@ xf86OSMouseInit(int flags)
 {
     OSMouseInfoPtr p;
 
-    p = xcalloc(sizeof(OSMouseInfoRec), 1);
+    p = calloc(sizeof(OSMouseInfoRec), 1);
     if (!p)
 	return NULL;
     p->SupportedInterfaces = SupportedInterfaces;
