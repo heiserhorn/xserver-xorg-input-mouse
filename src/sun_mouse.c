@@ -443,11 +443,7 @@ vuidReadInput(InputInfoPtr pInfo)
 
 	    /* force sending absolute resolution scaling ioctl */
 	    pVuidMse->absres.height = pVuidMse->absres.width = 0;
-#if GET_ABI_MAJOR(ABI_XINPUT_VERSION) == 0
-	    ptrCurScreen = miPointerCurrentScreen();
-#else
 	    ptrCurScreen = miPointerGetScreen(pInfo->dev);
-#endif	    
 	    vuidMouseSendScreenSize(ptrCurScreen, pVuidMse);
 	}
 #endif
@@ -512,14 +508,8 @@ static void vuidMouseAdjustFrame(int index, int x, int y, int flags)
         pScrn->AdjustFrame = vuidMouseAdjustFrame;
       }
 
-#if GET_ABI_MAJOR(ABI_XINPUT_VERSION) == 0
-      ptrCurScreen = miPointerCurrentScreen();
-#endif
-      
       for (m = vuidMouseList; m != NULL ; m = m->next) {
-#if GET_ABI_MAJOR(ABI_XINPUT_VERSION) >= 0
 	  ptrCurScreen = miPointerGetScreen(m->pInfo->dev);
-#endif
 	  if (ptrCurScreen == pScreen)
 	  {
 	      vuidMouseSendScreenSize(pScreen, m);

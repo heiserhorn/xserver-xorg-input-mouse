@@ -122,12 +122,6 @@ typedef struct _DragLockRec {
 static InputInfoPtr MousePreInit(InputDriverPtr drv, IDevPtr dev, int flags);
 
 static int MouseProc(DeviceIntPtr device, int what);
-#if GET_ABI_MAJOR(ABI_XINPUT_VERSION) < 2
-static Bool MouseConvert(InputInfoPtr pInfo, int first, int num, int v0,
-		 	     int v1, int v2, int v3, int v4, int v5, int *x,
-		 	     int *y);
-#endif
-
 static void MouseCtrl(DeviceIntPtr device, PtrCtrl *ctrl);
 static void MousePostEvent(InputInfoPtr pInfo, int buttons,
 			   int dx, int dy, int dz, int dw);
@@ -871,17 +865,9 @@ MousePreInit(InputDriverPtr drv, IDevPtr dev, int flags)
     pInfo->flags = XI86_SEND_DRAG_EVENTS;
     pInfo->device_control = MouseProc;
     pInfo->read_input = MouseReadInput;
-#if GET_ABI_MAJOR(ABI_XINPUT_VERSION) == 0
-    pInfo->motion_history_proc = xf86GetMotionEvents;
-    pInfo->history_size = 0;
-#endif
     pInfo->control_proc = NULL;
     pInfo->close_proc = NULL;
     pInfo->switch_mode = NULL;
-#if GET_ABI_MAJOR(ABI_XINPUT_VERSION) < 2
-    pInfo->conversion_proc = MouseConvert;
-    pInfo->reverse_conversion_proc = NULL;
-#endif
     pInfo->fd = -1;
     pInfo->dev = NULL;
     pInfo->private_flags = 0;
@@ -1595,17 +1581,8 @@ MouseProc(DeviceIntPtr device, int what)
 #if GET_ABI_MAJOR(ABI_XINPUT_VERSION) >= 7
                                 btn_labels,
 #endif
-#if GET_ABI_MAJOR(ABI_XINPUT_VERSION) == 0
-				miPointerGetMotionEvents,
-#elif GET_ABI_MAJOR(ABI_XINPUT_VERSION) < 3
-                                GetMotionHistory,
-#endif
                                 pMse->Ctrl,
-#if GET_ABI_MAJOR(ABI_XINPUT_VERSION) == 0
-				miPointerGetMotionBufferSize()
-#else
                                 GetMotionHistorySize(), 2
-#endif
 #if GET_ABI_MAJOR(ABI_XINPUT_VERSION) >= 7
                                 , axes_labels
 #endif
@@ -1625,9 +1602,6 @@ MouseProc(DeviceIntPtr device, int what)
 #endif
                 -1, -1, 1, 0, 1);
 	xf86InitValuatorDefaults(device, 1);
-#if GET_ABI_MAJOR(ABI_XINPUT_VERSION) == 0
-	xf86MotionHistoryAllocate(pInfo);
-#endif
 
 #ifdef EXTMOUSEDEBUG
 	ErrorF("assigning %p atom=%d name=%s\n", device, pInfo->atom,
@@ -1713,29 +1687,6 @@ MouseProc(DeviceIntPtr device, int what)
     }
     return Success;
 }
-
-#if GET_ABI_MAJOR(ABI_XINPUT_VERSION) < 2
-/*
- ***************************************************************************
- *
- * MouseConvert --
- *	Convert valuators to X and Y.
- *
- ***************************************************************************
- */
-static Bool
-MouseConvert(InputInfoPtr pInfo, int first, int num, int v0, int v1, int v2,
-	     int v3, int v4, int v5, int *x, int *y)
-{
-    if (first != 0 || num != 2)
-	return FALSE;
-
-    *x = v0;
-    *y = v1;
-
-    return TRUE;
-}
-#endif
 
 /**********************************************************************
  *
