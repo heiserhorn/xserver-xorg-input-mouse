@@ -819,33 +819,29 @@ MousePickProtocol(InputInfoPtr pInfo, const char* device,
 		  const char *protocol, MouseProtocolID *protocolID_out)
 {
     MouseProtocolID protocolID = *protocolID_out;
-    Bool detected;
 
     protocolID = ProtocolNameToID(protocol);
 
-    do {
-	detected = TRUE;
-	switch (protocolID) {
-	case PROT_AUTO:
-	    if (osInfo->SetupAuto) {
-                const char *osProt;
-		if ((osProt = osInfo->SetupAuto(pInfo,NULL))) {
-		    MouseProtocolID id = ProtocolNameToID(osProt);
-		    if (id == PROT_UNKNOWN || id == PROT_UNSUP) {
-			protocolID = id;
-			protocol = osProt;
-			detected = FALSE;
-		    }
-		}
+    if (protocolID == PROT_AUTO)
+    {
+	const char *osProt;
+	if (osInfo->SetupAuto && (osProt = osInfo->SetupAuto(pInfo,NULL))) {
+	    MouseProtocolID id = ProtocolNameToID(osProt);
+	    if (id == PROT_UNKNOWN || id == PROT_UNSUP) {
+		protocolID = id;
+		protocol = osProt;
 	    }
-	    break;
+	}
+    }
+
+    switch (protocolID) {
 	case PROT_UNKNOWN:
 	    /* Check for a builtin OS-specific protocol,
 	     * and call its PreInit. */
 	    if (osInfo->CheckProtocol
-		&& osInfo->CheckProtocol(protocol)) {
+		    && osInfo->CheckProtocol(protocol)) {
 		if (!device)
-                    MouseFindDevice(pInfo, protocol);
+		    MouseFindDevice(pInfo, protocol);
 		if (osInfo->PreInit) {
 		    osInfo->PreInit(pInfo, protocol, 0);
 		}
@@ -861,8 +857,7 @@ MousePickProtocol(InputInfoPtr pInfo, const char* device,
 	    break;
 	default:
 	    break;
-	}
-    } while (!detected);
+    }
 
     *protocolID_out = protocolID;
 
