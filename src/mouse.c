@@ -122,7 +122,7 @@ typedef struct _DragLockRec {
 static InputInfoPtr MousePreInit(InputDriverPtr drv, IDevPtr dev, int flags);
 
 static int MouseProc(DeviceIntPtr device, int what);
-static Bool MouseConvert(LocalDevicePtr local, int first, int num, int v0,
+static Bool MouseConvert(InputInfoPtr pInfo, int first, int num, int v0,
 		 	     int v1, int v2, int v3, int v4, int v5, int *x,
 		 	     int *y);
 
