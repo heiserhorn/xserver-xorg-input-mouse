@@ -216,7 +216,7 @@ vuidPreInit(InputInfoPtr pInfo, const char *protocol, int flags)
     xf86Msg(X_CONFIG, "%s: Protocol: %s\n", pInfo->name, protocol);
 
     /* Collect the options, and process the common options. */
-    xf86CollectInputOptions(pInfo, NULL, NULL);
+    COLLECT_INPUT_OPTIONS(pInfo, NULL);
     xf86ProcessCommonOptions(pInfo, pInfo->options);
 
     pVuidMse->buffer = (unsigned char *)&pVuidMse->event;

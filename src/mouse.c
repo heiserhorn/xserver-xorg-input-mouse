@@ -112,7 +112,11 @@ typedef struct _DragLockRec {
 } DragLockRec, *DragLockPtr;
 
 
+#if GET_ABI_MAJOR(ABI_XINPUT_VERSION) < 12
 static InputInfoPtr MousePreInit(InputDriverPtr drv, IDevPtr dev, int flags);
+#else
+static int MousePreInit(InputDriverPtr drv, InputInfoPtr pInfo, int flags);
+#endif
 
 static int MouseProc(DeviceIntPtr device, int what);
 static void MouseCtrl(DeviceIntPtr device, PtrCtrl *ctrl);
@@ -842,10 +846,48 @@ MousePickProtocol(InputInfoPtr pInfo, const char* device,
     return protocol;
 }
 
+#if GET_ABI_MAJOR(ABI_XINPUT_VERSION) < 12
+static int NewMousePreInit(InputDriverPtr drv, InputInfoPtr pInfo,
+                           int flags);
+
 static InputInfoPtr
 MousePreInit(InputDriverPtr drv, IDevPtr dev, int flags)
 {
     InputInfoPtr pInfo;
+
+    if (!(pInfo = xf86AllocateInput(drv, 0)))
+	return NULL;
+
+    pInfo->name = dev->identifier;
+    pInfo->flags = XI86_SEND_DRAG_EVENTS;
+    pInfo->conf_idev = dev;
+    pInfo->close_proc = NULL;
+    pInfo->private_flags = 0;
+    pInfo->always_core_feedback = NULL;
+
+    if (NewMousePreInit(drv, pInfo, flags) == Success)
+    {
+        /* Check if SendDragEvents has been disabled. */
+        if (!xf86SetBoolOption(dev->commonOptions, "SendDragEvents", TRUE))
+            pInfo->flags &= ~XI86_SEND_DRAG_EVENTS;
+
+        pInfo->flags |= XI86_CONFIGURED;
+
+        return pInfo;
+    }
+
+    xf86DeleteInput(pInfo, 0);
+
+    return NULL;
+}
+
+static int
+NewMousePreInit(InputDriverPtr drv, InputInfoPtr pInfo, int flags)
+#else
+static int
+MousePreInit(InputDriverPtr drv, InputInfoPtr pInfo, int flags)
+#endif
+{
     MouseDevPtr pMse;
     mousePrivPtr mPriv;
     MessageType protocolFrom = X_DEFAULT;
@@ -854,44 +896,34 @@ MousePreInit(InputDriverPtr drv, IDevPtr dev, int flags)
     MouseProtocolID protocolID;
     MouseProtocolPtr pProto;
     int i;
-    
-    if (!InitProtocols())
-	return NULL;
+    int rc = Success;
 
-    if (!(pInfo = xf86AllocateInput(drv, 0)))
-	return NULL;
+    if (!InitProtocols())
+	return BadAlloc;
 
     /* Initialise the InputInfoRec. */
-    pInfo->name = dev->identifier;
     pInfo->type_name = XI_MOUSE;
-    pInfo->flags = XI86_SEND_DRAG_EVENTS;
     pInfo->device_control = MouseProc;
     pInfo->read_input = MouseReadInput;
     pInfo->control_proc = NULL;
-    pInfo->close_proc = NULL;
     pInfo->switch_mode = NULL;
     pInfo->fd = -1;
     pInfo->dev = NULL;
-    pInfo->private_flags = 0;
-    pInfo->always_core_feedback = NULL;
-    pInfo->conf_idev = dev;
 
     /* Allocate the MouseDevRec and initialise it. */
     if (!(pMse = calloc(sizeof(MouseDevRec), 1)))
+    {
+	rc = BadAlloc;
 	goto out;
+    }
 
     pInfo->private = pMse;
     pMse->Ctrl = MouseCtrl;
     pMse->PostEvent = MousePostEvent;
     pMse->CommonOptions = MouseCommonOptions;
 
-    /* Check if SendDragEvents has been disabled. */
-    if (!xf86SetBoolOption(dev->commonOptions, "SendDragEvents", TRUE)) {
-	pInfo->flags &= ~XI86_SEND_DRAG_EVENTS;
-    }
-
     /* Find the protocol type. */
-    protocol = xf86SetStrOption(dev->commonOptions, "Protocol", NULL);
+    protocol = xf86SetStrOption(pInfo->options, "Protocol", NULL);
     if (protocol) {
 	protocolFrom = X_CONFIG;
     } else if (osInfo->DefaultProtocol) {
@@ -900,10 +932,11 @@ MousePreInit(InputDriverPtr drv, IDevPtr dev, int flags)
     }
     if (!protocol) {
 	xf86Msg(X_ERROR, "%s: No Protocol specified\n", pInfo->name);
+	rc = BadValue;
 	goto out;
     }
 
-    device = xf86SetStrOption(dev->commonOptions, "Device", NULL);
+    device = xf86SetStrOption(pInfo->options, "Device", NULL);
 
     /* Default Mapping: 1 2 3 8 9 10 11 ... */
     for (i = 0; i < MSE_MAXBUTTONS; i++)
@@ -916,18 +949,25 @@ MousePreInit(InputDriverPtr drv, IDevPtr dev, int flags)
 
     xf86Msg(protocolFrom, "%s: Protocol: \"%s\"\n", pInfo->name, protocol);
     if (!(pProto = GetProtocol(protocolID)))
+    {
+	rc = BadValue;
 	goto out;
+    }
 
     pMse->protocolID = protocolID;
     pMse->oldProtocolID = protocolID;  /* hack */
 
     pMse->autoProbe = FALSE;
     /* Collect the options, and process the common options. */
+#if GET_ABI_MAJOR(ABI_XINPUT_VERSION) < 12
     /* need some special handling here. xf86CollectInputOptions will reset
      * pInfo->options if the second argument is not-null. To re-merge the
      * previously set arguments, pass the original pInfo->options in.
      */
     xf86CollectInputOptions(pInfo, pProto->defaults, pInfo->options);
+#else
+    COLLECT_INPUT_OPTIONS(pInfo, pProto->defaults);
+#endif
     xf86ProcessCommonOptions(pInfo, pInfo->options);
 
     /* Check if the device can be opened. */
@@ -941,6 +981,7 @@ MousePreInit(InputDriverPtr drv, IDevPtr dev, int flags)
 		free(pMse->mousePriv);
 	    free(pMse);
 	    pInfo->private = NULL;
+	    rc = BadValue;
 	    goto out;
 	}
     }
@@ -948,7 +989,11 @@ MousePreInit(InputDriverPtr drv, IDevPtr dev, int flags)
     pInfo->fd = -1;
 
     if (!(mPriv = (pointer) calloc(sizeof(mousePrivRec), 1)))
+    {
+	rc = BadAlloc;
 	goto out;
+    }
+
     pMse->mousePriv = mPriv;
     pMse->CommonOptions(pInfo);
     pMse->checkMovements = checkForErraticMovements;
@@ -958,11 +1003,9 @@ MousePreInit(InputDriverPtr drv, IDevPtr dev, int flags)
     
     MouseHWOptions(pInfo);
     MouseSerialOptions(pInfo);
-    
-    pInfo->flags |= XI86_CONFIGURED;
 
 out:
-    return pInfo;
+    return rc;
 }
 
 
@@ -2523,7 +2566,7 @@ initMouseHW(InputInfoPtr pInfo)
 	    usleep(100000);
 	    /* Set the parameters up for the MM series protocol. */
 	    options = pInfo->options;
-	    xf86CollectInputOptions(pInfo, mmDefaults, NULL);
+	    COLLECT_INPUT_OPTIONS(pInfo, mmDefaults);
 	    xf86SetSerial(pInfo->fd, pInfo->options);
 	    pInfo->options = options;
 

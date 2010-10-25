@@ -32,6 +32,13 @@
 
 #include "xf86Xinput.h"
 
+#if GET_ABI_MAJOR(ABI_XINPUT_VERSION) < 12
+#define COLLECT_INPUT_OPTIONS(pInfo, options) xf86CollectInputOptions((pInfo), (options), NULL)
+#else
+#define COLLECT_INPUT_OPTIONS(pInfo, options) xf86CollectInputOptions((pInfo), (options))
+#endif
+
+
 /* Mouse interface classes */
 #define MSE_NONE	0x00
 #define MSE_SERIAL	0x01		/* serial port */
