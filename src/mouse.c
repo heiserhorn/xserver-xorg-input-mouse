@@ -856,7 +856,7 @@ MousePreInit(InputDriverPtr drv, IDevPtr dev, int flags)
 
     /* Allocate the MouseDevRec and initialise it. */
     if (!(pMse = calloc(sizeof(MouseDevRec), 1)))
-	return pInfo;
+	goto out;
     pInfo->private = pMse;
     pMse->Ctrl = MouseCtrl;
     pMse->PostEvent = MousePostEvent;
@@ -872,7 +872,7 @@ MousePreInit(InputDriverPtr drv, IDevPtr dev, int flags)
     }
     if (!protocol) {
 	xf86Msg(X_ERROR, "%s: No Protocol specified\n", pInfo->name);
-	return pInfo;
+	goto out;
     }
 
     device = xf86SetStrOption(dev->commonOptions, "Device", NULL);
@@ -907,17 +907,17 @@ MousePreInit(InputDriverPtr drv, IDevPtr dev, int flags)
 		if (osInfo->PreInit) {
 		    osInfo->PreInit(pInfo, protocol, 0);
 		}
-		return pInfo;
+		goto out;
 	    }
 	    xf86Msg(X_ERROR, "%s: Unknown protocol \"%s\"\n",
 		    pInfo->name, protocol);
-	    return pInfo;
+	    goto out;
 	    break;
 	case PROT_UNSUP:
 	    xf86Msg(X_ERROR,
 		    "%s: Protocol \"%s\" is not supported on this "
 		    "platform\n", pInfo->name, protocol);
-	    return pInfo;
+	    goto out;
 	    break;
 	default:
 	    break;
@@ -930,7 +930,7 @@ MousePreInit(InputDriverPtr drv, IDevPtr dev, int flags)
 
     xf86Msg(protocolFrom, "%s: Protocol: \"%s\"\n", pInfo->name, protocol);
     if (!(pProto = GetProtocol(protocolID)))
-	return pInfo;
+	goto out;
 
     pMse->protocolID = protocolID;
     pMse->oldProtocolID = protocolID;  /* hack */
@@ -951,14 +951,14 @@ MousePreInit(InputDriverPtr drv, IDevPtr dev, int flags)
 		free(pMse->mousePriv);
 	    free(pMse);
 	    pInfo->private = NULL;
-	    return pInfo;
+	    goto out;
 	}
     }
     xf86CloseSerial(pInfo->fd);
     pInfo->fd = -1;
 
     if (!(mPriv = (pointer) calloc(sizeof(mousePrivRec), 1)))
-	return pInfo;
+	goto out;
     pMse->mousePriv = mPriv;
     pMse->CommonOptions(pInfo);
     pMse->checkMovements = checkForErraticMovements;
@@ -970,6 +970,8 @@ MousePreInit(InputDriverPtr drv, IDevPtr dev, int flags)
     MouseSerialOptions(pInfo);
     
     pInfo->flags |= XI86_CONFIGURED;
+
+out:
     return pInfo;
 }
 
