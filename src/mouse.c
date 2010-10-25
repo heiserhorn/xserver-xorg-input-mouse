@@ -660,29 +660,8 @@ static void
 MouseSerialOptions(InputInfoPtr pInfo)
 {
     MouseDevPtr  pMse = pInfo->private;
-    Bool clearDTR, clearRTS;
-    
-    
+
     pMse->baudRate = xf86SetIntOption(pInfo->options, "BaudRate", 0);
-    if ((clearDTR = xf86SetBoolOption(pInfo->options, "ClearDTR",FALSE)))
-	pMse->mouseFlags |= MF_CLEAR_DTR;
-	
-    
-    if ((clearRTS = xf86SetBoolOption(pInfo->options, "ClearRTS",FALSE)))
-	pMse->mouseFlags |= MF_CLEAR_RTS;
-	
-    if (clearDTR || clearRTS) {
-	xf86Msg(X_CONFIG, "%s: ", pInfo->name);
-	if (clearDTR) {
-	    xf86ErrorF("ClearDTR");
-	    if (clearRTS)
-		xf86ErrorF(", ");
-	}
-	if (clearRTS) {
-	    xf86ErrorF("ClearRTS");
-	}
-	xf86ErrorF("\n");
-    }
 }
 
 static MouseProtocolID

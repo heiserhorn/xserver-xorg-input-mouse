@@ -211,8 +211,6 @@ typedef struct _MouseDevRec {
     Bool                flipXY;
     int                 invX;
     int                 invY;
-    int			mouseFlags;	/* Flags to Clear after opening
-					 * mouse dev */
     int			resolution;
     int			negativeZ;	/* button mask */
     int			positiveZ;	/* button mask */
