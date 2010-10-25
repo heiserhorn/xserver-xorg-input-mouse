@@ -54,7 +54,7 @@
 #include "xorg-server.h"
 #include "xf86.h"
 #include "xf86_OSlib.h"
-#include "xf86OSmouse.h"
+#include "mouse.h"
 #include "xisb.h"
 #include "mipointer.h"
 #include <sys/stropts.h>

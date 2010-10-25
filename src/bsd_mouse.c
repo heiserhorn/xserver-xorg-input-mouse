@@ -33,7 +33,7 @@
 #include "xf86Priv.h"
 #include "xf86_OSlib.h"
 #include "xf86Xinput.h"
-#include "xf86OSmouse.h"
+#include "mouse.h"
 #include "xisb.h"
 #include "mipointer.h"
 #ifdef WSCONS_SUPPORT

@@ -62,7 +62,6 @@
 
 #include "xf86Xinput.h"
 #include "xf86_OSproc.h"
-#include "xf86OSmouse.h"
 
 #include "compiler.h"
 
@@ -2299,7 +2298,7 @@ MousePostEvent(InputInfoPtr pInfo, int truebuttons,
  ******************************************************************/
 /*
  * This array is indexed by the MouseProtocolID values, so the order of the
- * entries must match that of the MouseProtocolID enum in xf86OSmouse.h.
+ * entries must match that of the MouseProtocolID enum in mouse.h.
  */
 static unsigned char proto[PROT_NUMPROTOS][8] = {
   /* --header--  ---data--- packet -4th-byte-  mouse   */
