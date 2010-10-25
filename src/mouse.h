@@ -161,17 +161,6 @@ typedef struct {
 
 extern OSMouseInfoPtr xf86OSMouseInit(int flags);
 
-/* Adjust this when the mouse interface changes. */
-
-/*
- * History:
- *
- *  1.0.0 - Everything up to when versioning was started.
- *  1.1.0 - FindDevice and GuessProtocol added to OSMouseInfoRec
- *  1.2.0 - xisbscale added to MouseDevRec
- *
- */
-
 /* Z axis mapping */
 #define MSE_NOZMAP	0
 #define MSE_MAPTOX	-1
