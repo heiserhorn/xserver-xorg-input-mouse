@@ -2369,13 +2369,7 @@ SetupMouse(InputInfoPtr pInfo)
 		    pMse->protoPara[i] = protoPara[i];
 	    /* if we come here PnP/OS mouse probing was successful */
 	} else {
-#if 1
 	    /* PnP/OS mouse probing wasn't successful; we look at data */
-#else
-  	    xf86Msg(X_ERROR, "%s: cannot determine the mouse protocol\n",
-		    pInfo->name);
-	    return FALSE;
-#endif
 	}
     }
 
