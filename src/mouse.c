@@ -122,9 +122,11 @@ typedef struct _DragLockRec {
 static InputInfoPtr MousePreInit(InputDriverPtr drv, IDevPtr dev, int flags);
 
 static int MouseProc(DeviceIntPtr device, int what);
+#if GET_ABI_MAJOR(ABI_XINPUT_VERSION) < 2
 static Bool MouseConvert(InputInfoPtr pInfo, int first, int num, int v0,
 		 	     int v1, int v2, int v3, int v4, int v5, int *x,
 		 	     int *y);
+#endif
 
 static void MouseCtrl(DeviceIntPtr device, PtrCtrl *ctrl);
 static void MousePostEvent(InputInfoPtr pInfo, int buttons,
@@ -877,8 +879,10 @@ MousePreInit(InputDriverPtr drv, IDevPtr dev, int flags)
     pInfo->control_proc = NULL;
     pInfo->close_proc = NULL;
     pInfo->switch_mode = NULL;
+#if GET_ABI_MAJOR(ABI_XINPUT_VERSION) < 2
     pInfo->conversion_proc = MouseConvert;
     pInfo->reverse_conversion_proc = NULL;
+#endif
     pInfo->fd = -1;
     pInfo->dev = NULL;
     pInfo->private_flags = 0;
@@ -1711,6 +1715,7 @@ MouseProc(DeviceIntPtr device, int what)
     return Success;
 }
 
+#if GET_ABI_MAJOR(ABI_XINPUT_VERSION) < 2
 /*
  ***************************************************************************
  *
@@ -1731,6 +1736,7 @@ MouseConvert(InputInfoPtr pInfo, int first, int num, int v0, int v1, int v2,
 
     return TRUE;
 }
+#endif
 
 /**********************************************************************
  *
