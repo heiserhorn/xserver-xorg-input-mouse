@@ -159,7 +159,7 @@ typedef struct {
  *		failed.
  */
 
-extern OSMouseInfoPtr xf86OSMouseInit(int flags);
+extern OSMouseInfoPtr OSMouseInit(int flags);
 
 /* Z axis mapping */
 #define MSE_NOZMAP	0

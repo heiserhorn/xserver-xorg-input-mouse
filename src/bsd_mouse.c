@@ -768,8 +768,8 @@ bsdMousePreInit(InputInfoPtr pInfo, const char *protocol, int flags)
     return TRUE;
 }    
 
-_X_EXPORT OSMouseInfoPtr
-xf86OSMouseInit(int flags)
+OSMouseInfoPtr
+OSMouseInit(int flags)
 {
     OSMouseInfoPtr p;
 

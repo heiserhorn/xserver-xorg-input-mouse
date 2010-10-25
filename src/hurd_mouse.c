@@ -227,7 +227,7 @@ DefaultProtocol(void)
 }
 
 OSMouseInfoPtr
-xf86OSMouseInit(int flags)
+OSMouseInit(int flags)
 {
     OSMouseInfoPtr p;
 

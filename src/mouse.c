@@ -764,7 +764,7 @@ InitProtocols(void)
     if (osInfo)
 	return TRUE;
 
-    osInfo = xf86OSMouseInit(0);
+    osInfo = OSMouseInit(0);
     if (!osInfo)
 	return FALSE;
     if (!osInfo->SupportedInterfaces)

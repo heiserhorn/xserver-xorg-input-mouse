@@ -204,8 +204,8 @@ SetupAuto(InputInfoPtr pInfo, int *protoPara)
     return lnxMouseMagic(pInfo);
 }
 
-_X_EXPORT OSMouseInfoPtr
-xf86OSMouseInit(int flags)
+OSMouseInfoPtr
+OSMouseInit(int flags)
 {
     OSMouseInfoPtr p;
 
