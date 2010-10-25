@@ -120,9 +120,6 @@ typedef struct _DragLockRec {
 
 
 static InputInfoPtr MousePreInit(InputDriverPtr drv, IDevPtr dev, int flags);
-#if 0
-static void MouseUnInit(InputDriverPtr drv, InputInfoPtr pInfo, int flags);
-#endif
 
 static int MouseProc(DeviceIntPtr device, int what);
 static Bool MouseConvert(LocalDevicePtr local, int first, int num, int v0,
@@ -161,7 +158,7 @@ _X_EXPORT InputDriverRec MOUSE = {
 	"mouse",
 	NULL,
 	MousePreInit,
-	/*MouseUnInit,*/NULL,
+	NULL,
 	NULL,
 	0
 };
