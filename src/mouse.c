@@ -1540,14 +1540,22 @@ MouseProc(DeviceIntPtr device, int what)
 #if GET_ABI_MAJOR(ABI_XINPUT_VERSION) >= 7
                 axes_labels[0],
 #endif
-                -1, -1, 1, 0, 1);
+                -1, -1, 1, 0, 1
+#if GET_ABI_MAJOR(ABI_XINPUT_VERSION) >= 12
+                , Relative
+#endif
+                );
 	xf86InitValuatorDefaults(device, 0);
 	/* Y valuator */
 	xf86InitValuatorAxisStruct(device, 1,
 #if GET_ABI_MAJOR(ABI_XINPUT_VERSION) >= 7
                 axes_labels[1],
 #endif
-                -1, -1, 1, 0, 1);
+                -1, -1, 1, 0, 1
+#if GET_ABI_MAJOR(ABI_XINPUT_VERSION) >= 12
+                , Relative
+#endif
+                );
 	xf86InitValuatorDefaults(device, 1);
 
 #ifdef EXTMOUSEDEBUG
