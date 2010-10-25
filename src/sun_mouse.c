@@ -259,8 +259,8 @@ vuidPreInit(InputInfoPtr pInfo, const char *protocol, int flags)
 	if (buttons == 0) {
 	    SYSCALL(i = ioctl(pInfo->fd, MSIOBUTTONS, &buttons));
 	    if (i == 0) {
-		pInfo->conf_idev->commonOptions =
-		    xf86ReplaceIntOption(pInfo->conf_idev->commonOptions,
+		pInfo->options =
+		    xf86ReplaceIntOption(pInfo->options,
 					 "Buttons", buttons);
 		xf86Msg(X_INFO, "%s: Setting Buttons option to \"%d\"\n",
 			pInfo->name, buttons);
@@ -676,16 +676,14 @@ solarisMouseAutoProbe(InputInfoPtr pInfo, const char **protocol,
 	/* Check to see if xorg.conf or HAL specified a device to use */
 	*device = xf86CheckStrOption(pInfo->options, "Device", NULL);
 	if (*device == NULL) {
-	    *device = xf86CheckStrOption(pInfo->conf_idev->commonOptions,
-					 "Device", NULL);
+	    *device = xf86CheckStrOption(pInfo->options, "Device", NULL);
 	}
     }
 
     if (*device != NULL) {
 	strmod = xf86CheckStrOption(pInfo->options, "StreamsModule", NULL);
 	if (strmod == NULL) {
-	    strmod = xf86CheckStrOption(pInfo->conf_idev->commonOptions,
-					"StreamsModule", NULL);
+	    strmod = xf86CheckStrOption(pInfo->options, "StreamsModule", NULL);
 	}
 	if (strmod) {
 	    /* if a device name is already known, and a StreamsModule is
@@ -744,13 +742,13 @@ SetupAuto(InputInfoPtr pInfo, int *protoPara)
 	/* probe to find device/protocol to use */
 	if (solarisMouseAutoProbe(pInfo, &pproto, &pdev) != FALSE) {
 	    /* Set the Device option. */
-	    pInfo->conf_idev->commonOptions =
-	     xf86AddNewOption(pInfo->conf_idev->commonOptions, "Device", pdev);
+	    pInfo->options =
+	     xf86AddNewOption(pInfo->options, "Device", pdev);
 	    xf86Msg(X_INFO, "%s: Setting Device option to \"%s\"\n",
 	      pInfo->name, pdev);
 	}
     } else if (pMse->protocolID == PROT_AUTO) {
-	pdev = xf86CheckStrOption(pInfo->conf_idev->commonOptions, 
+	pdev = xf86CheckStrOption(pInfo->options,
 		"Device", NULL);
 	solarisMouseAutoProbe(pInfo, &pproto, &pdev);
     }
@@ -765,8 +763,8 @@ FindDevice(InputInfoPtr pInfo, const char *protocol, int flags)
 
     if (solarisMouseAutoProbe(pInfo, &pproto, &pdev) != FALSE) {
 	/* Set the Device option. */
-	pInfo->conf_idev->commonOptions =
-	  xf86AddNewOption(pInfo->conf_idev->commonOptions, "Device", pdev);
+	pInfo->options =
+	  xf86AddNewOption(pInfo->options, "Device", pdev);
 	xf86Msg(X_INFO, "%s: Setting Device option to \"%s\"\n",
 	  pInfo->name, pdev);
     }

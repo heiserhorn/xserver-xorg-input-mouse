@@ -183,8 +183,8 @@ FindDevice(InputInfoPtr pInfo, const char *protocol, int flags)
 	return NULL;
 
     close(fd);
-    pInfo->conf_idev->commonOptions =
-	xf86AddNewOption(pInfo->conf_idev->commonOptions, "Device", path);
+    pInfo->options =
+	xf86AddNewOption(pInfo->options, "Device", path);
     xf86Msg(X_INFO, "%s: Setting Device option to \"%s\"\n", pInfo->name,
 	    path);
 

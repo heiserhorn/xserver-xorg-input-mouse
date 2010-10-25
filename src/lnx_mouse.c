@@ -80,8 +80,8 @@ FindDevice(InputInfoPtr pInfo, const char *protocol, int flags)
     if (*pdev) {
 	close(fd);
 	/* Set the Device option. */
-	pInfo->conf_idev->commonOptions =
-	    xf86AddNewOption(pInfo->conf_idev->commonOptions, "Device", *pdev);
+	pInfo->options =
+	    xf86AddNewOption(pInfo->options, "Device", *pdev);
 	xf86Msg(X_INFO, "%s: Setting Device option to \"%s\"\n",
 		pInfo->name, *pdev);
     }
@@ -99,7 +99,7 @@ lnxMouseMagic(InputInfoPtr pInfo)
     int i;
     int proto = MOUSE_PROTO_UNKNOWN;
 
-    dev = xf86SetStrOption(pInfo->conf_idev->commonOptions, "Device", NULL);
+    dev = xf86SetStrOption(pInfo->options, "Device", NULL);
     if (!dev) {
 #ifdef DEBUG
 	ErrorF("xf86SetStrOption failed to return the device name\n");

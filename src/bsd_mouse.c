@@ -329,8 +329,8 @@ FindDevice(InputInfoPtr pInfo, const char *protocol, int flags)
 
     if (dev) {
 	/* Set the Device option. */
-	pInfo->conf_idev->commonOptions =
-	    xf86AddNewOption(pInfo->conf_idev->commonOptions, "Device", dev);
+	pInfo->options =
+	    xf86AddNewOption(pInfo->options, "Device", dev);
 	xf86Msg(X_INFO, "%s: Setting Device option to \"%s\"\n",
 		pInfo->name, dev);
     }
@@ -369,8 +369,8 @@ FindDevice(InputInfoPtr pInfo, const char *protocol, int flags)
 	SYSCALL(fd = open(*pdev, O_RDWR | O_NONBLOCK));
 	if (fd != -1) {
 	    /* Set the Device option. */
-	    pInfo->conf_idev->commonOptions =
-		xf86AddNewOption(pInfo->conf_idev->commonOptions, 
+	    pInfo->options =
+		xf86AddNewOption(pInfo->options,
 				 "Device", *pdev);
 	    xf86Msg(X_INFO, "%s: found Device \"%s\"\n",
 		    pInfo->name, *pdev);

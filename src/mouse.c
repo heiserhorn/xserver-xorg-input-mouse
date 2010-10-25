@@ -923,7 +923,11 @@ MousePreInit(InputDriverPtr drv, IDevPtr dev, int flags)
 
     pMse->autoProbe = FALSE;
     /* Collect the options, and process the common options. */
-    xf86CollectInputOptions(pInfo, pProto->defaults, NULL);
+    /* need some special handling here. xf86CollectInputOptions will reset
+     * pInfo->options if the second argument is not-null. To re-merge the
+     * previously set arguments, pass the original pInfo->options in.
+     */
+    xf86CollectInputOptions(pInfo, pProto->defaults, pInfo->options);
     xf86ProcessCommonOptions(pInfo, pInfo->options);
 
     /* Check if the device can be opened. */
