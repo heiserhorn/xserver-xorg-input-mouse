@@ -814,6 +814,61 @@ MouseFindDevice(InputInfoPtr pInfo, const char* protocol)
     return device;
 }
 
+static const char*
+MousePickProtocol(InputInfoPtr pInfo, const char* device,
+		  const char *protocol, MouseProtocolID *protocolID_out)
+{
+    MouseProtocolID protocolID = *protocolID_out;
+    Bool detected;
+
+    protocolID = ProtocolNameToID(protocol);
+
+    do {
+	detected = TRUE;
+	switch (protocolID) {
+	case PROT_AUTO:
+	    if (osInfo->SetupAuto) {
+                const char *osProt;
+		if ((osProt = osInfo->SetupAuto(pInfo,NULL))) {
+		    MouseProtocolID id = ProtocolNameToID(osProt);
+		    if (id == PROT_UNKNOWN || id == PROT_UNSUP) {
+			protocolID = id;
+			protocol = osProt;
+			detected = FALSE;
+		    }
+		}
+	    }
+	    break;
+	case PROT_UNKNOWN:
+	    /* Check for a builtin OS-specific protocol,
+	     * and call its PreInit. */
+	    if (osInfo->CheckProtocol
+		&& osInfo->CheckProtocol(protocol)) {
+		if (!device)
+                    MouseFindDevice(pInfo, protocol);
+		if (osInfo->PreInit) {
+		    osInfo->PreInit(pInfo, protocol, 0);
+		}
+		break;
+	    }
+	    xf86Msg(X_ERROR, "%s: Unknown protocol \"%s\"\n",
+		    pInfo->name, protocol);
+	    break;
+	case PROT_UNSUP:
+	    xf86Msg(X_ERROR,
+		    "%s: Protocol \"%s\" is not supported on this "
+		    "platform\n", pInfo->name, protocol);
+	    break;
+	default:
+	    break;
+	}
+    } while (!detected);
+
+    *protocolID_out = protocolID;
+
+    return protocol;
+}
+
 static InputInfoPtr
 MousePreInit(InputDriverPtr drv, IDevPtr dev, int flags)
 {
@@ -821,11 +876,10 @@ MousePreInit(InputDriverPtr drv, IDevPtr dev, int flags)
     MouseDevPtr pMse;
     mousePrivPtr mPriv;
     MessageType protocolFrom = X_DEFAULT;
-    const char *protocol, *osProt = NULL;
+    const char *protocol;
     const char *device;
     MouseProtocolID protocolID;
     MouseProtocolPtr pProto;
-    Bool detected;
     int i;
     
     if (!InitProtocols())
@@ -881,49 +935,7 @@ MousePreInit(InputDriverPtr drv, IDevPtr dev, int flags)
     for (i = 0; i < MSE_MAXBUTTONS; i++)
 	pMse->buttonMap[i] = 1 << (i > 2 && i < MSE_MAXBUTTONS-4 ? i+4 : i);
 
-    protocolID = ProtocolNameToID(protocol);
-    do {
-	detected = TRUE;
-	switch (protocolID) {
-	case PROT_AUTO:
-	    if (osInfo->SetupAuto) {
-		if ((osProt = osInfo->SetupAuto(pInfo,NULL))) {
-		    MouseProtocolID id = ProtocolNameToID(osProt);
-		    if (id == PROT_UNKNOWN || id == PROT_UNSUP) {
-			protocolID = id;
-			protocol = osProt;
-			detected = FALSE;
-		    }
-		}
-	    }
-	    break;
-	case PROT_UNKNOWN:
-	    /* Check for a builtin OS-specific protocol,
-	     * and call its PreInit. */
-	    if (osInfo->CheckProtocol
-		&& osInfo->CheckProtocol(protocol)) {
-		if (!device)
-                    MouseFindDevice(pInfo, protocol);
-		if (osInfo->PreInit) {
-		    osInfo->PreInit(pInfo, protocol, 0);
-		}
-		goto out;
-	    }
-	    xf86Msg(X_ERROR, "%s: Unknown protocol \"%s\"\n",
-		    pInfo->name, protocol);
-	    goto out;
-	    break;
-	case PROT_UNSUP:
-	    xf86Msg(X_ERROR,
-		    "%s: Protocol \"%s\" is not supported on this "
-		    "platform\n", pInfo->name, protocol);
-	    goto out;
-	    break;
-	default:
-	    break;
-	    
-	}
-    } while (!detected);
+    protocol = MousePickProtocol(pInfo, device, protocol, &protocolID);
 
     if (!device)
         MouseFindDevice(pInfo, protocol);
