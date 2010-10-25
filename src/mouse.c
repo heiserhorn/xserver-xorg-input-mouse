@@ -162,7 +162,6 @@ _X_EXPORT InputDriverRec MOUSE = {
 	MousePreInit,
 	NULL,
 	NULL,
-	0
 };
 
 #define RETRY_COUNT 4
