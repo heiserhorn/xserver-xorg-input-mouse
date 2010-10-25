@@ -898,19 +898,20 @@ MousePreInit(InputDriverPtr drv, IDevPtr dev, int flags)
     pInfo->always_core_feedback = NULL;
     pInfo->conf_idev = dev;
 
+    /* Allocate the MouseDevRec and initialise it. */
+    if (!(pMse = calloc(sizeof(MouseDevRec), 1)))
+	goto out;
+
+    pInfo->private = pMse;
+    pMse->Ctrl = MouseCtrl;
+    pMse->PostEvent = MousePostEvent;
+    pMse->CommonOptions = MouseCommonOptions;
+
     /* Check if SendDragEvents has been disabled. */
     if (!xf86SetBoolOption(dev->commonOptions, "SendDragEvents", TRUE)) {
 	pInfo->flags &= ~XI86_SEND_DRAG_EVENTS;
     }
 
-    /* Allocate the MouseDevRec and initialise it. */
-    if (!(pMse = calloc(sizeof(MouseDevRec), 1)))
-	goto out;
-    pInfo->private = pMse;
-    pMse->Ctrl = MouseCtrl;
-    pMse->PostEvent = MousePostEvent;
-    pMse->CommonOptions = MouseCommonOptions;
-    
     /* Find the protocol type. */
     protocol = xf86SetStrOption(dev->commonOptions, "Protocol", NULL);
     if (protocol) {
