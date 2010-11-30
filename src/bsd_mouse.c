@@ -483,7 +483,9 @@ wsconsPreInit(InputInfoPtr pInfo, const char *protocol, int flags)
     pInfo->read_input = wsconsReadInput;
     pMse->xisbscale = sizeof(struct wscons_event);
 
+#if GET_ABI_MAJOR(ABI_XINPUT_VERSION) < 12
     pInfo->flags |= XI86_CONFIGURED;
+#endif
     return TRUE;
 }
 #endif
@@ -746,7 +748,9 @@ usbPreInit(InputInfoPtr pInfo, const char *protocol, int flags)
     pInfo->device_control = usbMouseProc;
     pInfo->read_input = usbReadInput;
 
+#if GET_ABI_MAJOR(ABI_XINPUT_VERSION) < 12
     pInfo->flags |= XI86_CONFIGURED;
+#endif
     return TRUE;
 }
 #endif /* USBMOUSE */

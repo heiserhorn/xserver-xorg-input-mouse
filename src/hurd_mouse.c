@@ -167,7 +167,9 @@ OsMousePreInit(InputInfoPtr pInfo, const char *protocol, int flags)
     /* Setup the local procs. */
     pInfo->read_input = OsMouseReadInput;
     
+#if GET_ABI_MAJOR(ABI_XINPUT_VERSION) < 12
     pInfo->flags |= XI86_CONFIGURED;
+#endif
     return TRUE;
 }
 
