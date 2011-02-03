@@ -21,7 +21,6 @@ Package: xserver-xorg-input-mouse
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, ${xinpdriver:Depends}
 Provides: ${xinpdriver:Provides}
-Replaces: xserver-xorg (<< 6.8.2-35)
 Description: X.Org X server -- mouse input driver
  This package provides the driver for mouse input devices.
  .
