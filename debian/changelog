@@ -1,3 +1,38 @@
+xserver-xorg-input-mouse (1:1.6.0-2) UNRELEASED; urgency=low
+
+  * Switch to dh:
+    - Use debhelper 8.
+    - Use dh-autoreconf.
+    - Bump xserver-xorg-dev build-dep for dh_xsf_substvars and xsf
+      debhelper sequence.
+    - Specify usr/share/man in .install, remove .manpages accordingly.
+    - Use .docs to install README file.
+  * Remove xsfbs accordingly.
+  * Remove long obsolete Replaces.
+  * Update Uploaders list. Thanks, David!
+  * Wrap Depends/Provides.
+  * Bump Standards-Version to 3.9.1 (no changes needed).
+
+ -- Cyril Brulebois <kibi@debian.org>  Thu, 03 Feb 2011 05:11:51 +0100
+
+xserver-xorg-input-mouse (1:1.6.0-1) experimental; urgency=low
+
+  [ Robert Hooker ]
+  * New upstream release.
+  * Bump xutils-dev requirement for new util-macros.
+
+  [ Cyril Brulebois ]
+  * Update debian/copyright from upstream COPYING.
+  * Add myself to Uploaders.
+
+ -- Cyril Brulebois <kibi@debian.org>  Fri, 19 Nov 2010 22:56:42 +0100
+
+xserver-xorg-input-mouse (1:1.5.0-3) experimental; urgency=low
+
+  * Build against Xserver 1.9.1 rc1.
+
+ -- Cyril Brulebois <kibi@debian.org>  Wed, 13 Oct 2010 01:10:55 +0200
+
 xserver-xorg-input-mouse (1:1.5.0-2) unstable; urgency=medium
 
   * Rename the build directory to not include DEB_BUILD_GNU_TYPE for no
