@@ -1,3 +1,10 @@
+xserver-xorg-input-mouse (1:1.6.0-3) UNRELEASED; urgency=low
+
+  * Cherry-pick from upstream, thanks to Samuel Thibault:
+    - Fix mouse data buffering
+
+ -- Cyril Brulebois <kibi@debian.org>  Thu, 17 Feb 2011 23:03:40 +0100
+
 xserver-xorg-input-mouse (1:1.6.0-2) unstable; urgency=low
 
   * Switch to dh:
