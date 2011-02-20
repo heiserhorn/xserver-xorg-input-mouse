@@ -281,13 +281,15 @@ indicating that the next button pressed is to be
 .BI "Option \*qClearDTR\*q \*q" boolean \*q
 Enable/disable clearing the DTR line on the serial port used by the mouse.
 Some dual-protocol mice require the DTR line to be cleared to operate
-in the non-default protocol.  This option is for serial mice only.
+in the non-default protocol.  This option is for serial mice only and is
+handled by the X server.
 Default: off.
 .TP 7
 .BI "Option \*qClearRTS\*q \*q" boolean \*q
 Enable/disable clearing the RTS line on the serial port used by the mouse.
 Some dual-protocol mice require the RTS line to be cleared to operate
-in the non-default protocol.  This option is for serial mice only.
+in the non-default protocol.  This option is for serial mice only and is
+handled by the X server.
 Default: off.
 .TP 7
 .BI "Option \*qBaudRate\*q \*q" integer \*q
