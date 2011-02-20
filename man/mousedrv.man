@@ -86,8 +86,9 @@ platforms this is limited to plug and play serial mice, and on some the
 auto-detection works for any mouse that the OS's kernel driver supports.
 On others, it is always necessary to specify the mouse protocol in the
 config file.  The
-.I README.mouse
-document contains some detailed information about this.
+.I README
+document provided with this driver contains some detailed information about
+this.
 .PP
 The following driver
 .B Options
