@@ -21,9 +21,8 @@ types of mice depends on the OS.
 .PP
 The
 .B mouse
-driver functions as a pointer input device, and may be used as the
-X server's core pointer.  Multiple mice are supported by multiple
-instances of this driver.
+driver functions as a pointer input device. Multiple mice are supported by
+multiple instances of this driver.
 .SH SUPPORTED HARDWARE
 .TP
 USB mouse
