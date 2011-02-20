@@ -105,7 +105,7 @@ NetMousePS/2, NetScrollPS/2, BusMouse, SysMouse, WSMouse, USB, VUID, Xqueue.
 .RE
 .PP
 .RS 7
-Not all protocols are supported on all platforms.  The "Auto" platform
+Not all protocols are supported on all platforms.  The "Auto" protocol
 specifies that protocol auto-detection should be attempted.  There is no
 default protocol setting, and specifying this option is mandatory.
 .RE
