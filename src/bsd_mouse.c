@@ -33,7 +33,7 @@
 #include "xf86Priv.h"
 #include "xf86_OSlib.h"
 #include "xf86Xinput.h"
-#include "xf86OSmouse.h"
+#include "mouse.h"
 #include "xisb.h"
 #include "mipointer.h"
 #ifdef WSCONS_SUPPORT
@@ -329,8 +329,8 @@ FindDevice(InputInfoPtr pInfo, const char *protocol, int flags)
 
     if (dev) {
 	/* Set the Device option. */
-	pInfo->conf_idev->commonOptions =
-	    xf86AddNewOption(pInfo->conf_idev->commonOptions, "Device", dev);
+	pInfo->options =
+	    xf86AddNewOption(pInfo->options, "Device", dev);
 	xf86Msg(X_INFO, "%s: Setting Device option to \"%s\"\n",
 		pInfo->name, dev);
     }
@@ -369,8 +369,8 @@ FindDevice(InputInfoPtr pInfo, const char *protocol, int flags)
 	SYSCALL(fd = open(*pdev, O_RDWR | O_NONBLOCK));
 	if (fd != -1) {
 	    /* Set the Device option. */
-	    pInfo->conf_idev->commonOptions =
-		xf86AddNewOption(pInfo->conf_idev->commonOptions, 
+	    pInfo->options =
+		xf86AddNewOption(pInfo->options,
 				 "Device", *pdev);
 	    xf86Msg(X_INFO, "%s: found Device \"%s\"\n",
 		    pInfo->name, *pdev);
@@ -458,7 +458,7 @@ wsconsPreInit(InputInfoPtr pInfo, const char *protocol, int flags)
     xf86Msg(X_CONFIG, "%s: Protocol: %s\n", pInfo->name, protocol);
 
     /* Collect the options, and process the common options. */
-    xf86CollectInputOptions(pInfo, NULL, NULL);
+    COLLECT_INPUT_OPTIONS(pInfo, NULL);
     xf86ProcessCommonOptions(pInfo, pInfo->options);
 
     /* Check if the device can be opened. */
@@ -468,7 +468,7 @@ wsconsPreInit(InputInfoPtr pInfo, const char *protocol, int flags)
 	    xf86Msg(X_WARNING, "%s: cannot open input device\n", pInfo->name);
 	else {
 	    xf86Msg(X_ERROR, "%s: cannot open input device\n", pInfo->name);
-	    xfree(pMse);
+	    free(pMse);
 	    pInfo->private = NULL;
 	    return FALSE;
 	}
@@ -483,7 +483,9 @@ wsconsPreInit(InputInfoPtr pInfo, const char *protocol, int flags)
     pInfo->read_input = wsconsReadInput;
     pMse->xisbscale = sizeof(struct wscons_event);
 
+#if GET_ABI_MAJOR(ABI_XINPUT_VERSION) < 12
     pInfo->flags |= XI86_CONFIGURED;
+#endif
     return TRUE;
 }
 #endif
@@ -545,7 +547,7 @@ usbMouseProc(DeviceIntPtr pPointer, int what)
 	else {
 	    pMse->buffer = XisbNew(pInfo->fd, pUsbMse->packetSize);
 	    if (!pMse->buffer) {
-		xfree(pMse);
+		free(pMse);
 		xf86CloseSerial(pInfo->fd);
 		pInfo->fd = -1;
 	    } else {
@@ -566,7 +568,7 @@ usbMouseProc(DeviceIntPtr pPointer, int what)
 	if (pInfo->fd != -1) {
 	    RemoveEnabledDevice(pInfo->fd);
 	    if (pUsbMse->packetSize > 8 && pUsbMse->buffer) {
-		xfree(pUsbMse->buffer);
+		free(pUsbMse->buffer);
 	    }
 	    if (pMse->buffer) {
 		XisbFree(pMse->buffer);
@@ -642,10 +644,10 @@ usbPreInit(InputInfoPtr pInfo, const char *protocol, int flags)
     report_desc_t reportDesc;
     int i;
 
-    pUsbMse = xalloc(sizeof(UsbMseRec));
+    pUsbMse = malloc(sizeof(UsbMseRec));
     if (pUsbMse == NULL) {
 	xf86Msg(X_ERROR, "%s: cannot allocate UsbMouseRec\n", pInfo->name);
-	xfree(pMse);
+	free(pMse);
 	return FALSE;
     }
 
@@ -653,7 +655,7 @@ usbPreInit(InputInfoPtr pInfo, const char *protocol, int flags)
     xf86Msg(X_CONFIG, "%s: Protocol: %s\n", pInfo->name, protocol);
 
     /* Collect the options, and process the common options. */
-    xf86CollectInputOptions(pInfo, NULL, NULL);
+    COLLECT_INPUT_OPTIONS(pInfo, NULL);
     xf86ProcessCommonOptions(pInfo, pInfo->options);
 
     /* Check if the device can be opened. */
@@ -663,8 +665,8 @@ usbPreInit(InputInfoPtr pInfo, const char *protocol, int flags)
 	    xf86Msg(X_WARNING, "%s: cannot open input device\n", pInfo->name);
 	else {
 	    xf86Msg(X_ERROR, "%s: cannot open input device\n", pInfo->name);
-	    xfree(pUsbMse);
-	    xfree(pMse);
+	    free(pUsbMse);
+	    free(pMse);
 	    return FALSE;
 	}
     }
@@ -687,12 +689,12 @@ usbPreInit(InputInfoPtr pInfo, const char *protocol, int flags)
     if (pUsbMse->packetSize <= 8) {
 	pUsbMse->buffer = pMse->protoBuf;
     } else {
-	pUsbMse->buffer = xalloc(pUsbMse->packetSize);
+	pUsbMse->buffer = malloc(pUsbMse->packetSize);
     }
     if (pUsbMse->buffer == NULL) {
 	xf86Msg(X_ERROR, "%s: cannot allocate buffer\n", pInfo->name);
-	xfree(pUsbMse);
-	xfree(pMse);
+	free(pUsbMse);
+	free(pMse);
 	xf86CloseSerial(pInfo->fd);
 	return FALSE;
     }
@@ -746,7 +748,9 @@ usbPreInit(InputInfoPtr pInfo, const char *protocol, int flags)
     pInfo->device_control = usbMouseProc;
     pInfo->read_input = usbReadInput;
 
+#if GET_ABI_MAJOR(ABI_XINPUT_VERSION) < 12
     pInfo->flags |= XI86_CONFIGURED;
+#endif
     return TRUE;
 }
 #endif /* USBMOUSE */
@@ -768,12 +772,12 @@ bsdMousePreInit(InputInfoPtr pInfo, const char *protocol, int flags)
     return TRUE;
 }    
 
-_X_EXPORT OSMouseInfoPtr
-xf86OSMouseInit(int flags)
+OSMouseInfoPtr
+OSMouseInit(int flags)
 {
     OSMouseInfoPtr p;
 
-    p = xcalloc(sizeof(OSMouseInfoRec), 1);
+    p = calloc(sizeof(OSMouseInfoRec), 1);
     if (!p)
 	return NULL;
     p->SupportedInterfaces = SupportedInterfaces;
