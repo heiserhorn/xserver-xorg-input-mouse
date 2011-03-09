@@ -252,6 +252,7 @@ static MouseProtocolRec mouseProtocols[] = {
 
     /* Misc (usually OS-specific) */
     { "SysMouse",		MSE_MISC,	mlDefaults,	PROT_SYSMOUSE },
+    { "WSMouse",		MSE_MISC,	NULL,		PROT_WSMOUSE },
 
     /* end of list */
     { NULL,			MSE_NONE,	NULL,		PROT_UNKNOWN }
@@ -817,6 +818,10 @@ MousePickProtocol(InputInfoPtr pInfo, const char* device,
     }
 
     switch (protocolID) {
+        case PROT_WSMOUSE:
+            if (osInfo->PreInit)
+                osInfo->PreInit(pInfo, protocol, 0);
+            break;
 	case PROT_UNKNOWN:
 	    /* Check for a builtin OS-specific protocol,
 	     * and call its PreInit. */
