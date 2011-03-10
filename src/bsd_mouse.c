@@ -102,7 +102,7 @@ SupportedInterfaces(void)
 #elif defined(__FreeBSD__) || defined(__FreeBSD_kernel__) || defined(__DragonFly__)
     return MSE_SERIAL | MSE_BUS | MSE_PS2 | MSE_AUTO | MSE_MISC;
 #else
-    return MSE_SERIAL | MSE_BUS | MSE_PS2 | MSE_XPS2 | MSE_AUTO;
+    return MSE_SERIAL | MSE_BUS | MSE_PS2 | MSE_XPS2 | MSE_AUTO | MSE_MISC;
 #endif
 }
 
@@ -453,31 +453,6 @@ static Bool
 wsconsPreInit(InputInfoPtr pInfo, const char *protocol, int flags)
 {
     MouseDevPtr pMse = pInfo->private;
-
-    pMse->protocol = protocol;
-    xf86Msg(X_CONFIG, "%s: Protocol: %s\n", pInfo->name, protocol);
-
-    /* Collect the options, and process the common options. */
-    COLLECT_INPUT_OPTIONS(pInfo, NULL);
-    xf86ProcessCommonOptions(pInfo, pInfo->options);
-
-    /* Check if the device can be opened. */
-    pInfo->fd = xf86OpenSerial(pInfo->options);
-    if (pInfo->fd == -1) {
-	if (xf86GetAllowMouseOpenFail())
-	    xf86Msg(X_WARNING, "%s: cannot open input device\n", pInfo->name);
-	else {
-	    xf86Msg(X_ERROR, "%s: cannot open input device\n", pInfo->name);
-	    free(pMse);
-	    pInfo->private = NULL;
-	    return FALSE;
-	}
-    }
-    xf86CloseSerial(pInfo->fd);
-    pInfo->fd = -1;
-
-    /* Process common mouse options (like Emulate3Buttons, etc). */
-    pMse->CommonOptions(pInfo);
 
     /* Setup the local input proc. */
     pInfo->read_input = wsconsReadInput;
