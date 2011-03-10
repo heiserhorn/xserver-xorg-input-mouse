@@ -1,9 +1,9 @@
-xserver-xorg-input-mouse (1:1.7.0-1) UNRELEASED; urgency=low
+xserver-xorg-input-mouse (1:1.7.0-1) unstable; urgency=low
 
   * New upstream release:
     - Fix BSD issues with new ABI12 init process.
 
- -- Cyril Brulebois <kibi@debian.org>  Thu, 10 Mar 2011 11:58:23 +0100
+ -- Cyril Brulebois <kibi@debian.org>  Thu, 10 Mar 2011 11:59:21 +0100
 
 xserver-xorg-input-mouse (1:1.6.99.901-1) unstable; urgency=low
 
