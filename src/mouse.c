@@ -953,6 +953,8 @@ MousePreInit(InputDriverPtr drv, InputInfoPtr pInfo, int flags)
         MouseFindDevice(pInfo, protocol);
 
     xf86Msg(protocolFrom, "%s: Protocol: \"%s\"\n", pInfo->name, protocol);
+    if (protocolID == PROT_UNKNOWN)
+        goto out;
     if (!(pProto = GetProtocol(protocolID)))
     {
 	rc = BadValue;
