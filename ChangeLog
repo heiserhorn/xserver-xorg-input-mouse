@@ -1,3 +1,25 @@
+commit 1780667854d73bbd0e0596271b09f93321cd0b1d
+Author: Samuel Thibault <samuel.thibault@ens-lyon.org>
+Date:   Wed Mar 30 02:26:25 2011 +0200
+
+    Fix Hurd mouse driver with XInput ABI before 12
+    
+    Commit 7bf22a36 (Use pInfo->options instead of conf-idev.) updated the
+    xf86CollectInputOptions call into keeping previous options (for ABI before
+    12). The hurd mouse driver also needs to be updated.
+
+commit d6e9623875de5714e85f7da5782ea665116f86dc
+Author: Samuel Thibault <samuel.thibault@ens-lyon.org>
+Date:   Wed Mar 30 01:00:47 2011 +0200
+
+    Fix OSMouse OS-defined protocol support
+    
+    Fix regression introduced by 0a088df6: in the case of an OS-specific
+    protocol, the protocol is PROT_UNKNOWN, but should not be rejected: the core
+    mouse drive just needs to let the OS driver handle it.
+    
+    Signed-off-by: Samuel Thibault <samuel.thibault@ens-lyon.org>
+
 commit a07c353f01f99ef3e62f84a32e91d539a4e4863a
 Author: Peter Hutterer <peter.hutterer@who-t.net>
 Date:   Thu Mar 10 08:32:23 2011 +1000
