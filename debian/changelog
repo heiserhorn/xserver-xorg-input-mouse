@@ -1,8 +1,15 @@
-xserver-xorg-input-mouse (1:1.7.0-1+exp1) experimental; urgency=low
+xserver-xorg-input-mouse (1:1.7.0-2+exp1) experimental; urgency=low
 
   * Rebuild in experimental against Xserver 1.10.
 
- -- Cyril Brulebois <kibi@debian.org>  Thu, 10 Mar 2011 12:04:30 +0100
+ -- Cyril Brulebois <kibi@debian.org>  Fri, 01 Apr 2011 02:21:05 +0200
+
+xserver-xorg-input-mouse (1:1.7.0-2) unstable; urgency=low
+
+  * Merge two more commits from upstream to fix Hurd support, thanks to
+    Samuel Thibault (Closes: #620089).
+
+ -- Cyril Brulebois <kibi@debian.org>  Fri, 01 Apr 2011 02:18:50 +0200
 
 xserver-xorg-input-mouse (1:1.7.0-1) unstable; urgency=low
 
