@@ -1,3 +1,12 @@
+xserver-xorg-input-mouse (1:1.7.1-1) UNRELEASED; urgency=low
+
+  * New upstream release:
+    - Mostly equivalent to the previous upload, due to the merge from
+      upstream in 1:1.7.0-2, but let's keep up with new upstream releases
+      anyway.
+
+ -- Cyril Brulebois <kibi@debian.org>  Tue, 05 Jul 2011 19:40:09 +0200
+
 xserver-xorg-input-mouse (1:1.7.0-4) unstable; urgency=low
 
   * Upload to unstable.
