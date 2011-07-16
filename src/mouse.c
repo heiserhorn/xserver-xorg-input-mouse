@@ -1691,6 +1691,9 @@ MouseProc(DeviceIntPtr device, int what)
 	free(pMse->mousePriv);
 	pMse->mousePriv = NULL;
 	break;
+
+    default:
+	return BadValue;
     }
     return Success;
 }
