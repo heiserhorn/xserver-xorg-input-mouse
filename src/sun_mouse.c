@@ -205,6 +205,10 @@ vuidPreInit(InputInfoPtr pInfo, const char *protocol, int flags)
     VuidMsePtr pVuidMse;
     int buttons, i;
 
+    /* Ensure we don't add the same device twice */
+    if (getVuidMsePriv(pInfo) != NULL)
+	return TRUE;
+
     pVuidMse = calloc(sizeof(VuidMseRec), 1);
     if (pVuidMse == NULL) {
 	xf86Msg(X_ERROR, "%s: cannot allocate VuidMouseRec\n", pInfo->name);
@@ -684,7 +688,9 @@ SetupAuto(InputInfoPtr pInfo, int *protoPara)
     } else if (pMse->protocolID == PROT_AUTO) {
 	pdev = xf86CheckStrOption(pInfo->options,
 		"Device", NULL);
-	solarisMouseAutoProbe(pInfo, &pproto, &pdev);
+	if ((solarisMouseAutoProbe(pInfo, &pproto, &pdev) != FALSE) &&
+	    (pproto != NULL))
+	    sunMousePreInit(pInfo, pproto, 0);
     }
     return pproto;
 }
