@@ -2431,13 +2431,13 @@ SetupMouse(InputInfoPtr pInfo)
      * for the new protocol.
      */
     if (pMse->oldProtocolID != pMse->protocolID) {
-	pointer tmp = NULL;
 	if ((pMse->protocolID >= 0)
 	    && (pMse->protocolID < PROT_NUMPROTOS)
-	    && mouseProtocols[pMse->protocolID].defaults)
-	    tmp = xf86OptionListCreate(
+	    && mouseProtocols[pMse->protocolID].defaults) {
+	    pointer tmp = xf86OptionListCreate(
 		mouseProtocols[pMse->protocolID].defaults, -1, 0);
-	pInfo->options = xf86OptionListMerge(pInfo->options, tmp);
+	    pInfo->options = xf86OptionListMerge(pInfo->options, tmp);
+	}
 	/*
 	 * If baudrate is set write it back to the option
 	 * list so that the serial interface code can access
