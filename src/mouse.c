@@ -3469,12 +3469,14 @@ autoProbeMouse(InputInfoPtr pInfo, Bool inSync, Bool lostSync)
 	case AUTOPROBE_SWITCH_PROTOCOL:
 	{
 	    MouseProtocolID proto;
+	    MouseProtocolPtr pProto;
 	    void *defaults;
 	    AP_DBG(("State SWITCH_PROTOCOL\n"));
 	    proto = mPriv->protoList[mPriv->protocolID++];
 	    if (proto == PROT_UNKNOWN) 
 		mPriv->autoState = AUTOPROBE_SWITCHSERIAL;
-	    else if (!(defaults = GetProtocol(proto)->defaults)
+	    else if (!((pProto = GetProtocol(proto)) &&
+		       ((defaults = pProto->defaults)))
 		       || (mPriv->serialDefaultsNum == -1 
 			   && (defaults == msDefaults))
 		       || (mPriv->serialDefaultsNum != -1
