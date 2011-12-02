@@ -1,3 +1,9 @@
+xserver-xorg-input-mouse (1:1.7.1-1~bpo60+1) squeeze-backports; urgency=low
+
+  * Rebuild for squeeze-backports.
+
+ -- Cyril Brulebois <kibi@debian.org>  Fri, 02 Dec 2011 12:46:55 +0100
+
 xserver-xorg-input-mouse (1:1.7.1-1) unstable; urgency=low
 
   * New upstream release:
