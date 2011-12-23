@@ -203,7 +203,6 @@ vuidPreInit(InputInfoPtr pInfo, const char *protocol, int flags)
 {
     MouseDevPtr pMse = pInfo->private;
     VuidMsePtr pVuidMse;
-    int buttons, i;
 
     /* Ensure we don't add the same device twice */
     if (getVuidMsePriv(pInfo) != NULL)
@@ -279,7 +278,6 @@ vuidReadInput(InputInfoPtr pInfo)
     int buttons;
     int dx = 0, dy = 0, dz = 0, dw = 0;
     unsigned int n;
-    int c; 
     unsigned char *pBuf;
     int absX = 0, absY = 0;
     Bool absXset = FALSE, absYset = FALSE;
