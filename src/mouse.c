@@ -62,6 +62,9 @@
 
 #include "xf86Xinput.h"
 #include "xf86_OSproc.h"
+#include "exevents.h"
+#include <X11/Xatom.h>
+#include "xserver-properties.h"
 
 #include "compiler.h"
 
@@ -1019,6 +1022,25 @@ out:
     return rc;
 }
 
+static void
+MouseInitProperties(DeviceIntPtr device)
+{
+    InputInfoPtr pInfo = device->public.devicePrivate;
+
+#ifdef XI_PROP_DEVICE_NODE
+    const char *device_node =
+        xf86CheckStrOption(pInfo->options, "Device", NULL);
+
+    if (device_node)
+    {
+        Atom prop_device = MakeAtom(XI_PROP_DEVICE_NODE,
+                                    strlen(XI_PROP_DEVICE_NODE), TRUE);
+        XIChangeDeviceProperty(device, prop_device, XA_STRING, 8,
+                               PropModeReplace,
+                               strlen(device_node), device_node, FALSE);
+    }
+#endif /* XI_PROP_DEVICE_NODE */
+}
 
 static void
 MouseReadInput(InputInfoPtr pInfo)
@@ -1616,6 +1638,7 @@ MouseProc(DeviceIntPtr device, int what)
 	ErrorF("assigning %p atom=%d name=%s\n", device, pInfo->atom,
 		pInfo->name);
 #endif
+	MouseInitProperties(device);
 	break;
 
     case DEVICE_ON:
