@@ -1022,10 +1022,29 @@ out:
     return rc;
 }
 
+static void MouseInitButtonLabels(Atom *btn_labels)
+{
+    int i;
+    Atom unknown_btn;
+
+    btn_labels[0] = XIGetKnownProperty(BTN_LABEL_PROP_BTN_LEFT);
+    btn_labels[1] = XIGetKnownProperty(BTN_LABEL_PROP_BTN_MIDDLE);
+    btn_labels[2] = XIGetKnownProperty(BTN_LABEL_PROP_BTN_RIGHT);
+    btn_labels[3] = XIGetKnownProperty(BTN_LABEL_PROP_BTN_WHEEL_UP);
+    btn_labels[4] = XIGetKnownProperty(BTN_LABEL_PROP_BTN_WHEEL_DOWN);
+    btn_labels[5] = XIGetKnownProperty(BTN_LABEL_PROP_BTN_HWHEEL_LEFT);
+    btn_labels[6] = XIGetKnownProperty(BTN_LABEL_PROP_BTN_HWHEEL_RIGHT);
+
+    unknown_btn = XIGetKnownProperty(BTN_LABEL_PROP_BTN_UNKNOWN);
+    for (i = 7; i < MSE_MAXBUTTONS; i++)
+        btn_labels[i] = unknown_btn;
+}
+
 static void
 MouseInitProperties(DeviceIntPtr device)
 {
     InputInfoPtr pInfo = device->public.devicePrivate;
+    MouseDevPtr pMse = pInfo->private;
 
 #ifdef XI_PROP_DEVICE_NODE
     const char *device_node =
@@ -1040,6 +1059,23 @@ MouseInitProperties(DeviceIntPtr device)
                                strlen(device_node), device_node, FALSE);
     }
 #endif /* XI_PROP_DEVICE_NODE */
+
+    /* Button labels */
+    if (pMse->buttons > 0)
+    {
+        Atom prop_btn_label = XIGetKnownProperty(BTN_LABEL_PROP);
+
+        if (prop_btn_label)
+        {
+            Atom btn_labels[MSE_MAXBUTTONS];
+            MouseInitButtonLabels(btn_labels);
+
+            XIChangeDeviceProperty(device, prop_btn_label, XA_ATOM, 32,
+                                   PropModeReplace, pMse->buttons,
+                                   btn_labels, FALSE);
+            XISetDevicePropertyDeletable(device, prop_btn_label, FALSE);
+        }
+    }
 }
 
 static void
@@ -1597,7 +1633,11 @@ MouseProc(DeviceIntPtr device, int what)
 	for (i = 0; i < MSE_MAXBUTTONS; i++)
 	    map[i + 1] = i + 1;
 
-        /* FIXME: we should probably set the labels here */
+#if GET_ABI_MAJOR(ABI_XINPUT_VERSION) >= 7
+        MouseInitButtonLabels(btn_labels);
+        axes_labels[0] = XIGetKnownProperty(AXIS_LABEL_PROP_REL_X);
+        axes_labels[1] = XIGetKnownProperty(AXIS_LABEL_PROP_REL_Y);
+#endif
 
 	InitPointerDeviceStruct((DevicePtr)device, map,
 				min(pMse->buttons, MSE_MAXBUTTONS),
