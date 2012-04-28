@@ -125,12 +125,12 @@ cannot be auto-detected, the default value is 3.  The maximum number is 24.
 Enable/disable the emulation of the third (middle) mouse button for mice
 which only have two physical buttons.  The third button is emulated by
 pressing both buttons simultaneously.  Default: on, until a press of a
-physical button 3 is detected.
+physical button 3 is detected.  Property: "Mouse Middle Button Emulation"
 .TP 7
 .BI "Option \*qEmulate3Timeout\*q \*q" integer \*q
 Sets the timeout (in milliseconds) that the driver waits before deciding
 if two buttons where pressed "simultaneously" when 3 button emulation is
-enabled.  Default: 50.
+enabled.  Default: 50.   Property: "Mouse Middle Button Timeout"
 .TP 7
 .BI "Option \*qChordMiddle\*q \*q" boolean \*q
 Enable/disable handling of mice that send left+right events when the middle

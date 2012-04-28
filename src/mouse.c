@@ -65,6 +65,7 @@
 #include "exevents.h"
 #include <X11/Xatom.h>
 #include "xserver-properties.h"
+#include "xf86-mouse-properties.h"
 
 #include "compiler.h"
 
@@ -139,6 +140,7 @@ static void ps2WakeupHandler(pointer data, int i, pointer LastSelectMask);
 static void ps2BlockHandler(pointer data, struct timeval **waitTime,
 			    pointer LastSelectMask);
 #endif
+static void Emulate3ButtonsSetEnabled(InputInfoPtr pInfo, Bool enable);
 
 /* mouse autoprobe stuff */
 static const char *autoOSProtocol(InputInfoPtr pInfo, int *protoPara);
@@ -159,6 +161,10 @@ _X_EXPORT InputDriverRec MOUSE = {
 };
 
 #define RETRY_COUNT 4
+
+/* Properties that can be set at runtime via xinput */
+static Atom prop_mbemu     = 0; /* Middle button emulation on/off property */
+static Atom prop_mbtimeout = 0; /* Middle button timeout property */
 
 /*
  * Microsoft (all serial models), Logitech MouseMan, First Mouse, etc,
@@ -1040,11 +1046,39 @@ static void MouseInitButtonLabels(Atom *btn_labels)
         btn_labels[i] = unknown_btn;
 }
 
+static int
+MouseSetProperty(DeviceIntPtr device, Atom atom,
+				XIPropertyValuePtr val, BOOL checkonly)
+{
+    InputInfoPtr pInfo = device->public.devicePrivate;
+    MouseDevPtr pMse = pInfo->private;
+
+    if (atom == prop_mbemu)
+    {
+        if (val->format != 8 || val->size != 1 || val->type != XA_INTEGER)
+            return BadMatch;
+
+        if (!checkonly)
+            Emulate3ButtonsSetEnabled(pInfo, *((BOOL*)val->data));
+    }
+    else if (atom == prop_mbtimeout)
+    {
+        if (val->format != 32 || val->size != 1 || val->type != XA_INTEGER)
+            return BadMatch;
+
+        if (!checkonly)
+            pMse->emulate3Timeout = *((CARD32*)val->data);
+    }
+
+    return Success;
+}
+
 static void
 MouseInitProperties(DeviceIntPtr device)
 {
     InputInfoPtr pInfo = device->public.devicePrivate;
     MouseDevPtr pMse = pInfo->private;
+    int rc;
 
 #ifdef XI_PROP_DEVICE_NODE
     const char *device_node =
@@ -1076,6 +1110,32 @@ MouseInitProperties(DeviceIntPtr device)
             XISetDevicePropertyDeletable(device, prop_btn_label, FALSE);
         }
     }
+
+    /* Middle button emulation - which this driver calls 3rd button emulation,
+     * but evdev's properties considers that to be simulating right button
+     * clicks from a one button mouse, which this driver does not currently
+     * support, so we use this name for better consistency.
+     */
+    prop_mbemu = MakeAtom(MOUSE_PROP_MIDBUTTON, strlen(MOUSE_PROP_MIDBUTTON),
+                          TRUE);
+    rc = XIChangeDeviceProperty(device, prop_mbemu, XA_INTEGER, 8,
+                                PropModeReplace, 1,
+                                &pMse->emulate3Buttons, FALSE);
+    if (rc != Success)
+        return;
+    XISetDevicePropertyDeletable(device, prop_mbemu, FALSE);
+
+    prop_mbtimeout = MakeAtom(MOUSE_PROP_MIDBUTTON_TIMEOUT,
+                              strlen(MOUSE_PROP_MIDBUTTON_TIMEOUT), TRUE);
+    rc = XIChangeDeviceProperty(device, prop_mbtimeout, XA_INTEGER, 32,
+                                PropModeReplace, 1,
+                                &pMse->emulate3Timeout, FALSE);
+
+    if (rc != Success)
+        return;
+    XISetDevicePropertyDeletable(device, prop_mbtimeout, FALSE);
+
+    XIRegisterPropertyHandler(device, MouseSetProperty, NULL, NULL);
 }
 
 static void
@@ -1965,6 +2025,32 @@ buttonTimer(InputInfoPtr pInfo)
     return 0;
 }
 
+static void
+Emulate3ButtonsSetEnabled(InputInfoPtr pInfo, Bool enable)
+{
+    MouseDevPtr pMse = pInfo->private;
+
+    if (pMse->emulate3Buttons == enable)
+        return;
+
+    pMse->emulate3Buttons = enable;
+
+    if (enable) {
+        pMse->emulateState = 0;
+        pMse->emulate3Pending = FALSE;
+        pMse->emulate3ButtonsSoft = FALSE; /* specifically requested now */
+
+        RegisterBlockAndWakeupHandlers (MouseBlockHandler, MouseWakeupHandler,
+                                        (pointer) pInfo);
+    } else {
+        if (pMse->emulate3Pending)
+            buttonTimer(pInfo);
+
+        RemoveBlockAndWakeupHandlers (MouseBlockHandler, MouseWakeupHandler,
+                                      (pointer) pInfo);
+    }
+}
+
 static Bool
 Emulate3ButtonsSoft(InputInfoPtr pInfo)
 {
@@ -1973,15 +2059,9 @@ Emulate3ButtonsSoft(InputInfoPtr pInfo)
     if (!pMse->emulate3ButtonsSoft)
 	return TRUE;
 
-    pMse->emulate3Buttons = FALSE;
-    
-    if (pMse->emulate3Pending)
-	buttonTimer(pInfo);
-
     xf86Msg(X_INFO,"3rd Button detected: disabling emulate3Button\n");
 
-    RemoveBlockAndWakeupHandlers (MouseBlockHandler, MouseWakeupHandler,
-				  (pointer) pInfo);
+    Emulate3ButtonsSetEnabled(pInfo, FALSE);
 
     return FALSE;
 }

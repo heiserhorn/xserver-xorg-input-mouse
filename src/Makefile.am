@@ -19,7 +19,7 @@
 #  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 AM_CFLAGS = $(CWARNFLAGS) 
-AM_CPPFLAGS = $(XORG_CFLAGS)
+AM_CPPFLAGS = -I$(top_srcdir)/include $(XORG_CFLAGS)
 
 # this is obnoxious:
 # -module lets us name the module exactly how we want

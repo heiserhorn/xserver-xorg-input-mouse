@@ -57,6 +57,16 @@ AC_ARG_WITH(xorg-module-dir,
 inputdir=${moduledir}/input
 AC_SUBST(inputdir)
 
+# X Server SDK location is required to install xf86-mouse-properties.h
+# This location is also relayed in the xorg-mouse.pc file
+sdkdir=`$PKG_CONFIG --variable=sdkdir xorg-server`
+
+# Workaround overriding sdkdir to be able to create a tarball when user has no
+# write permission in sdkdir. See DISTCHECK_CONFIGURE_FLAGS in Makefile.am
+AC_ARG_WITH([sdkdir], [], [sdkdir="$withval"])
+AC_SUBST([sdkdir])
+
+
 # Work out which OS mouse driver we need to build
 case $host_os in
   linux*)
@@ -78,6 +88,8 @@ DRIVER_NAME=mouse
 AC_SUBST([DRIVER_NAME])
 
 AC_CONFIG_FILES([Makefile
+                 xf86-mouse.pc
+                 include/Makefile
                  src/Makefile
                  man/Makefile])
 AC_OUTPUT
