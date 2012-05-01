@@ -51,7 +51,7 @@
 typedef unsigned short kev_type;		/* kd event type */
 typedef unsigned char Scancode;
 
-struct mouse_motion {		
+struct mouse_motion {
     short mm_deltaX;		/* units? */
     short mm_deltaY;
 };
@@ -66,7 +66,7 @@ typedef struct {
     } value;
 } kd_event;
 
-/* 
+/*
  * kd_event ID's.
  */
 #define MOUSE_LEFT	1		/* mouse left button up/down */
@@ -87,7 +87,7 @@ OsMouseReadInput(InputInfoPtr pInfo)
     MouseDevPtr pMse;
     static kd_event eventList[NUMEVENTS];
     static int remainder = 0;
-    int n, c; 
+    int n, c;
     kd_event *event = eventList;
     unsigned char *pBuf;
 
@@ -156,7 +156,7 @@ OsMousePreInit(InputInfoPtr pInfo, const char *protocol, int flags)
     xf86ProcessCommonOptions(pInfo, pInfo->options);
 
     /* Check if the device can be opened. */
-    pInfo->fd = xf86OpenSerial(pInfo->options); 
+    pInfo->fd = xf86OpenSerial(pInfo->options);
     if (pInfo->fd == -1) {
 	if (xf86GetAllowMouseOpenFail())
 	    xf86Msg(X_WARNING, "%s: cannot open input device\n", pInfo->name);
@@ -174,7 +174,7 @@ OsMousePreInit(InputInfoPtr pInfo, const char *protocol, int flags)
 
     /* Setup the local procs. */
     pInfo->read_input = OsMouseReadInput;
-    
+
 #if GET_ABI_MAJOR(ABI_XINPUT_VERSION) < 12
     pInfo->flags |= XI86_CONFIGURED;
 #endif

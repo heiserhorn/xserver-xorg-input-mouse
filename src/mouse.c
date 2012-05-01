@@ -293,7 +293,7 @@ MouseCommonOptions(InputInfoPtr pInfo)
 	pMse->emulate3ButtonsSoft = TRUE;
 	pMse->emulate3Buttons = TRUE;
     }
-    
+
     pMse->emulate3Timeout = xf86SetIntOption(pInfo->options,
 					     "Emulate3Timeout", 50);
     if (pMse->emulate3Buttons || pMse->emulate3ButtonsSoft) {
@@ -315,12 +315,12 @@ MouseCommonOptions(InputInfoPtr pInfo)
     } else
 	pMse->invY = 1;
     pMse->angleOffset = xf86SetIntOption(pInfo->options, "AngleOffset", 0);
-    
+
 
     if (pMse->pDragLock)
 	free(pMse->pDragLock);
     pMse->pDragLock = NULL;
-      
+
     s = xf86SetStrOption(pInfo->options, "DragLockButtons", NULL);
 
     if (s) {
@@ -330,13 +330,13 @@ MouseCommonOptions(InputInfoPtr pInfo)
 	int i, j;             /* indexes */
 	char *s1;             /* parse input string */
 	DragLockPtr pLock;
-      
+
 	pLock = pMse->pDragLock = calloc(1, sizeof(DragLockRec));
 	/* init code */
 
 	/* initial string to be taken apart */
 	s1 = s;
-      
+
 	/* keep getting numbers which are buttons */
 	while ((s1 != NULL) && (lock = strtol(s1, &s1, 10)) != 0) {
 
@@ -354,14 +354,14 @@ MouseCommonOptions(InputInfoPtr pInfo)
 		/*if no target, must be a master drag lock button */
 		/* save master drag lock mask */
 		pLock->masterLockM = lockM;
-		xf86Msg(X_CONFIG, 
-			"DragLock button %d is master drag lock", 
+		xf86Msg(X_CONFIG,
+			"DragLock button %d is master drag lock",
 			lock);
 	    } else {
 		/* have target button number*/
 		/* check target button number for sanity */
 		if ((target < 0) || (target > MSE_MAXBUTTONS)) {
-		    xf86Msg(X_WARNING, 
+		    xf86Msg(X_WARNING,
 			    "DragLock: Invalid button number for target=%d\n",
 			    target);
 		    break;
@@ -370,20 +370,20 @@ MouseCommonOptions(InputInfoPtr pInfo)
 		/* target button mask */
 		targetM = 1 << (target - 1);
 
-		xf86Msg(X_CONFIG, 
-			"DragLock: button %d is drag lock for button %d\n", 
+		xf86Msg(X_CONFIG,
+			"DragLock: button %d is drag lock for button %d\n",
 			lock,target);
 		lock--;
 
 		/* initialize table that maps drag lock mask to target mask */
-		pLock->nib_table[lock / NIB_BITS][1 << (lock % NIB_BITS)] = 
+		pLock->nib_table[lock / NIB_BITS][1 << (lock % NIB_BITS)] =
 			targetM;
 
 		/* add new drag lock to mask of drag locks */
 		pLock->lockButtonsM |= lockM;
 	    }
 
-	} 
+	}
 
 	/*
 	 * fill out rest of map that maps sets of drag lock buttons
@@ -415,7 +415,7 @@ MouseCommonOptions(InputInfoPtr pInfo)
 		     * has already been calculated.
 		     */
 		    if (otherbits)
-			pLock->nib_table[i][j] = 
+			pLock->nib_table[i][j] =
 				     pLock->nib_table[i][fM] |
 				     pLock->nib_table[i][otherbits];
 
@@ -483,7 +483,7 @@ MouseCommonOptions(InputInfoPtr pInfo)
 	    wheelButton = 4;
 	}
 	pMse->wheelButton = wheelButton;
-	
+
 	pMse->wheelInertia = xf86SetIntOption(pInfo->options,
 					"EmulateWheelInertia", 10);
 	if (pMse->wheelInertia <= 0) {
@@ -658,8 +658,8 @@ MouseHWOptions(InputInfoPtr pInfo)
 {
     MouseDevPtr  pMse = pInfo->private;
     mousePrivPtr mPriv = (mousePrivPtr)pMse->mousePriv;
-    
-    if (mPriv == NULL) 
+
+    if (mPriv == NULL)
 	    return;
 
     if ((mPriv->soft
@@ -767,7 +767,7 @@ InitProtocols(void)
     classes = osInfo->SupportedInterfaces();
     if (!classes)
 	return FALSE;
-    
+
     /* Mark unsupported interface classes. */
     for (i = 0; mouseProtocols[i].name; i++)
 	if (!(mouseProtocols[i].class & classes))
@@ -1020,7 +1020,7 @@ MousePreInit(InputDriverPtr drv, InputInfoPtr pInfo, int flags)
     pMse->autoProbeMouse = autoProbeMouse;
     pMse->collectData = collectData;
     pMse->dataGood = autoGood;
-    
+
     MouseHWOptions(pInfo);
     MouseSerialOptions(pInfo);
 
@@ -1239,15 +1239,15 @@ MouseReadInput(InputInfoPtr pInfo)
 		 * byte is also optional for MouseMan+ and FirstMouse+ in
 		 * their native mode.  It is always sent if they are in the
 		 * IntelliMouse compatible mode.
-		 */ 
-		case PROT_IMSERIAL:	/* IntelliMouse, NetMouse, Mie Mouse, 
+		 */
+		case PROT_IMSERIAL:	/* IntelliMouse, NetMouse, Mie Mouse,
 					   MouseMan+ */
 		    dz = (u & 0x08) ?
 				(u & 0x0f) - 16 : (u & 0x0f);
 		    if ((dz >= 7) || (dz <= -7))
 			dz = 0;
 		    buttons |=  ((int)(u & 0x10) >> 3)
-			      | ((int)(u & 0x20) >> 2) 
+			      | ((int)(u & 0x20) >> 2)
 			      | (pMse->lastButtons & 0x05);
 		    break;
 
@@ -1302,19 +1302,19 @@ MouseReadInput(InputInfoPtr pInfo)
 	 *       use bit 0x08 in the header byte for resyncing, since that
 	 *       bit is supposed to be always on, but nobody told Microsoft...)
 	 */
-	
+
 	/*
 	 * [KAZU,OYVIND-120398]
 	 * The above hack is wrong!  Because of b) above, we shall see
 	 * erroneous mouse events so often when the MouseSystem mouse is
-	 * moved quickly.  As for the PS/2 and its variants, we don't need 
-	 * to treat them as special cases, because protoPara[2] and 
-	 * protoPara[3] are both 0x00 for them, thus, any data bytes will 
-	 * never be discarded.  0x80 is rejected for MMSeries, Logitech 
-	 * and MMHittab protocols, because protoPara[2] and protoPara[3] 
-	 * are 0x80 and 0x00 respectively.  The other protocols are 7-bit 
-	 * protocols; there is no use checking 0x80.  
-	 * 
+	 * moved quickly.  As for the PS/2 and its variants, we don't need
+	 * to treat them as special cases, because protoPara[2] and
+	 * protoPara[3] are both 0x00 for them, thus, any data bytes will
+	 * never be discarded.  0x80 is rejected for MMSeries, Logitech
+	 * and MMHittab protocols, because protoPara[2] and protoPara[3]
+	 * are 0x80 and 0x00 respectively.  The other protocols are 7-bit
+	 * protocols; there is no use checking 0x80.
+	 *
 	 * All in all we should check the condition a) only.
 	 */
 
@@ -1323,10 +1323,10 @@ MouseReadInput(InputInfoPtr pInfo)
 	 * Check packet for valid data:
 	 * If driver is in sync with datastream, the packet is considered
 	 * bad if any byte (header and/or data) contains an invalid value.
-	 * 
+	 *
 	 * If packet is bad, we discard the first byte and shift the buffer.
 	 * Next iteration will then check the new situation for validity.
-	 * 
+	 *
 	 * If flag MF_SAFE is set in proto[7] and the driver
 	 * is out of sync, the packet is also considered bad if
 	 * any of the data bytes contains a valid header byte value.
@@ -1360,7 +1360,7 @@ MouseReadInput(InputInfoPtr pInfo)
 	    ErrorF("skipping byte %02x\n",*pBuf);
 #endif
 	    /* Tell auto probe that we are out of sync */
-	    if (pMse->autoProbeMouse && pMse->autoProbe) 
+	    if (pMse->autoProbeMouse && pMse->autoProbe)
 		pMse->autoProbeMouse(pInfo, FALSE, pMse->inSync);
 	    pMse->protoBufTail = --pBufP;
 	    for (j = 0; j < pBufP; j++)
@@ -1369,9 +1369,9 @@ MouseReadInput(InputInfoPtr pInfo)
 	    continue;
 	}
 	/* Tell auto probe that we were successful */
-	if (pMse->autoProbeMouse && pMse->autoProbe) 
+	if (pMse->autoProbeMouse && pMse->autoProbe)
 	    pMse->autoProbeMouse(pInfo, TRUE, FALSE);
-	
+
 	if (!pMse->inSync) {
 #ifdef EXTMOUSEDEBUG
 	    ErrorF("mouse driver back in sync\n");
@@ -1381,7 +1381,7 @@ MouseReadInput(InputInfoPtr pInfo)
 
   	if (!pMse->dataGood(pMse))
   	    continue;
-	
+
 	/*
 	 * Packet complete and verified, now process it ...
 	 */
@@ -1417,7 +1417,7 @@ MouseReadInput(InputInfoPtr pInfo)
 	    dx =    (signed char)(pBuf[1]) + (char)(pBuf[3]);
 	    dy = - ((signed char)(pBuf[2]) + (char)(pBuf[4]));
 	    break;
-      
+
 	case PROT_MMHIT:	/* MM_HitTablet */
 	    buttons = pBuf[0] & 0x07;
 	    if (buttons != 0)
@@ -1476,10 +1476,10 @@ MouseReadInput(InputInfoPtr pInfo)
 		    SetMouseProto(pMse, PROT_EXPPS2);
 		    xf86Msg(X_INFO,
 			    "Mouse autoprobe: Changing protocol to %s\n",
-			    pMse->protocol); 
-		    
-		    goto REDO_INTERPRET; 
-		} else  
+			    pMse->protocol);
+
+		    goto REDO_INTERPRET;
+		} else
 		    dz = 0;
 	    }
 	    break;
@@ -1488,7 +1488,7 @@ MouseReadInput(InputInfoPtr pInfo)
 	    if (pMse->autoProbe && (pBuf[3] & 0xC0)) {
 		SetMouseProto(pMse, PROT_IMPS2);
 		xf86Msg(X_INFO,"Mouse autoprobe: Changing protocol to %s\n",
-			pMse->protocol); 
+			pMse->protocol);
 		goto REDO_INTERPRET;
 	    }
 	    buttons = (pBuf[0] & 0x04) >> 1 |       /* Middle */
@@ -1533,7 +1533,7 @@ MouseReadInput(InputInfoPtr pInfo)
 					    (pBuf[2] & 0x0f);
 		    break;
 		case 2:		/* Logitech reserves this packet type */
-		    /* 
+		    /*
 		     * IBM ScrollPoint uses this packet to encode its
 		     * stick movement.
 		     */
@@ -1610,7 +1610,7 @@ MouseReadInput(InputInfoPtr pInfo)
                       | ((int)(pBuf[3] & 0x10) >> 3);
             dx = (signed char)(((pBuf[0] & 0x03) << 6) | (pBuf[1] &  0x3F));
             dy = (signed char)(((pBuf[0] & 0x0C) << 4) | (pBuf[2] &  0x3F));
-	    dz = (pBuf[3] & 0x08) ? ((int)(pBuf[3] & 0x0F) - 0x10) : 
+	    dz = (pBuf[3] & 0x08) ? ((int)(pBuf[3] & 0x0F) - 0x10) :
                                     ((int)(pBuf[3] & 0x0F));
 	    break;
 
@@ -1637,7 +1637,7 @@ post_event:
 	/* post an event */
 	pMse->PostEvent(pInfo, buttons, dx, dy, dz, dw);
 
-	/* 
+	/*
 	 * We don't reset pBufP here yet, as there may be an additional data
 	 * byte in some protocols. See above.
 	 */
@@ -1793,7 +1793,7 @@ MouseProc(DeviceIntPtr device, int what)
 	device->public.on = TRUE;
 	FlushButtons(pMse);
 	break;
-	    
+
     case DEVICE_OFF:
 	if (pInfo->fd != -1) {
 	    xf86RemoveEnabledDevice(pInfo);
@@ -1995,7 +1995,7 @@ static char reverseMap[16] = { 0,  4,  2,  6,
 			       8, 12, 10, 14,
 			       9, 13, 11, 15 };
 
-static char hitachMap[16] = {  0,  2,  1,  3, 
+static char hitachMap[16] = {  0,  2,  1,  3,
 			       8, 10,  9, 11,
 			       4,  6,  5,  7,
 			      12, 14, 13, 15 };
@@ -2090,7 +2090,7 @@ static void MouseWakeupHandler(pointer data,
     InputInfoPtr    pInfo = (InputInfoPtr) data;
     MouseDevPtr	    pMse = (MouseDevPtr) pInfo->private;
     int		    ms;
-    
+
     if (pMse->emulate3Pending)
     {
 	ms = pMse->emulate3Expires - GetTimeInMillis ();
@@ -2158,7 +2158,7 @@ MouseDoPostEvent(InputInfoPtr pInfo, int buttons, int dx, int dy)
 	    if (buttons & wheelButtonMask) {
 		/* Start timeout handling */
 		pMse->wheelButtonExpires = GetTimeInMillis () + pMse->wheelButtonTimeout;
-		ms = - pMse->wheelButtonTimeout;  
+		ms = - pMse->wheelButtonTimeout;
 	    } else {
 		ms = pMse->wheelButtonExpires - GetTimeInMillis ();
 
@@ -2259,7 +2259,7 @@ MouseDoPostEvent(InputInfoPtr pInfo, int buttons, int dx, int dy)
 	 * adjust buttons state for drag locks!
 	 * if there is drag locks
 	 */
-        if (pMse->pDragLock) {      
+        if (pMse->pDragLock) {
 	    DragLockPtr   pLock;
 	    int tarOfGoingDown, tarOfDown;
 	    int realbuttons;
@@ -2288,19 +2288,19 @@ MouseDoPostEvent(InputInfoPtr pInfo, int buttons, int dx, int dy)
 				realbuttons & pLock->lockButtonsM);
 
 	    /*
-	     * when simulatedDown set and target pressed, 
-	     * simulatedDown goes false 
+	     * when simulatedDown set and target pressed,
+	     * simulatedDown goes false
 	     */
 	    pLock->simulatedDown &= ~(realbuttons & change);
 
 	    /*
-	     * if master drag lock released  
+	     * if master drag lock released
 	     * then master drag lock state on
 	     */
 	    pLock->masterTS |= (~realbuttons & change) & pLock->masterLockM;
 
 	    /* if master state, buttons going down are simulatedDown */
-	    if (pLock->masterTS) 
+	    if (pLock->masterTS)
 		pLock->simulatedDown |= (realbuttons & change);
 
 	    /* if any button pressed, no longer in master drag lock state */
@@ -2368,7 +2368,7 @@ MousePostEvent(InputInfoPtr pInfo, int truebuttons,
 
     pMse = pInfo->private;
     mousepriv = (mousePrivPtr)pMse->mousePriv;
-    
+
     if (pMse->protocolID == PROT_MMHIT)
 	b = reverseBits(hitachMap, truebuttons);
     else
@@ -2458,7 +2458,7 @@ MousePostEvent(InputInfoPtr pInfo, int truebuttons,
 	dy = tmp;
     }
 
-    /* Accumulate the scaled dx, dy in the private variables 
+    /* Accumulate the scaled dx, dy in the private variables
        fracdx,fracdy and return the integer number part */
     if (mousepriv) {
 	mousepriv->fracdx += mousepriv->sensitivity*dx;
@@ -2466,7 +2466,7 @@ MousePostEvent(InputInfoPtr pInfo, int truebuttons,
 	mousepriv->fracdx -= ( dx=(int)(mousepriv->fracdx) );
 	mousepriv->fracdy -= ( dy=(int)(mousepriv->fracdy) );
     }
-    
+
     /* If mouse wheel movement has to be mapped on a button, we need to
      * loop for button press and release events. */
     do {
@@ -2537,14 +2537,14 @@ SetupMouse(InputInfoPtr pInfo)
     Bool automatic = FALSE;
 
     pMse = pInfo->private;
-    
+
     /* Handle the "Auto" protocol. */
     if (pMse->protocolID == PROT_AUTO) {
-	/* 
-	 * We come here when user specifies protocol "auto" in 
+	/*
+	 * We come here when user specifies protocol "auto" in
 	 * the configuration file or thru the xf86misc extensions.
 	 * So we initialize autoprobing here.
-	 * Probe for PnP/OS mouse first. If unsuccessful 
+	 * Probe for PnP/OS mouse first. If unsuccessful
 	 * try to guess protocol from incoming data.
 	 */
 	automatic = TRUE;
@@ -2553,7 +2553,7 @@ SetupMouse(InputInfoPtr pInfo)
 	if (name)  {
 #ifdef EXTMOUSEDEBUG
 	    ErrorF("PnP/OS Mouse detected: %s\n",name);
-#endif	 
+#endif
 	}
     }
 
@@ -2587,7 +2587,7 @@ SetupMouse(InputInfoPtr pInfo)
 	 * If baudrate is set write it back to the option
 	 * list so that the serial interface code can access
 	 * the new value. Not set means default.
-	 */ 
+	 */
 	if (pMse->baudRate)
 	    xf86ReplaceIntOption(pInfo->options, "BaudRate", pMse->baudRate);
 	pMse->oldProtocolID = pMse->protocolID; /* hack */
@@ -2599,7 +2599,7 @@ SetupMouse(InputInfoPtr pInfo)
 	xf86SetSerial(pInfo->fd, pInfo->options);
 
     if (!initMouseHW(pInfo))
-	return FALSE;    
+	return FALSE;
 
     pMse->protoBufTail = 0;
     pMse->inSync = 0;
@@ -2665,7 +2665,7 @@ SetupMouse(InputInfoPtr pInfo)
     } \
   }
 
-		       
+
 static Bool
 initMouseHW(InputInfoPtr pInfo)
 {
@@ -2678,10 +2678,10 @@ initMouseHW(InputInfoPtr pInfo)
     int paramlen = 0;
     int count = RETRY_COUNT;
     Bool ps2Init = TRUE;
-    
+
     switch (pMse->protocolID) {
 	case PROT_LOGI:		/* Logitech Mice */
-	    /* 
+	    /*
 	     * The baud rate selection command must be sent at the current
 	     * baud rate; try all likely settings.
 	     */
@@ -2838,7 +2838,7 @@ initMouseHW(InputInfoPtr pInfo)
 	case PROT_PS2:
 	case PROT_GLIDEPS2:
 	    break;
-	
+
 	case PROT_IMPS2:		/* IntelliMouse */
 	{
 	    static unsigned char seq[] = { 243, 200, 243, 100, 243, 80 };
@@ -2851,22 +2851,22 @@ initMouseHW(InputInfoPtr pInfo)
 	{
 	    static unsigned char seq[] = { 243, 200, 243, 100, 243, 80,
 					   243, 200, 243, 200, 243, 80 };
-	
+
 	    param = seq;
 	    paramlen = sizeof(seq);
 	}
 	break;
-    
+
 	case PROT_NETPS2:		/* NetMouse, NetMouse Pro, Mie Mouse */
 	case PROT_NETSCPS2:		/* NetScroll */
 	{
 	    static unsigned char seq[] = { 232, 3, 230, 230, 230, 233 };
-	
+
 	    param = seq;
 	    paramlen = sizeof(seq);
 	}
 	break;
-    
+
 	case PROT_MMPS2:		/* MouseMan+, FirstMouse+ */
 	{
 	    static unsigned char seq[] = { 230, 232, 0, 232, 3, 232, 2, 232, 1,
@@ -2875,7 +2875,7 @@ initMouseHW(InputInfoPtr pInfo)
 	    paramlen = sizeof(seq);
 	}
 	break;
-    
+
 	case PROT_THINKPS2:		/* ThinkingMouse */
 	{
 	    static unsigned char seq[] = { 243, 10, 232,  0, 243, 20, 243, 60,
@@ -2918,13 +2918,13 @@ initMouseHW(InputInfoPtr pInfo)
 		usleep(30000);
 		xf86FlushInput(pInfo->fd);
 	    }
-	    
+
 	    if (osInfo->SetPS2Res) {
 		osInfo->SetPS2Res(pInfo, pMse->protocol, pMse->sampleRate,
 				  pMse->resolution);
 	    } else {
 		unsigned char c2[2];
-		
+
 		c = 0xE6;	/*230*/	/* 1:1 scaling */
 		if (!ps2SendPacket(pInfo,&c,1)) {
 		    if (!count--)
@@ -3005,7 +3005,7 @@ initMouseHW(InputInfoPtr pInfo)
 
 #ifdef SUPPORT_MOUSE_RESET
 static Bool
-mouseReset(InputInfoPtr pInfo, unsigned char val) 
+mouseReset(InputInfoPtr pInfo, unsigned char val)
 {
     MouseDevPtr pMse = pInfo->private;
     mousePrivPtr mousepriv = (mousePrivPtr)pMse->mousePriv;
@@ -3028,7 +3028,7 @@ mouseReset(InputInfoPtr pInfo, unsigned char val)
      * There are no bytes sent after the replug event package until
      * the mouse is reset.
      */
-    
+
     if (mousepriv->current == 0
 	&& (mousepriv->lastEvent - prevEvent) < 4000)
 	return FALSE;
@@ -3046,7 +3046,7 @@ mouseReset(InputInfoPtr pInfo, unsigned char val)
 #ifdef EXTMOUSEDEBUG
     ErrorF("Mouse Current: %i 0x%x\n",mousepriv->current, val);
 #endif
-    
+
     /* here we put the mouse specific reset detection */
     /* They need to do three things:                 */
     /*  Check if byte may be a reset byte            */
@@ -3074,7 +3074,7 @@ mouseReset(InputInfoPtr pInfo, unsigned char val)
 	    ret = TRUE;
 	}
     }
-    
+
 	if (!expectReset)
 	    mousepriv->current = 0;
 	else
@@ -3108,7 +3108,7 @@ ps2WakeupHandler(pointer data, int i, pointer LastSelectMask)
     MouseDevPtr	    pMse = (MouseDevPtr) pInfo->private;
     mousePrivPtr mousepriv = (mousePrivPtr)pMse->mousePriv;
     int		    ms;
-    
+
     if (mousepriv->inReset) {
 	unsigned char val;
 	int blocked;
@@ -3146,12 +3146,12 @@ ps2WakeupHandler(pointer data, int i, pointer LastSelectMask)
 #endif
 
 static
-MouseProtocolID hardProtocolList[] = { 	PROT_MSC, PROT_MM, PROT_LOGI, 
+MouseProtocolID hardProtocolList[] = { 	PROT_MSC, PROT_MM, PROT_LOGI,
 					PROT_LOGIMAN, PROT_MMHIT,
 					PROT_GLIDE, PROT_IMSERIAL,
 					PROT_THINKING, PROT_ACECAD,
 					PROT_THINKPS2, PROT_MMPS2,
-					PROT_GLIDEPS2, 
+					PROT_GLIDEPS2,
 					PROT_NETSCPS2, PROT_EXPPS2,PROT_IMPS2,
 					PROT_GENPS2, PROT_NETPS2,
 					PROT_MS,
@@ -3159,12 +3159,12 @@ MouseProtocolID hardProtocolList[] = { 	PROT_MSC, PROT_MM, PROT_LOGI,
 };
 
 static
-MouseProtocolID softProtocolList[] = { 	PROT_MSC, PROT_MM, PROT_LOGI, 
+MouseProtocolID softProtocolList[] = { 	PROT_MSC, PROT_MM, PROT_LOGI,
 					PROT_LOGIMAN, PROT_MMHIT,
 					PROT_GLIDE, PROT_IMSERIAL,
 					PROT_THINKING, PROT_ACECAD,
 					PROT_THINKPS2, PROT_MMPS2,
-					PROT_GLIDEPS2, 
+					PROT_GLIDEPS2,
 					PROT_NETSCPS2 ,PROT_IMPS2,
 					PROT_GENPS2,
 					PROT_MS,
@@ -3221,7 +3221,7 @@ autoOSProtocol(InputInfoPtr pInfo, int *protoPara)
     if (name) {
 	pMse->protocolID = protocolID;
     }
-    
+
     return name;
 }
 
@@ -3238,7 +3238,7 @@ createProtoList(MouseDevPtr pMse, MouseProtocolID *protoList)
     mousePrivPtr mPriv = (mousePrivPtr)pMse->mousePriv;
     MouseProtocolID *tmplist = NULL;
     int blocked;
-    
+
     AP_DBGC(("Autoprobe: "));
     for (i = 0; i < mPriv->count; i++)
 	AP_DBGC(("%2.2x ", (unsigned char) mPriv->data[i]));
@@ -3256,14 +3256,14 @@ createProtoList(MouseDevPtr pMse, MouseProtocolID *protoList)
     } else
 	return;
 
-    for (i = 0; ((prot = protoList[i]) != PROT_UNKNOWN 
+    for (i = 0; ((prot = protoList[i]) != PROT_UNKNOWN
 		 && (k < NUM_AUTOPROBE_PROTOS - 1)) ; i++) {
 	Bool bad = TRUE;
 	unsigned char byte = 0;
 	int count = 0;
 	int next_header_candidate = 0;
 	int header_count = 0;
-	
+
 	if (!GetProtocol(prot))
 	    continue;
 	para = proto[prot];
@@ -3274,7 +3274,7 @@ createProtoList(MouseDevPtr pMse, MouseProtocolID *protoList)
 	for (j = 0; j < 7; j++)
 	    AP_DBGC(("%2.2x ", (unsigned char) para[j]));
 	AP_DBGC(("\n"));
-#endif   
+#endif
 	j = 0;
 	while (1) {
 	    /* look for header */
@@ -3285,7 +3285,7 @@ createProtoList(MouseDevPtr pMse, MouseProtocolID *protoList)
 		    count = 1;
 		    break;
 		} else {
-		    /* 
+		    /*
 		     * Bail out if number of bytes per package have
 		     * been tested for header.
 		     * Take bytes per package of leading garbage into
@@ -3303,10 +3303,10 @@ createProtoList(MouseDevPtr pMse, MouseProtocolID *protoList)
 		if (count == para[4]) {
 		    count = 0;
 		    /* check and eat excess byte */
-		    if (((byte & para[0]) != para[1]) 
+		    if (((byte & para[0]) != para[1])
 			&& ((byte & para[5]) == para[6])) {
 			AP_DBG(("excess byte found\n"));
-			continue; 
+			continue;
 		    }
 		}
 		if (count == 0) {
@@ -3321,10 +3321,10 @@ createProtoList(MouseDevPtr pMse, MouseProtocolID *protoList)
 			count++;
 			continue;
 		    }
-		} 
+		}
 		/* validate data */
-		else if (((byte & para[2]) != para[3]) 
-			 || ((para[7] & MPF_SAFE) 
+		else if (((byte & para[2]) != para[3])
+			 || ((para[7] & MPF_SAFE)
 			     && ((byte & para[0]) == para[1]))) {
 		    AP_DBG(("data bad\n"));
 		    bad = TRUE;
@@ -3354,7 +3354,7 @@ createProtoList(MouseDevPtr pMse, MouseProtocolID *protoList)
     }
 
     xf86UnblockSIGIO(blocked);
-    
+
     mPriv->protoList[k] = PROT_UNKNOWN;
 
     free(tmplist);
@@ -3403,7 +3403,7 @@ typedef enum {
 #define BAD_INC_CERTAINTY_WHEN_SYNC_LOST 2
 
 static validState
-validCount(mousePrivPtr mPriv, Bool inSync, Bool lostSync) 
+validCount(mousePrivPtr mPriv, Bool inSync, Bool lostSync)
 {
     if (inSync) {
 	if (!--mPriv->goodCount) {
@@ -3420,7 +3420,7 @@ validCount(mousePrivPtr mPriv, Bool inSync, Bool lostSync)
     /* We are out of sync again */
     mPriv->goodCount = PROBE_UNCERTAINTY;
     /* We increase uncertainty of having the correct protocol */
-    mPriv->badCount+= lostSync ? BAD_INC_CERTAINTY_WHEN_SYNC_LOST 
+    mPriv->badCount+= lostSync ? BAD_INC_CERTAINTY_WHEN_SYNC_LOST
 	: BAD_INC_CERTAINTY;
 
     if (mPriv->badCount < BAD_CERTAINTY) {
@@ -3441,13 +3441,13 @@ validCount(mousePrivPtr mPriv, Bool inSync, Bool lostSync)
 				mPriv->acc = 0;
 
 static void
-autoProbeMouse(InputInfoPtr pInfo, Bool inSync, Bool lostSync) 
+autoProbeMouse(InputInfoPtr pInfo, Bool inSync, Bool lostSync)
 {
     MouseDevPtr pMse = pInfo->private;
     mousePrivPtr mPriv = (mousePrivPtr)pMse->mousePriv;
 
     MouseProtocolID *protocolList = NULL;
-    
+
     while (1) {
 	switch (mPriv->autoState) {
 	case AUTOPROBE_GOOD:
@@ -3473,7 +3473,7 @@ autoProbeMouse(InputInfoPtr pInfo, Bool inSync, Bool lostSync)
 	    AP_DBG(("State H_SETPROTO\n"));
 	    if ((pMse->protocolID = hardProtocolList[mPriv->protocolID++])
 		== PROT_UNKNOWN) {
-		mPriv->protocolID = 0;		    
+		mPriv->protocolID = 0;
 		break;
 	    } else if (GetProtocol(pMse->protocolID) &&  SetupMouse(pInfo)) {
 		FlushButtons(pMse);
@@ -3532,7 +3532,7 @@ autoProbeMouse(InputInfoPtr pInfo, Bool inSync, Bool lostSync)
 	    mPriv->count = 0;
 	    mPriv->serialDefaultsNum = -1;
 	    mPriv->autoState = AUTOPROBE_COLLECT;
-	    break;    
+	    break;
 	case AUTOPROBE_COLLECT:
 	    AP_DBG(("State COLLECT\n"));
 	    if (mPriv->count <= NUM_MSE_AUTOPROBE_BYTES)
@@ -3592,10 +3592,10 @@ autoProbeMouse(InputInfoPtr pInfo, Bool inSync, Bool lostSync)
 	{
 	    pointer serialDefaults;
 	    AP_DBG(("State SWITCHSERIAL\n"));
-	    
+
 	    if (!serialDefaultsList)
 		createSerialDefaultsList();
-	    
+
 	    AP_DBG(("Switching serial params\n"));
 	    if ((serialDefaults =
 		 serialDefaultsList[++mPriv->serialDefaultsNum]) == NULL) {
@@ -3616,11 +3616,11 @@ autoProbeMouse(InputInfoPtr pInfo, Bool inSync, Bool lostSync)
 	    void *defaults;
 	    AP_DBG(("State SWITCH_PROTOCOL\n"));
 	    proto = mPriv->protoList[mPriv->protocolID++];
-	    if (proto == PROT_UNKNOWN) 
+	    if (proto == PROT_UNKNOWN)
 		mPriv->autoState = AUTOPROBE_SWITCHSERIAL;
 	    else if (!((pProto = GetProtocol(proto)) &&
 		       ((defaults = pProto->defaults)))
-		       || (mPriv->serialDefaultsNum == -1 
+		       || (mPriv->serialDefaultsNum == -1
 			   && (defaults == msDefaults))
 		       || (mPriv->serialDefaultsNum != -1
 			   && serialDefaultsList[mPriv->serialDefaultsNum]
@@ -3643,7 +3643,7 @@ static Bool
 autoGood(MouseDevPtr pMse)
 {
     mousePrivPtr mPriv = (mousePrivPtr)pMse->mousePriv;
-    
+
     if (!pMse->autoProbe)
 	return TRUE;
 
@@ -3679,7 +3679,7 @@ checkForErraticMovements(InputInfoPtr pInfo, int dx, int dy)
 	return;
 
 #if 0
-    if (abs(dx - mPriv->prevDx) > 300 
+    if (abs(dx - mPriv->prevDx) > 300
 	|| abs(dy - mPriv->prevDy) > 300)
 	AP_DBG(("erratic1 behaviour\n"));
 #endif
@@ -3689,7 +3689,7 @@ checkForErraticMovements(InputInfoPtr pInfo, int dx, int dy)
 	    if (abs(mPriv->accDx) > mPriv->acc) {
 		mPriv->acc = abs(mPriv->accDx);
 		AP_DBG(("acc=%i\n",mPriv->acc));
-	    } 
+	    }
 	    else
 		AP_DBG(("accDx=%i\n",mPriv->accDx));
 	} else {
@@ -3732,7 +3732,7 @@ SetMouseProto(MouseDevPtr pMse, MouseProtocolID protocolID)
     if ((pMse->protocolID >= 0) && (pMse->protocolID < PROT_NUMPROTOS))
 	memcpy(pMse->protoPara, proto[pMse->protocolID],
 	       sizeof(pMse->protoPara));
-    
+
     if (pMse->emulate3ButtonsSoft)
 	pMse->emulate3Buttons = TRUE;
 }
@@ -3748,7 +3748,7 @@ collectData(MouseDevPtr pMse, unsigned char u)
 	mPriv->data[mPriv->count++] = u;
 	if (mPriv->count <= NUM_MSE_AUTOPROBE_BYTES) {
 		return TRUE;
-	} 
+	}
     }
     return FALSE;
 }

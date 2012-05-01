@@ -91,11 +91,11 @@ static symtab_t pnpprod[] = {
      * EzScroll returns PNP0F04 in the compatible device field; but it
      * doesn't look compatible... XXX
      */
-    { "PNP0F04",  PROT_MSC },		/* MouseSystems */ 
-    { "PNP0F05",  PROT_MSC },		/* MouseSystems */ 
+    { "PNP0F04",  PROT_MSC },		/* MouseSystems */
+    { "PNP0F05",  PROT_MSC },		/* MouseSystems */
 #ifdef notyet
-    { "PNP0F06",  PROT_??? },		/* Genius Mouse */ 
-    { "PNP0F07",  PROT_??? },		/* Genius Mouse */ 
+    { "PNP0F06",  PROT_??? },		/* Genius Mouse */
+    { "PNP0F07",  PROT_??? },		/* Genius Mouse */
 #endif
     { "PNP0F08",  PROT_LOGIMAN },	/* Logitech serial */
     { "PNP0F09",  PROT_MS },		/* MS BallPoint serial */
@@ -114,7 +114,7 @@ static symtab_t pnpprod[] = {
 #ifdef notyet
     { "PNP0F14",  PROT_??? },		/* MS Kids Mouse */
 #endif
-    { "PNP0F15",  PROT_BM },		/* Logitech bus */ 
+    { "PNP0F15",  PROT_BM },		/* Logitech bus */
 #ifdef notyet
     { "PNP0F16",  PROT_??? },		/* Logitech SWIFT */
 #endif
@@ -159,7 +159,7 @@ MouseGetSerialPnpProtocol(InputInfoPtr pInfo)
     int len;
     Bool prePNP;
 
-    if ((len = pnpgets(pInfo, buf, &prePNP)) > 0) 
+    if ((len = pnpgets(pInfo, buf, &prePNP)) > 0)
     {
 	if (!prePNP) {
 	    if (pnpparse(pInfo, &pnpid, buf, len) &&
@@ -181,7 +181,7 @@ MouseGetPnpProtocol(InputInfoPtr pInfo)
     mousePrivPtr mPriv = (mousePrivPtr)pMse->mousePriv;
     MouseProtocolID val;
     CARD32 last;
-    
+
     if ((val = MouseGetSerialPnpProtocol(pInfo)) != PROT_UNKNOWN) {
 	if (val == MouseGetSerialPnpProtocol(pInfo))
 	    return val;
@@ -199,9 +199,9 @@ MouseGetPnpProtocol(InputInfoPtr pInfo)
 #endif
 	    mPriv->disablePnPauto = TRUE;
 	    return PROT_UNKNOWN;
-	} 
+	}
     }
-    
+
 #ifdef EXTMOUSEDEBUG
     if (mPriv->disablePnPauto)
 	xf86ErrorF("Mouse: Enabling PnP\n");
@@ -215,19 +215,19 @@ MouseGetPnpProtocol(InputInfoPtr pInfo)
 }
 
 /*
- * Try to elicit a PnP ID as described in 
- * Microsoft, Hayes: "Plug and Play External COM Device Specification, 
+ * Try to elicit a PnP ID as described in
+ * Microsoft, Hayes: "Plug and Play External COM Device Specification,
  * rev 1.00", 1995.
  *
  * The routine does not fully implement the COM Enumerator as per Section
  * 2.1 of the document.  In particular, we don't have idle state in which
- * the driver software monitors the com port for dynamic connection or 
- * removal of a device at the port, because `moused' simply quits if no 
+ * the driver software monitors the com port for dynamic connection or
+ * removal of a device at the port, because `moused' simply quits if no
  * device is found.
  *
- * In addition, as PnP COM device enumeration procedure slightly has 
+ * In addition, as PnP COM device enumeration procedure slightly has
  * changed since its first publication, devices which follow earlier
- * revisions of the above spec. may fail to respond if the rev 1.0 
+ * revisions of the above spec. may fail to respond if the rev 1.0
  * procedure is used. XXX
  */
 static int
@@ -236,9 +236,9 @@ pnpgets(InputInfoPtr pInfo, char *buf, Bool *prePNP)
     int i;
     char c;
     pointer pnpOpts;
-    
+
 #if 0
-    /* 
+    /*
      * This is the procedure described in rev 1.0 of PnP COM device spec.
      * Unfortunately, some devices which conform to earlier revisions of
      * the spec gets confused and do not return the ID string...
@@ -317,11 +317,11 @@ pnpgets(InputInfoPtr pInfo, char *buf, Bool *prePNP)
     /* collect PnP COM device ID (2.1.7) */
     i = 0;
     *prePNP = FALSE;
-    
+
     usleep(200000);	/* the mouse must send `Begin ID' within 200msec */
     while (xf86ReadSerial(pInfo->fd, &c, 1) == 1) {
 	/* we may see "M", or "M3..." before `Begin ID' */
-	if (c == 'M') 
+	if (c == 'M')
 	    *prePNP = TRUE;
 
         if ((c == 0x08) || (c == 0x28)) {	/* Begin ID */
@@ -332,7 +332,7 @@ pnpgets(InputInfoPtr pInfo, char *buf, Bool *prePNP)
         }
 	if (*prePNP)
 	    buf[i++] = c;
-	
+
 	if (xf86WaitForInput(pInfo->fd, 200000) <= 0)
 	    break;
     }
@@ -342,7 +342,7 @@ pnpgets(InputInfoPtr pInfo, char *buf, Bool *prePNP)
     }
     if (*prePNP)
 	return i;
-    
+
     ++c;			/* make it `End ID' */
     for (;;) {
 	if (xf86WaitForInput(pInfo->fd, 200000) <= 0)
@@ -359,9 +359,9 @@ pnpgets(InputInfoPtr pInfo, char *buf, Bool *prePNP)
     return i;
 
     /*
-     * According to PnP spec, we should set DTR = 1 and RTS = 0 while 
-     * in idle state.  But, `moused' shall set DTR = RTS = 1 and proceed, 
-     * assuming there is something at the port even if it didn't 
+     * According to PnP spec, we should set DTR = 1 and RTS = 0 while
+     * in idle state.  But, `moused' shall set DTR = RTS = 1 and proceed,
+     * assuming there is something at the port even if it didn't
      * respond to the PnP enumeration procedure.
      */
 disconnect_idle:
@@ -450,7 +450,7 @@ pnpparse(InputInfoPtr pInfo, pnpid_t *id, char *buf, int len)
 		break;
         }
 	/*
-	 * PnP COM spec prior to v0.96 allowed '*' in this field, 
+	 * PnP COM spec prior to v0.96 allowed '*' in this field,
 	 * it's not allowed now; just ignore it.
 	 */
 	if (buf[j] == '*')
@@ -483,9 +483,9 @@ pnpparse(InputInfoPtr pInfo, pnpid_t *id, char *buf, int len)
         sprintf(s, "%02X", sum & 0x0ff);
         if (strncmp(s, &buf[len - 3], 2) != 0) {
 #if 0
-            /* 
+            /*
 	     * Checksum error!!
-	     * I found some mice do not comply with the PnP COM device 
+	     * I found some mice do not comply with the PnP COM device
 	     * spec regarding checksum... XXX
 	     */
 	    return FALSE;
@@ -582,7 +582,7 @@ ps2SendPacket(InputInfoPtr pInfo, unsigned char *bytes, int len)
 {
     unsigned char c;
     int i,j;
-    
+
 #ifdef DEBUG
     xf86ErrorF("Ps/2 data package:");
     for (i = 0; i < len; i++)
@@ -608,7 +608,7 @@ ps2SendPacket(InputInfoPtr pInfo, unsigned char *bytes, int len)
 
 	    if (c == 0xFE) /* resend */
 		continue;
-	    
+
 
 	    if (c == 0xFC) /* error */
 		return FALSE;
@@ -623,10 +623,10 @@ ps2SendPacket(InputInfoPtr pInfo, unsigned char *bytes, int len)
 	if (j == 10)
 	    return FALSE;
     }
-    
+
     return TRUE;
 }
-    
+
 static Bool
 ps2DisableDataReporting(InputInfoPtr pInfo)
 {
@@ -649,7 +649,7 @@ ps2GetDeviceID(InputInfoPtr pInfo)
 
     usleep(30000);
     xf86FlushInput(pInfo->fd);
-    if (!ps2SendPacket(pInfo, packet, sizeof(packet))) 
+    if (!ps2SendPacket(pInfo, packet, sizeof(packet)))
 	return -1;
     while (1) {
 	if (!readMouse(pInfo,&u))
@@ -673,7 +673,7 @@ ps2Reset(InputInfoPtr pInfo)
 #ifdef DEBUG
    xf86ErrorF("PS/2 Mouse reset\n");
 #endif
-    if (!ps2SendPacket(pInfo, packet, sizeof(packet))) 
+    if (!ps2SendPacket(pInfo, packet, sizeof(packet)))
 	return FALSE;
     /* we need a little delay here */
     xf86WaitForInput(pInfo->fd, 500000);
@@ -681,11 +681,11 @@ ps2Reset(InputInfoPtr pInfo)
 	if (!readMouse(pInfo,&u)) {
 	    goto EXIT;
 	}
-	if (u != reply[i]) 
+	if (u != reply[i])
 	    goto EXIT;
     }
     return TRUE;
-    
+
  EXIT:
     xf86FlushInput(pInfo->fd);
     return FALSE;
@@ -700,9 +700,9 @@ probePs2ProtocolPnP(InputInfoPtr pInfo)
     xf86FlushInput(pInfo->fd);
 
     ps2DisableDataReporting(pInfo);
-    
+
     if (ps2Reset(pInfo)) { /* Reset PS2 device */
-  	unsigned char seq[] = { 243, 200, 243, 100, 243, 80 }; 
+  	unsigned char seq[] = { 243, 200, 243, 100, 243, 80 };
 	/* Try to identify Intelli Mouse */
 	if (ps2SendPacket(pInfo, seq, sizeof(seq))) {
 	    u = ps2GetDeviceID(pInfo);
@@ -713,21 +713,21 @@ probePs2ProtocolPnP(InputInfoPtr pInfo)
 		    u = ps2GetDeviceID(pInfo);
 		    if (u == 0x04)
 			ret =  PROT_EXPPS2;
-		    else 
+		    else
 			ret = PROT_IMPS2;
-		} 
+		}
 	    } else if (ps2Reset(pInfo))  /* reset again to find sane state */
 		ret = PROT_PS2;
 	}
-    
-	if (ret != PROT_UNKNOWN) 
+
+	if (ret != PROT_UNKNOWN)
 	    ps2EnableDataReporting(pInfo);
     }
     return ret;
 }
 
 static struct ps2protos {
-    int Id; 
+    int Id;
     MouseProtocolID protoID;
 } ps2 [] = {
     { 0x0, PROT_PS2 },
@@ -750,12 +750,12 @@ getPs2ProtocolPnP(InputInfoPtr pInfo)
     while (--count)
 	if (ps2DisableDataReporting(pInfo))
 	    break;
-    
+
     if (!count) {
 	proto = PROT_UNKNOWN;
 	goto EXIT;
     }
-    
+
     if ((Id = ps2GetDeviceID(pInfo)) == -1) {
 	proto = PROT_UNKNOWN;
 	goto EXIT;
@@ -773,10 +773,10 @@ getPs2ProtocolPnP(InputInfoPtr pInfo)
 	    goto EXIT;
 	}
     }
-    
+
     proto = PROT_UNKNOWN;
     xf86Msg(X_ERROR,"Found unknown PS/2 proto ID %x\n",Id);
-    
+
  EXIT:
     xf86FlushInput(pInfo->fd);
     return proto;

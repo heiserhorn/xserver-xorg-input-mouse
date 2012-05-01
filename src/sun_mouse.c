@@ -69,7 +69,7 @@
 # include <sys/vuid_wheel.h>
 #endif
 
-/* Support for scaling absolute coordinates to screen size in 
+/* Support for scaling absolute coordinates to screen size in
  * Solaris 10 updates and beyond */
 #if !defined(HAVE_ABSOLUTE_MOUSE_SCALING)
 # ifdef MSIOSRESOLUTION /* Defined in msio.h if scaling support present */
@@ -94,7 +94,7 @@ static const char *solarisMouseDevs[] = {
 };
 
 typedef struct _VuidMseRec {
-    struct _VuidMseRec *next;    
+    struct _VuidMseRec *next;
     InputInfoPtr	pInfo;
     Firm_event 		event;
     unsigned char *	buffer;
@@ -225,11 +225,11 @@ vuidPreInit(InputInfoPtr pInfo, const char *protocol, int flags)
 
     pMse->xisbscale = sizeof(Firm_event);
 
-#ifdef HAVE_ABSOLUTE_MOUSE_SCALING    
+#ifdef HAVE_ABSOLUTE_MOUSE_SCALING
     pVuidMse->absres.height = pVuidMse->absres.width = 0;
 #endif
     pVuidMse->pInfo = pInfo;
-    pVuidMse->next = vuidMouseList; 
+    pVuidMse->next = vuidMouseList;
     vuidMouseList = pVuidMse;
 
 #if GET_ABI_MAJOR(ABI_XINPUT_VERSION) < 12
@@ -239,27 +239,27 @@ vuidPreInit(InputInfoPtr pInfo, const char *protocol, int flags)
 }
 
 static void
-vuidFlushAbsEvents(InputInfoPtr pInfo, int absX, int absY, 
+vuidFlushAbsEvents(InputInfoPtr pInfo, int absX, int absY,
 		   Bool *absXset, Bool *absYset)
 {
 #ifdef DEBUG
-    ErrorF("vuidFlushAbsEvents: %d,%d (set: %d, %d)\n", absX, absY, 
+    ErrorF("vuidFlushAbsEvents: %d,%d (set: %d, %d)\n", absX, absY,
 	   *absXset, *absYset);
 #endif
     if ((*absXset) && (*absYset)) {
-	xf86PostMotionEvent(pInfo->dev, 
+	xf86PostMotionEvent(pInfo->dev,
 			    /* is_absolute: */    TRUE,
 			    /* first_valuator: */ 0,
 			    /* num_valuators: */  2,
 			    absX, absY);
     } else if (*absXset) {
-	xf86PostMotionEvent(pInfo->dev, 
+	xf86PostMotionEvent(pInfo->dev,
 			    /* is_absolute: */    TRUE,
 			    /* first_valuator: */ 0,
 			    /* num_valuators: */  1,
 			    absX);
     } else if (*absYset) {
-	xf86PostMotionEvent(pInfo->dev, 
+	xf86PostMotionEvent(pInfo->dev,
 			    /* is_absolute: */    TRUE,
 			    /* first_valuator: */ 1,
 			    /* num_valuators: */  1,
@@ -364,7 +364,7 @@ vuidReadInput(InputInfoPtr pInfo)
 		absYset = TRUE;
 		break;
 	    }
-	} 
+	}
 #ifdef HAVE_VUID_WHEEL
 	else if (vuid_in_range(VUID_WHEEL, pVuidMse->event.id)) {
 	    if (vuid_id_offset(pVuidMse->event.id) == 0)
@@ -404,7 +404,7 @@ static void vuidMouseSendScreenSize(ScreenPtr pScreen, VuidMsePtr pVuidMse)
     if (!pScr->currentMode)
 	return;
 
-    if ((pVuidMse->absres.width != pScr->currentMode->HDisplay) || 
+    if ((pVuidMse->absres.width != pScr->currentMode->HDisplay) ||
 	(pVuidMse->absres.height != pScr->currentMode->VDisplay))
     {
 	pVuidMse->absres.width = pScr->currentMode->HDisplay;
@@ -415,14 +415,14 @@ static void vuidMouseSendScreenSize(ScreenPtr pScreen, VuidMsePtr pVuidMse)
 	} while ( (result != 0) && (errno == EINTR) );
 
 	if (result != 0) {
-	    xf86Msg(X_WARNING, 
+	    xf86Msg(X_WARNING,
 		    "%s: couldn't set absolute mouse scaling resolution: %s\n",
 		    pInfo->name, strerror(errno));
 #ifdef DEBUG
 	} else {
-	    xf86Msg(X_INFO, 
-		    "%s: absolute mouse scaling resolution set to %d x %d\n", 
-		    pInfo->name, 
+	    xf86Msg(X_INFO,
+		    "%s: absolute mouse scaling resolution set to %d x %d\n",
+		    pInfo->name,
 		    pVuidMse->absres.width, pVuidMse->absres.height);
 #endif
 	}
@@ -433,7 +433,7 @@ static void vuidMouseAdjustFrame(int index, int x, int y, int flags)
 {
       ScrnInfoPtr	pScrn = xf86Screens[index];
       ScreenPtr		pScreen = pScrn->pScreen;
-      xf86AdjustFrameProc *wrappedAdjustFrame 
+      xf86AdjustFrameProc *wrappedAdjustFrame
 	  = (xf86AdjustFrameProc *) vuidMouseGetScreenPrivate(pScreen);
       VuidMsePtr	m;
       ScreenPtr 	ptrCurScreen;
@@ -472,7 +472,7 @@ vuidMouseProc(DeviceIntPtr pPointer, int what)
     if (pVuidMse == NULL) {
 	return BadImplementation;
     }
-    
+
     switch (what) {
 
     case DEVICE_INIT:
@@ -492,16 +492,16 @@ vuidMouseProc(DeviceIntPtr pPointer, int what)
 		}
 	    vuidMouseGeneration = serverGeneration;
 	}
-#endif    	
+#endif
 	ret = pVuidMse->wrapped_device_control(pPointer, what);
 	break;
-	
+
     case DEVICE_ON:
 	ret = pVuidMse->wrapped_device_control(pPointer, DEVICE_ON);
 
 	if ((ret == Success) && (pInfo->fd != -1)) {
 	    int fmt = VUID_FIRM_EVENT;
-	    
+
 	    if (pVuidMse->strmod) {
 		/* Check to see if module is already pushed */
 		SYSCALL(i = ioctl(pInfo->fd, I_FIND, pVuidMse->strmod));
@@ -525,9 +525,9 @@ vuidMouseProc(DeviceIntPtr pPointer, int what)
 			pInfo->name, strerror(errno));
 	    }
 	    vuidMouseWheelInit(pInfo);
-#ifdef HAVE_ABSOLUTE_MOUSE_SCALING	    
+#ifdef HAVE_ABSOLUTE_MOUSE_SCALING
 	    vuidMouseSendScreenSize(screenInfo.screens[0], pVuidMse);
-#endif	    
+#endif
 	    xf86FlushInput(pInfo->fd);
 
 	    /* Allocate here so we don't alloc in ReadInput which may be called
@@ -573,7 +573,7 @@ sunMousePreInit(InputInfoPtr pInfo, const char *protocol, int flags)
 	return vuidPreInit(pInfo, protocol, flags);
     }
     return TRUE;
-}    
+}
 
 static const char **
 BuiltinNames(void)
@@ -600,7 +600,7 @@ DefaultProtocol(void)
 }
 
 static Bool
-solarisMouseAutoProbe(InputInfoPtr pInfo, const char **protocol, 
+solarisMouseAutoProbe(InputInfoPtr pInfo, const char **protocol,
 	const char **device)
 {
     const char **pdev, **pproto;

@@ -11,7 +11,7 @@
 #endif
 
 #include "mouse.h"
-#include "xf86Xinput.h"                                                                                              
+#include "xf86Xinput.h"
 /* Private interface for the mouse driver. */
 
 typedef enum  {
@@ -63,7 +63,7 @@ typedef struct {
     int		acc;
     CARD32	pnpLast;
     Bool	disablePnPauto;
-    float	fracdx,fracdy; 
+    float	fracdx,fracdy;
     float	sensitivity;
 } mousePrivRec, *mousePrivPtr;
 

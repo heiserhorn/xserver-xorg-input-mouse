@@ -179,7 +179,7 @@ static struct {
 	{ MOUSE_PROTO_THINK,		"ThinkingMouse" },
 	{ MOUSE_PROTO_SYSMOUSE,		"SysMouse" }
 };
-	
+
 static const char *
 SetupAuto(InputInfoPtr pInfo, int *protoPara)
 {
@@ -193,7 +193,7 @@ SetupAuto(InputInfoPtr pInfo, int *protoPara)
     /* set the driver operation level, if applicable */
     i = 1;
     ioctl(pInfo->fd, MOUSE_SETLEVEL, &i);
-    
+
     /* interrogate the driver and get some intelligence on the device. */
     hw.iftype = MOUSE_IF_UNKNOWN;
     hw.model = MOUSE_MODEL_GENERIC;
@@ -301,7 +301,7 @@ FindDevice(InputInfoPtr pInfo, const char *protocol, int flags)
 		continue;
 	    } else if (!strcmp(*pdev, DEFAULT_SYSMOUSE_DEV)) {
 		/* Check if /dev/mouse is the same as /dev/sysmouse. */
-		if (devMouse && fstat(fd, &sb) == 0 && 
+		if (devMouse && fstat(fd, &sb) == 0 &&
 		    devMouseStat.st_dev == sb.st_dev &&
 		    devMouseStat.st_ino == sb.st_ino) {
 		    /* If the same, use /dev/sysmouse. */
@@ -390,7 +390,7 @@ wsconsReadInput(InputInfoPtr pInfo)
 {
     MouseDevPtr pMse;
     static struct wscons_event eventList[NUMEVENTS];
-    int n, c; 
+    int n, c;
     struct wscons_event *event = eventList;
     unsigned char *pBuf;
 
@@ -493,16 +493,16 @@ usbMouseProc(DeviceIntPtr pPointer, int what)
     pUsbMse = pMse->mousePriv;
 
     switch (what) {
-    case DEVICE_INIT: 
+    case DEVICE_INIT:
 	pPointer->public.on = FALSE;
 
 	for (nbuttons = 0; nbuttons < MSE_MAXBUTTONS; ++nbuttons)
 	    map[nbuttons + 1] = nbuttons + 1;
 
-	InitPointerDeviceStruct((DevicePtr)pPointer, 
-				map, 
+	InitPointerDeviceStruct((DevicePtr)pPointer,
+				map,
 				min(pMse->buttons, MSE_MAXBUTTONS),
-				miPointerGetMotionEvents, 
+				miPointerGetMotionEvents,
 				pMse->Ctrl,
 				miPointerGetMotionBufferSize());
 
@@ -527,7 +527,7 @@ usbMouseProc(DeviceIntPtr pPointer, int what)
 		pInfo->fd = -1;
 	    } else {
 		xf86FlushInput(pInfo->fd);
-		if (!xf86InstallSIGIOHandler (pInfo->fd, usbSigioReadInput, 
+		if (!xf86InstallSIGIOHandler (pInfo->fd, usbSigioReadInput,
 					      pInfo))
 		    AddEnabledDevice(pInfo->fd);
 	    }
@@ -569,7 +569,7 @@ usbReadInput(InputInfoPtr pInfo)
     UsbMsePtr pUsbMse;
     int buttons = pMse->lastButtons;
     int dx = 0, dy = 0, dz = 0, dw = 0;
-    int n, c; 
+    int n, c;
     unsigned char *pBuf;
 
     pMse = pInfo->private;
@@ -590,7 +590,7 @@ usbReadInput(InputInfoPtr pInfo)
     /* discard packets with an id that don't match the mouse */
     /* XXX this is probably not the right thing */
     if (pUsbMse->iid != 0) {
-	if (*pBuf++ != pUsbMse->iid) 
+	if (*pBuf++ != pUsbMse->iid)
 	    return;
     }
     dx = hid_get_data(pBuf, &pUsbMse->loc_x);
@@ -600,7 +600,7 @@ usbReadInput(InputInfoPtr pInfo)
 
     buttons = 0;
     for (n = 0; n < pMse->buttons; n++) {
-	if (hid_get_data(pBuf, &pUsbMse->loc_btn[n])) 
+	if (hid_get_data(pBuf, &pUsbMse->loc_btn[n]))
 	    buttons |= (1 << UMS_BUT(n));
     }
     pMse->PostEvent(pInfo, buttons, dx, dy, dz, dw);
@@ -748,7 +748,7 @@ bsdMousePreInit(InputInfoPtr pInfo, const char *protocol, int flags)
     }
 #endif
     return TRUE;
-}    
+}
 
 OSMouseInfoPtr
 OSMouseInit(int flags)
