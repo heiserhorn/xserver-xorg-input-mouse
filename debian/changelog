@@ -1,9 +1,9 @@
-xserver-xorg-input-mouse (1:1.7.2-3) UNRELEASED; urgency=low
+xserver-xorg-input-mouse (1:1.7.2-3) unstable; urgency=medium
 
   * Update bsd-array-bounds.diff patch to fix crashes on kfreebsd-*,
     thanks to Petr Salinger (Closes: #681506).
 
- -- Cyril Brulebois <kibi@debian.org>  Mon, 16 Jul 2012 00:31:00 +0200
+ -- Cyril Brulebois <kibi@debian.org>  Mon, 16 Jul 2012 00:33:57 +0200
 
 xserver-xorg-input-mouse (1:1.7.2-2) unstable; urgency=low
 
