@@ -6,6 +6,9 @@ Subject: Work around gcc bug resulting in build failure
 
 Debian bug#665390.
 
+Followup-From: Petr Salinger <Petr.Salinger@seznam.cz>
+Followup-Bug: #681506
+
 Index: xserver-xorg-input-mouse/src/bsd_mouse.c
 ===================================================================
 --- xserver-xorg-input-mouse.orig/src/bsd_mouse.c
@@ -15,11 +18,11 @@ Index: xserver-xorg-input-mouse/src/bsd_mouse.c
      int i;
  
 -    for (i = 0; internalNames[i]; i++)
-+    for (i = 0; i < (sizeof(internalNames) / sizeof(internalNames[0])); i++)
++    for (i = -1; internalNames[++i];)
  	if (xf86NameCmp(protocol, internalNames[i]) == 0)
  	    return TRUE;
 -    for (i = 0; miscNames[i]; i++)
-+    for (i = 0; i < (sizeof(miscNames) / sizeof(miscNames[0])); i++)
++    for (i = -1; miscNames[++i];)
  	if (xf86NameCmp(protocol, miscNames[i]) == 0)
  	    return TRUE;
      return FALSE;
