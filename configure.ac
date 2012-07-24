@@ -46,7 +46,7 @@ XORG_DEFAULT_OPTIONS
 XORG_WITH_LINT
 
 # Obtain compiler/linker options from server and required extensions
-PKG_CHECK_MODULES(XORG, [xorg-server >= 1.5.99.901] xproto inputproto)
+PKG_CHECK_MODULES(XORG, [xorg-server >= 1.7] xproto inputproto)
 
 # Define a configure option for an alternate input module directory
 AC_ARG_WITH(xorg-module-dir,
