@@ -39,6 +39,7 @@ OS_SRCS = bsd_mouse.c hurd_mouse.c lnx_mouse.c sun_mouse.c
 	mouse.h \
 	pnp.c \
 	mousePriv.h \
+	compat-api.h \
 	@OS_MOUSE_NAME@_mouse.c
 
 EXTRA_DIST = $(OS_SRCS)

@@ -112,8 +112,10 @@ static int  vuidMouseProc(DeviceIntPtr pPointer, int what);
 static void vuidReadInput(InputInfoPtr pInfo);
 
 #ifdef HAVE_ABSOLUTE_MOUSE_SCALING
+# include "compat-api.h"
+
 static void vuidMouseSendScreenSize(ScreenPtr pScreen, VuidMsePtr pVuidMse);
-static void vuidMouseAdjustFrame(int index, int x, int y, int flags);
+static void vuidMouseAdjustFrame(ADJUST_FRAME_ARGS_DECL);
 
 static int vuidMouseGeneration = 0;
 
@@ -429,19 +431,19 @@ static void vuidMouseSendScreenSize(ScreenPtr pScreen, VuidMsePtr pVuidMse)
     }
 }
 
-static void vuidMouseAdjustFrame(int index, int x, int y, int flags)
+static void vuidMouseAdjustFrame(ADJUST_FRAME_ARGS_DECL)
 {
-      ScrnInfoPtr       pScrn = xf86Screens[index];
-      ScreenPtr         pScreen = pScrn->pScreen;
+      SCRN_INFO_PTR(arg);
+      ScreenPtr         pScreen = xf86ScrnToScreen(pScrn);
       xf86AdjustFrameProc *wrappedAdjustFrame
           = (xf86AdjustFrameProc *) vuidMouseGetScreenPrivate(pScreen);
       VuidMsePtr        m;
       ScreenPtr         ptrCurScreen;
 
-      if(wrappedAdjustFrame) {
-        pScrn->AdjustFrame = wrappedAdjustFrame;
-        (*pScrn->AdjustFrame)(index, x, y, flags);
-        pScrn->AdjustFrame = vuidMouseAdjustFrame;
+      if (wrappedAdjustFrame) {
+          pScrn->AdjustFrame = wrappedAdjustFrame;
+          (*pScrn->AdjustFrame)(ADJUST_FRAME_ARGS(pScrn, x, y));
+          pScrn->AdjustFrame = vuidMouseAdjustFrame;
       }
 
       for (m = vuidMouseList; m != NULL ; m = m->next) {
