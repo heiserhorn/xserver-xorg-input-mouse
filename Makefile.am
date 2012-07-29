@@ -21,6 +21,9 @@
 SUBDIRS = include src man
 MAINTAINERCLEANFILES = ChangeLog INSTALL
 
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = xf86-mouse.pc
+
 .PHONY: ChangeLog INSTALL
 
 INSTALL:
