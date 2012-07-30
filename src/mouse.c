@@ -327,7 +327,7 @@ MouseCommonOptions(InputInfoPtr pInfo)
         int lock;             /* lock button */
         int target;           /* target button */
         int lockM,targetM;    /* bitmasks for drag lock, target */
-        int i, j;             /* indexes */
+        int j;                /* indexes */
         char *s1;             /* parse input string */
         DragLockPtr pLock;
 
@@ -3599,14 +3599,14 @@ autoProbeMouse(InputInfoPtr pInfo, Bool inSync, Bool lostSync)
         }
         case AUTOPROBE_SWITCH_PROTOCOL:
         {
-            MouseProtocolID proto;
+            MouseProtocolID prot;
             MouseProtocolPtr pProto;
             void *defaults;
             AP_DBG(("State SWITCH_PROTOCOL\n"));
-            proto = mPriv->protoList[mPriv->protocolID++];
-            if (proto == PROT_UNKNOWN)
+            prot = mPriv->protoList[mPriv->protocolID++];
+            if (prot == PROT_UNKNOWN)
                 mPriv->autoState = AUTOPROBE_SWITCHSERIAL;
-            else if (!((pProto = GetProtocol(proto)) &&
+            else if (!((pProto = GetProtocol(prot)) &&
                        ((defaults = pProto->defaults)))
                        || (mPriv->serialDefaultsNum == -1
                            && (defaults == msDefaults))
@@ -3614,8 +3614,8 @@ autoProbeMouse(InputInfoPtr pInfo, Bool inSync, Bool lostSync)
                            && serialDefaultsList[mPriv->serialDefaultsNum]
                            == defaults)) {
                 AP_DBG(("Changing Protocol to %s\n",
-                        ProtocolIDToName(proto)));
-                SetMouseProto(pMse,proto);
+                        ProtocolIDToName(prot)));
+                SetMouseProto(pMse,prot);
                 FlushButtons(pMse);
                 RESET_VALIDATION;
                 mPriv->autoState = AUTOPROBE_VALIDATE2;

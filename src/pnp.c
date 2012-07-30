@@ -708,8 +708,8 @@ probePs2ProtocolPnP(InputInfoPtr pInfo)
             u = ps2GetDeviceID(pInfo);
             if (u == 0x03) {
                 /* found IntelliMouse now try IntelliExplorer */
-                unsigned char seq[] = { 243, 200, 243, 200, 243, 80 };
-                if (ps2SendPacket(pInfo,seq,sizeof(seq))) {
+                unsigned char im_seq[] = { 243, 200, 243, 200, 243, 80 };
+                if (ps2SendPacket(pInfo,im_seq,sizeof(im_seq))) {
                     u = ps2GetDeviceID(pInfo);
                     if (u == 0x04)
                         ret =  PROT_EXPPS2;
