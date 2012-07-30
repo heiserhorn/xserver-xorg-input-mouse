@@ -88,7 +88,7 @@ DRIVER_NAME=mouse
 AC_SUBST([DRIVER_NAME])
 
 AC_CONFIG_FILES([Makefile
-                 xf86-mouse.pc
+                 xorg-mouse.pc
                  include/Makefile
                  src/Makefile
                  man/Makefile])
