@@ -147,7 +147,7 @@ VuidMsePtr getVuidMsePriv(InputInfoPtr pInfo)
    list or changing pInfo->fd while xf86Wakeup is looping through the list
    causes server crashes */
 static CARD32
-vuidRemoveMouse(OsTimerPtr timer, CARD32 time, pointer arg)
+vuidRemoveMouse(OsTimerPtr timer, CARD32 now, pointer arg)
 {
     InputInfoPtr pInfo = (InputInfoPtr) arg;
 
