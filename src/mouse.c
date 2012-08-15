@@ -1723,8 +1723,7 @@ MouseProc(DeviceIntPtr device, int what)
         xf86InitValuatorDefaults(device, 1);
 
 #ifdef EXTMOUSEDEBUG
-        ErrorF("assigning %p atom=%d name=%s\n", device, pInfo->atom,
-                pInfo->name);
+        ErrorF("assigning %p name=%s\n", device, pInfo->name);
 #endif
         MouseInitProperties(device);
         break;
